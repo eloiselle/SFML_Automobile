@@ -35,7 +35,8 @@ automobile::~automobile()
 
 }
 
-//Get
+//==Get==
+
 int automobile::getAngleIncrementation()
 {
 	return _angleIncrementation;
@@ -46,7 +47,8 @@ int automobile::getDegree()
 	return _degree;
 }
 
-//Set
+//==Set==
+
 void automobile::setDegree(int degree)
 {
 	_degree = degree;
