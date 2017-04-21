@@ -71,9 +71,9 @@ int main()
 		}
 
 		//Gère les virages
-		sprite.rotate(-angleIncrementation);
+		sprite.setRotation(joueur.getDegree());
 
-		sprite.move(cos(automobile::convertDegreeRadian(degreeAuto)) / 100, sin(automobile::convertDegreeRadian(degreeAuto)) / 100);
+		sprite.move(cos(joueur.convertDegreeRadian(joueur.getDegree())) / 30, sin(joueur.convertDegreeRadian(joueur.getDegree())) / 30);
 		window.clear();
 		window.draw(sprite);
 		window.display();
