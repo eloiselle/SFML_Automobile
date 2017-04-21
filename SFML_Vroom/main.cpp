@@ -1,13 +1,21 @@
+/* En-tête du programme
+=========================
+Auteurs		: Émile Loiselle et Francis Forest
+Nom du CPP	: main.cpp
+Date		: 21 avril 2017
+But			: Contrôler un automobile sur une piste de course le plus rapidement possible. */
 
+//Directives au pré-processeur
 #include <SFML/Graphics.hpp>
-using namespace sf;	//SFML
+using namespace sf;
 
 //Constantes
 const double PI = atan(1) * 4;
 
 //Prototypes
-double getRads(double degre);
+double convertDegreeRadian(double degre);
 
+//Programme principal
 int main()
 {
 	//Initialisation SFML
@@ -18,9 +26,9 @@ int main()
 	Event event;
 
 	//Variables
-	double degree = 90;
-	double radian = 0;
-	double angleInc = 0.01;
+	double degreeAuto = 90;
+	double radianAuto = 0;
+	double angleIncrementation = 0.01;
 
 	//Chargement de la texture de l'auto
 	texture.loadFromFile("orange32x16.png", IntRect(0, 0, 32, 16));
@@ -30,7 +38,7 @@ int main()
 
 	//Initialisation  auto
 	sprite.setPosition(100, 100);
-	sprite.rotate(degree);
+	sprite.rotate(degreeAuto);
 
 	//Tant que le jeu roule
 	while (window.isOpen())
@@ -46,10 +54,10 @@ int main()
 		}
 
 		//Gère les virages
-		degree -= angleInc;
-		sprite.rotate(-angleInc);
+		degreeAuto -= angleIncrementation;
+		sprite.rotate(-angleIncrementation);
 
-		sprite.move(cos(getRads(degree)) / 100, sin(getRads(degree)) / 100);
+		sprite.move(cos(convertDegreeRadian(degreeAuto)) / 100, sin(convertDegreeRadian(degreeAuto)) / 100);
 		window.clear();
 		window.draw(sprite);
 		window.display();
@@ -58,7 +66,8 @@ int main()
 	return 0;
 }
 
-double getRads(double degre)
+//(Fonction) Convertit un angle en degree vers un radian
+double convertDegreeRadian(double degree)
 {
-	return 2 * PI * (degre / 360);
+	return 2 * PI * (degree / 360);
 }
