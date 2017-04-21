@@ -7,13 +7,8 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement possi
 
 //Directives au pré-processeur
 #include <SFML/Graphics.hpp>
+#include "auto.h"
 using namespace sf;
-
-//Constantes
-const double PI = atan(1) * 4;
-
-//Prototypes
-double convertDegreeRadian(double degre);
 
 //Programme principal
 int main()
@@ -26,9 +21,7 @@ int main()
 	Event event;
 
 	//Variables
-	double degreeAuto = 90;
-	double radianAuto = 0;
-	double angleIncrementation = 0.01;
+	automobile joueur;
 
 	//Chargement de la texture de l'auto
 	texture.loadFromFile("orange32x16.png", IntRect(0, 0, 32, 16));
@@ -38,7 +31,7 @@ int main()
 
 	//Initialisation  auto
 	sprite.setPosition(100, 100);
-	sprite.rotate(degreeAuto);
+	sprite.rotate(joueur.getDegree());
 
 	//Tant que le jeu roule
 	while (window.isOpen())
@@ -46,28 +39,45 @@ int main()
 		//Attend les événements
 		while (window.pollEvent(event))
 		{
-			//Si appuie sur X ou Alt+F4
-			if (event.type == Event::Closed)
-
-				//Ferme le jeu
+			switch (event.type)
+			{
+				//Si appuie sur X ou Alt+F4
+			case Event::Closed:
 				window.close();
+				break;
+
+				//Si une touche appuyée
+			case Event::KeyPressed:
+				switch (event.key.code)
+				{
+					//Escape ferme le jeu
+				case sf::Keyboard::Escape:
+					window.close();
+					break;
+
+					//Gauche
+				case sf::Keyboard::Left:
+					//Tourne à gauche
+					joueur.setDegree(joueur.getDegree() - joueur.getAngleIncrementation());
+					break;
+
+					//Droite
+				case sf::Keyboard::Right:
+					//Tourne à droite
+					joueur.setDegree(joueur.getDegree() + joueur.getAngleIncrementation());
+					break;
+				}
+			}
 		}
 
 		//Gère les virages
-		degreeAuto -= angleIncrementation;
 		sprite.rotate(-angleIncrementation);
 
-		sprite.move(cos(convertDegreeRadian(degreeAuto)) / 100, sin(convertDegreeRadian(degreeAuto)) / 100);
+		sprite.move(cos(automobile::convertDegreeRadian(degreeAuto)) / 100, sin(automobile::convertDegreeRadian(degreeAuto)) / 100);
 		window.clear();
 		window.draw(sprite);
 		window.display();
 	}
 
 	return 0;
-}
-
-//(Fonction) Convertit un angle en degree vers un radian
-double convertDegreeRadian(double degree)
-{
-	return 2 * PI * (degree / 360);
 }
