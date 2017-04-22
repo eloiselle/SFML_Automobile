@@ -19,9 +19,13 @@ int main()
 	RenderTexture;
 	Sprite sprite;
 	Event event;
+	Clock horlogeDelta;			//https://en.wikipedia.org/wiki/%CE%94T
 
 	//Variables
 	automobile joueur;
+
+	//Limite le nombre d'images par secondes
+	window.setFramerateLimit(60);
 
 	//Chargement de la texture de l'auto
 	texture.loadFromFile("orange32x16.png", IntRect(0, 0, 32, 16));
@@ -36,45 +40,33 @@ int main()
 	//Tant que le jeu roule
 	while (window.isOpen())
 	{
+		//Réinitialise l'horloge
+		Time tempsDelta = horlogeDelta.restart();
+
 		//Attend les événements
 		while (window.pollEvent(event))
-		{
-			switch (event.type)
-			{
-				//Si appuie sur X ou Alt+F4
-			case Event::Closed:
+			if(event.type == sf::Event::Closed || ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)))
 				window.close();
-				break;
 
-				//Si une touche appuyée
-			case Event::KeyPressed:
-				switch (event.key.code)
-				{
-					//Escape ferme le jeu
-				case sf::Keyboard::Escape:
-					window.close();
-					break;
+		//Gauche
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			joueur.setVirage(1);
 
-					//Gauche
-				case sf::Keyboard::Left:
-					//Tourne à gauche
-					joueur.setDegree(joueur.getDegree() - joueur.getAngleIncrementation());
-					break;
+		//Droite
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			joueur.setVirage(2);
 
-					//Droite
-				case sf::Keyboard::Right:
-					//Tourne à droite
-					joueur.setDegree(joueur.getDegree() + joueur.getAngleIncrementation());
-					break;
-				}
-			}
-		}
+		//Nulle
+		else
+			joueur.setVirage(0);
 
 		//Gère les virages
+		joueur.effectuerVirage();
 		sprite.setRotation(joueur.getDegree());
+		joueur.setVirage(0);
 
-		//Gère le mouvement
-		sprite.move(cos(joueur.convertDegreeRadian(joueur.getDegree())) / 30, sin(joueur.convertDegreeRadian(joueur.getDegree())) / 30);
+		//Gère le mouvement, et applique une force dépendament du temps qui s'est écoulé (offre une expérience de jeu constante)
+		sprite.move(cos(joueur.convertDegreeRadian(joueur.getDegree())) * tempsDelta.asSeconds() , sin(joueur.convertDegreeRadian(joueur.getDegree())) * tempsDelta.asSeconds());
 
 		//Gère l'affichage
 		window.clear();
