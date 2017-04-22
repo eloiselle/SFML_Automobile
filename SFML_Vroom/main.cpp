@@ -14,7 +14,7 @@ using namespace sf;
 int main()
 {
 	//Initialisation SFML
-	RenderWindow window(VideoMode(800, 600), "Vroooom!!!");
+	RenderWindow window(VideoMode(1280, 720), "Vroooom!!!");
 	Texture texture;
 	RenderTexture;
 	Sprite sprite;
@@ -36,7 +36,7 @@ int main()
 
 	//Initialisation auto
 	sprite.setPosition(100, 100);
-	sprite.rotate(joueur.getDegree());
+	sprite.rotate(joueur.getDegre());
 
 	//Tant que le jeu roule
 	while (window.isOpen())
@@ -71,11 +71,18 @@ int main()
 
 		//Gère les virages
 		joueur.effectuerVirage();
-		sprite.setRotation(joueur.getDegree());
+		sprite.setRotation(joueur.getDegre());
 		joueur.setVirage(0);
 
-		//Gère le mouvement, et applique une force dépendament du temps qui s'est écoulé (offre une expérience de jeu constante)
-		sprite.move(joueur.getVelociteX() * cos(joueur.convertDegreeRadian(joueur.getDegree())) * tempsDelta.asSeconds() , joueur.getVelociteY() * sin(joueur.convertDegreeRadian(joueur.getDegree())) * tempsDelta.asSeconds());
+		//Gère le mouvement du véhicule
+		sprite.move(
+			joueur.getVelociteX() * cos(
+				joueur.convertDegreeRadian(joueur.getDegre())) * tempsDelta.asSeconds() , 
+			joueur.getVelociteY() * sin(
+				joueur.convertDegreeRadian(joueur.getDegre())) * tempsDelta.asSeconds());
+
+		//Affaiblissement de la vélocité
+		joueur.velociteAffaiblir();
 
 		//Gère l'affichage
 		window.clear();

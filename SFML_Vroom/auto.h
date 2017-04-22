@@ -21,6 +21,7 @@ private:
 	float _velociteY;
 	double _vitesseIncrementation;
 	float _vitesseMax;
+	float _vitesseAffaiblir;
 
 	double _degree;
 	double _radian;
@@ -30,27 +31,34 @@ private:
 
 public:
 
+	//Constructeur / Déconstructeur
 	automobile();
 	~automobile();
 
+	//Obtient vélocité
 	float getVelociteX();
 	float getVelociteY();
 
+	//Accélération / Vitesse Max
 	double getVitesseIncrementation();
 	float getVitesseMax();
 
-	double getDegree();
+	//Obtient Degré / Vitesse de virage
+	double getDegre();
 	double getAngleIncrementation();
 
+	//Change vélocité
 	void setVelociteY(float velociteY);
 	void setVelociteX(float velociteX);
 
-	void setDegree(double degree);
+	//Change Degré / Virage
+	void setDegre(double degre);
 	void setVirage(int virage);
 
-	double convertDegreeRadian(double degree);
+	double convertDegreeRadian(double degre);
 	void effectuerVirage();
-	void automobile::effectuerVelocite(int direction, double tempsDelta);
+	void effectuerVelocite(int direction, double tempsDelta);
+	void velociteAffaiblir();
 };
 
 automobile::automobile()
@@ -58,10 +66,11 @@ automobile::automobile()
 	_velociteX = 0;					//La vitesse actuelle de l'auto
 	_velociteY = 0;
 	_vitesseMax = 250;
+	_vitesseAffaiblir = 0.995;
 	_degree = 90;					//L'angle actuel, en degré, de l'auto
 	_radian = 0;					//L'angle actuel, en radian, de l'auto
 
-	_vitesseIncrementation = 0.5;		//La vitesse à laquelle l'auto fais son accélération
+	_vitesseIncrementation = 0.4;		//La vitesse à laquelle l'auto fais son accélération
 	_angleIncrementation = 4;		//La vitesse à laquelle l'auto fais ses virage
 
 	_virage = 0;					//1 = Gauche, 2 = Droite, 0 = Nulle
@@ -94,7 +103,7 @@ float automobile::getVitesseMax()
 	return _vitesseMax;
 }
 
-double automobile::getDegree()
+double automobile::getDegre()
 {
 	return _degree;
 }
@@ -117,7 +126,7 @@ void automobile::setVelociteY(float velociteY)
 	_velociteY = velociteY;
 }
 
-void automobile::setDegree(double degree)
+void automobile::setDegre(double degree)
 {
 	_degree = degree;
 }
@@ -152,23 +161,41 @@ void automobile::effectuerVirage()
 //Ajuste la vélocité basée sur la direction désirée et le temps écoulé
 void automobile::effectuerVelocite(int direction, double tempsDelta)
 {
+	//Si on avance
 	if (direction == 1)
 	{
+		//Si la vélocitée est plus petite que la vitesse maximale
 		if (_velociteX < _vitesseMax)
+			//On ajoute de la vitesse
 			_velociteX += _vitesseIncrementation * tempsDelta;
 
+		//Même chose pour Y
 		if (_velociteY < _vitesseMax)
 			_velociteY += _vitesseIncrementation * tempsDelta;
 	}
+
+	//Si on recule
 	else if (direction == 0)
 	{
+		//Si on a pas atteint la vitesse maximale sur X à reculons
 		if (_velociteX > -(_vitesseMax / 2))
-			_velociteX -= _vitesseIncrementation * tempsDelta;
+			//On recule plus vite
+			_velociteX -= (_vitesseIncrementation / 2) * tempsDelta;
 		else
+			//Sinon la vitesse du reculons est celle maximale
 			_velociteX = -(_vitesseMax / 2);
+
+		//Même chose pour le Y
 		if (_velociteY > -(_vitesseMax / 2))
-			_velociteY -= _vitesseIncrementation * tempsDelta;
+			_velociteY -= (_vitesseIncrementation / 2) * tempsDelta;
 		else
 			_velociteY = -(_vitesseMax / 2);
 	}
+}
+
+void automobile::velociteAffaiblir()
+{
+	_velociteX *= _vitesseAffaiblir;
+	_velociteY *= _vitesseAffaiblir;
+
 }
