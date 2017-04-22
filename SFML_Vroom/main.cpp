@@ -30,10 +30,11 @@ int main()
 	//Chargement de la texture de l'auto
 	texture.loadFromFile("orange32x16.png", IntRect(0, 0, 32, 16));
 
-	//Insertion de la texture dans le sprite
+	//Insertion de la texture dans le sprite et changement du point d'origine
 	sprite.setTexture(texture);
+	sprite.setOrigin(12, 8);
 
-	//Initialisation  auto
+	//Initialisation auto
 	sprite.setPosition(100, 100);
 	sprite.rotate(joueur.getDegree());
 
@@ -60,13 +61,21 @@ int main()
 		else
 			joueur.setVirage(0);
 
+		//Haut
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			joueur.effectuerVelocite(1, tempsDelta.asMilliseconds());
+
+		//Bas
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			joueur.effectuerVelocite(0, tempsDelta.asMilliseconds());
+
 		//Gère les virages
 		joueur.effectuerVirage();
 		sprite.setRotation(joueur.getDegree());
 		joueur.setVirage(0);
 
 		//Gère le mouvement, et applique une force dépendament du temps qui s'est écoulé (offre une expérience de jeu constante)
-		sprite.move(cos(joueur.convertDegreeRadian(joueur.getDegree())) * tempsDelta.asSeconds() , sin(joueur.convertDegreeRadian(joueur.getDegree())) * tempsDelta.asSeconds());
+		sprite.move(joueur.getVelociteX() * cos(joueur.convertDegreeRadian(joueur.getDegree())) * tempsDelta.asSeconds() , joueur.getVelociteY() * sin(joueur.convertDegreeRadian(joueur.getDegree())) * tempsDelta.asSeconds());
 
 		//Gère l'affichage
 		window.clear();

@@ -19,7 +19,8 @@ private:
 
 	float _velociteX;
 	float _velociteY;
-	float _vitesseIncrementation;
+	double _vitesseIncrementation;
+	float _vitesseMax;
 
 	double _degree;
 	double _radian;
@@ -34,27 +35,34 @@ public:
 
 	float getVelociteX();
 	float getVelociteY();
+
+	double getVitesseIncrementation();
+	float getVitesseMax();
+
 	double getDegree();
 	double getAngleIncrementation();
 
 	void setVelociteY(float velociteY);
 	void setVelociteX(float velociteX);
+
 	void setDegree(double degree);
 	void setVirage(int virage);
 
 	double convertDegreeRadian(double degree);
 	void effectuerVirage();
+	void automobile::effectuerVelocite(int direction, double tempsDelta);
 };
 
 automobile::automobile()
 {
 	_velociteX = 0;					//La vitesse actuelle de l'auto
 	_velociteY = 0;
+	_vitesseMax = 250;
 	_degree = 90;					//L'angle actuel, en degré, de l'auto
 	_radian = 0;					//L'angle actuel, en radian, de l'auto
 
-	_vitesseIncrementation = 2;		//La vitesse à laquelle l'auto fais son accélération
-	_angleIncrementation = 5;		//La vitesse à laquelle l'auto fais ses virage
+	_vitesseIncrementation = 0.5;		//La vitesse à laquelle l'auto fais son accélération
+	_angleIncrementation = 4;		//La vitesse à laquelle l'auto fais ses virage
 
 	_virage = 0;					//1 = Gauche, 2 = Droite, 0 = Nulle
 }
@@ -65,7 +73,7 @@ automobile::~automobile()
 }
 
 //==Get==
-
+#pragma region "Getters"
 float automobile::getVelociteX()
 {
 	return _velociteX;
@@ -76,9 +84,14 @@ float automobile::getVelociteY()
 	return _velociteY;
 }
 
-double automobile::getAngleIncrementation()
+double automobile::getVitesseIncrementation()
 {
-	return _angleIncrementation;
+	return _vitesseIncrementation;
+}
+
+float automobile::getVitesseMax()
+{
+	return _vitesseMax;
 }
 
 double automobile::getDegree()
@@ -86,8 +99,14 @@ double automobile::getDegree()
 	return _degree;
 }
 
-//==Set==
+double automobile::getAngleIncrementation()
+{
+	return _angleIncrementation;
+}
+#pragma endregion
 
+//==Set==
+#pragma region "Setters"
 void automobile::setVelociteX(float velociteX)
 {
 	_velociteX = velociteX;
@@ -107,6 +126,7 @@ void automobile::setVirage(int virage)
 {
 	_virage = virage;
 }
+#pragma endregion
 
 //Convertit un angle en degree vers un radian
 double automobile::convertDegreeRadian(double degree)
@@ -126,5 +146,29 @@ void automobile::effectuerVirage()
 	else if (_virage == 2)
 	{
 		_degree = _degree + _angleIncrementation;
+	}
+}
+
+//Ajuste la vélocité basée sur la direction désirée et le temps écoulé
+void automobile::effectuerVelocite(int direction, double tempsDelta)
+{
+	if (direction == 1)
+	{
+		if (_velociteX < _vitesseMax)
+			_velociteX += _vitesseIncrementation * tempsDelta;
+
+		if (_velociteY < _vitesseMax)
+			_velociteY += _vitesseIncrementation * tempsDelta;
+	}
+	else if (direction == 0)
+	{
+		if (_velociteX > -(_vitesseMax / 2))
+			_velociteX -= _vitesseIncrementation * tempsDelta;
+		else
+			_velociteX = -(_vitesseMax / 2);
+		if (_velociteY > -(_vitesseMax / 2))
+			_velociteY -= _vitesseIncrementation * tempsDelta;
+		else
+			_velociteY = -(_vitesseMax / 2);
 	}
 }
