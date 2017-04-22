@@ -73,11 +73,13 @@ int main()
 		//Gère les virages
 		sprite.setRotation(joueur.getDegree());
 
+		//Gère le mouvement
 		sprite.move(cos(joueur.convertDegreeRadian(joueur.getDegree())) / 30, sin(joueur.convertDegreeRadian(joueur.getDegree())) / 30);
+
+		//Gère l'affichage
 		window.clear();
 		window.draw(sprite);
 		window.display();
 	}
-
 	return 0;
 }
