@@ -17,11 +17,18 @@ class automobile
 
 private:
 
-	float _velociteX;
-	float _velociteY;
+	char _controleHaut;
+	char _controleBas;
+	char _controleGauche;
+	char _controleDroite;
+
+	int _autoRGB[3];
+
+	double _velociteX;
+	double _velociteY;
 	double _vitesseIncrementation;
-	float _vitesseMax;
-	float _vitesseAffaiblir;
+	double _vitesseMax;
+	double _vitesseAffaiblir;
 
 	double _degree;
 	double _radian;
@@ -36,29 +43,35 @@ public:
 	~automobile();
 
 	//Obtient vélocité
-	float getVelociteX();
-	float getVelociteY();
+	double getVelociteX();
+	double getVelociteY();
 
 	//Accélération / Vitesse Max
 	double getVitesseIncrementation();
-	float getVitesseMax();
+	double getVitesseMax();
 
 	//Obtient Degré / Vitesse de virage
 	double getDegre();
 	double getAngleIncrementation();
+	int getRed();
+	int getGreen();
+	int getBlue();
 
 	//Change vélocité
-	void setVelociteY(float velociteY);
-	void setVelociteX(float velociteX);
+	void setVelociteY(double velociteY);
+	void setVelociteX(double velociteX);
 
 	//Change Degré / Virage
 	void setDegre(double degre);
 	void setVirage(int virage);
+	void setCouleur(int red, int green, int blue);
 
 	double convertDegreeRadian(double degre);
 	void effectuerVirage();
 	void effectuerVelocite(int direction, double tempsDelta);
 	void velociteAffaiblir();
+
+	void collision();
 };
 
 automobile::automobile()
@@ -69,6 +82,10 @@ automobile::automobile()
 	_vitesseAffaiblir = 0.995;
 	_degree = 90;					//L'angle actuel, en degré, de l'auto
 	_radian = 0;					//L'angle actuel, en radian, de l'auto
+
+	_autoRGB[0] = 125;
+	_autoRGB[1] = 125;
+	_autoRGB[2] = 125;
 
 	_vitesseIncrementation = 0.4;		//La vitesse à laquelle l'auto fais son accélération
 	_angleIncrementation = 4;		//La vitesse à laquelle l'auto fais ses virage
@@ -83,12 +100,12 @@ automobile::~automobile()
 
 //==Get==
 #pragma region "Getters"
-float automobile::getVelociteX()
+double automobile::getVelociteX()
 {
 	return _velociteX;
 }
 
-float automobile::getVelociteY()
+double automobile::getVelociteY()
 {
 	return _velociteY;
 }
@@ -98,7 +115,7 @@ double automobile::getVitesseIncrementation()
 	return _vitesseIncrementation;
 }
 
-float automobile::getVitesseMax()
+double automobile::getVitesseMax()
 {
 	return _vitesseMax;
 }
@@ -112,16 +129,31 @@ double automobile::getAngleIncrementation()
 {
 	return _angleIncrementation;
 }
+
+int automobile::getRed()
+{
+	return _autoRGB[0];
+}
+
+int automobile::getGreen()
+{
+	return _autoRGB[1];
+}
+
+int automobile::getBlue()
+{
+	return _autoRGB[2];
+}
 #pragma endregion
 
 //==Set==
 #pragma region "Setters"
-void automobile::setVelociteX(float velociteX)
+void automobile::setVelociteX(double velociteX)
 {
 	_velociteX = velociteX;
 }
 
-void automobile::setVelociteY(float velociteY)
+void automobile::setVelociteY(double velociteY)
 {
 	_velociteY = velociteY;
 }
@@ -134,6 +166,14 @@ void automobile::setDegre(double degree)
 void automobile::setVirage(int virage)
 {
 	_virage = virage;
+}
+
+//Changes la couleur d'une auto (RGB)
+void automobile::setCouleur(int red, int green, int blue)
+{
+	_autoRGB[0] = red;
+	_autoRGB[1] = green;
+	_autoRGB[2] = blue;
 }
 #pragma endregion
 
@@ -193,9 +233,20 @@ void automobile::effectuerVelocite(int direction, double tempsDelta)
 	}
 }
 
+//Modification naturelle de la vélocité
 void automobile::velociteAffaiblir()
 {
 	_velociteX *= _vitesseAffaiblir;
 	_velociteY *= _vitesseAffaiblir;
 
+}
+
+//Gère la collision entre 2 autos
+void automobile::collision()
+{
+	if (_velociteX > 0 && _velociteY > 0)
+	{
+		_velociteX = -(_velociteX / 2);
+		_velociteY = -(_velociteY / 2);
+	}
 }
