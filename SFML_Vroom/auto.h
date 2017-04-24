@@ -67,7 +67,7 @@ automobile::automobile()
 	_velociteY = 0;
 	_vitesseMax = 250;
 	_vitesseAffaiblir = 0.995;
-	_degree = 90;					//L'angle actuel, en degré, de l'auto
+	_degree = 270;					//L'angle actuel, en degré, de l'auto
 	_radian = 0;					//L'angle actuel, en radian, de l'auto
 
 	_vitesseIncrementation = 0.4;		//La vitesse à laquelle l'auto fais son accélération

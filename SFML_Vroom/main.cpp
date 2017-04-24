@@ -63,7 +63,7 @@ int main()
 	greenLight.setTexture(textureGreenLight);
 
 	//Initialisation auto
-	car.setPosition(100, 100);
+	car.setPosition(181, 427);
 	car.rotate(joueur.getDegre());
 
 	redLight.setPosition(600, 300);
@@ -106,7 +106,7 @@ int main()
 
 		temps2 = clock2.getElapsedTime();
 		
-		if (temps2.asSeconds() >= 6)
+		if (temps2.asSeconds() >= 5)
 		{
 			canDrive = true;
 		}
@@ -132,15 +132,15 @@ int main()
 		window.draw(map);
 		window.draw(car);
 
-		if (temps2.asSeconds() <= 4)
+		if (temps2.asSeconds() <= 3)
 		{
 			window.draw(redLight);
 		}
-		else if (temps2.asSeconds() <= 6)
+		else if (temps2.asSeconds() <= 5)
 		{
 			window.draw(yellowLight);
 		}
-		else if (temps2.asSeconds() <= 7)
+		else if (temps2.asSeconds() <= 6)
 		{
 			window.draw(greenLight);
 		}
