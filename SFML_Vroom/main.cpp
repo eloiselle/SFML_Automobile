@@ -16,8 +16,10 @@ int main()
 	//Initialisation SFML
 	RenderWindow window(VideoMode(1280, 720), "Vroooom!!!");
 	Texture texture;
+	Texture textureMap;
 	RenderTexture;
 	Sprite sprite;
+	Sprite map;
 	Event event;
 	Clock horlogeDelta;			//https://en.wikipedia.org/wiki/%CE%94T
 
@@ -29,14 +31,20 @@ int main()
 
 	//Chargement de la texture de l'auto
 	texture.loadFromFile("orange32x16.png", IntRect(0, 0, 32, 16));
+	
+	textureMap.loadFromFile("map2.png", IntRect(0, 0, 1280, 720));
 
 	//Insertion de la texture dans le sprite et changement du point d'origine
 	sprite.setTexture(texture);
 	sprite.setOrigin(12, 8);
 
+	map.setTexture(textureMap);
+
 	//Initialisation auto
 	sprite.setPosition(100, 100);
 	sprite.rotate(joueur.getDegre());
+
+	map.setPosition(0, 0);
 
 	//Tant que le jeu roule
 	while (window.isOpen())
@@ -86,6 +94,7 @@ int main()
 
 		//Gère l'affichage
 		window.clear();
+		window.draw(map);
 		window.draw(sprite);
 		window.display();
 	}
