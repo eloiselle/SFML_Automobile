@@ -45,7 +45,7 @@ int main()
 	//Chargement des textures
 	texture.loadFromFile("orange32x16.png", IntRect(0, 0, 32, 16));
 
-	textureMap.loadFromFile("map2.png", IntRect(0, 0, 1280, 720));
+	textureMap.loadFromFile("map.png", IntRect(0, 0, 1280, 720));
 
 	textureRedLight.loadFromFile("redLight.png", IntRect(0, 0, 200, 137));
 	textureYellowLight.loadFromFile("yellowLight.png", IntRect(0, 0, 60, 137));
@@ -61,7 +61,7 @@ int main()
 	car.setOrigin(12, 8);
 
 	//Initialisation auto
-	car.setPosition(181, 427);
+	car.setPosition(181, 395);
 	car.rotate(joueur.getDegre());
 
 	//Traffics Lights centrées
