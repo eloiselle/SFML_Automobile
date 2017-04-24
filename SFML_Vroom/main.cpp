@@ -5,6 +5,8 @@ Nom du CPP	: main.cpp
 Date		: 21 avril 2017
 But			: Contrôler un automobile sur une piste de course le plus rapidement possible. */
 
+//Lien de discussion instantané: https://tlk.io/sfml_automobile
+
 //Directives au pré-processeur
 #include <SFML/Graphics.hpp>
 #include "auto.h"
