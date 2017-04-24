@@ -27,11 +27,13 @@ int main()
 	Sprite redLight;
 	Sprite yellowLight;
 	Sprite greenLight;
-	Event event;
+
 	Clock horlogeDelta;			//https://en.wikipedia.org/wiki/%CE%94T
 	Clock clock2;
 	Time temps2;
 	float secondes;
+
+	Event event;
 
 	//Variables
 	automobile joueur;
@@ -40,38 +42,33 @@ int main()
 	//Limite le nombre d'images par secondes
 	window.setFramerateLimit(60);
 
-	//Chargement de la texture de l'auto
+	//Chargement des textures
 	texture.loadFromFile("orange32x16.png", IntRect(0, 0, 32, 16));
 
-	//Chargement de la texture de la piste
 	textureMap.loadFromFile("map2.png", IntRect(0, 0, 1280, 720));
 
 	textureRedLight.loadFromFile("redLight.png", IntRect(0, 0, 200, 137));
 	textureYellowLight.loadFromFile("yellowLight.png", IntRect(0, 0, 60, 137));
 	textureGreenLight.loadFromFile("greenLight.png", IntRect(0, 0, 60, 137));
 
-
-	//Insertion de la texture dans le sprite et changement du point d'origine
+	//Insertion des textures dans leur sprite réspectifs
 	car.setTexture(texture);
-	car.setOrigin(12, 8);
-
-	//Insertion de la texture dans le sprite de la map
 	map.setTexture(textureMap);
-
 	redLight.setTexture(textureRedLight);
 	yellowLight.setTexture(textureYellowLight);
 	greenLight.setTexture(textureGreenLight);
+	
+	car.setOrigin(12, 8);
 
 	//Initialisation auto
 	car.setPosition(181, 427);
 	car.rotate(joueur.getDegre());
 
-	redLight.setPosition(600, 300);
-	yellowLight.setPosition(600, 300);
-	greenLight.setPosition(600, 300);
+	//Traffics Lights centrées
+	redLight.setPosition(575, 300);
+	yellowLight.setPosition(575, 300);
+	greenLight.setPosition(575, 300);
 	
-
-
 	//Tant que le jeu roule
 	while (window.isOpen())
 	{
