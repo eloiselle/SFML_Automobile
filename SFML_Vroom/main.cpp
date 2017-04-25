@@ -7,20 +7,42 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement possi
 
 //Directives au pré-processeur
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include "auto.h"
 using namespace sf;
+using namespace std;
 
 //Programme principal
 int main()
 {
 	//Initialisation SFML
-	RenderWindow window(VideoMode(1280, 720), "Vroooom!!!");
+	RenderWindow window(VideoMode(1280, 768), "Vroooom!!!");
 	Texture texture;
 	Texture textureMap;
 	Texture textureRedLight;
 	Texture textureYellowLight;
 	Texture textureGreenLight;
 	RenderTexture;
+
+	Mouse mouse;
+
+	float x = 0;
+	float y = 0;
+	Vector2i coordonates;
+
+	Text text;
+
+	CircleShape point[1000];
+	for (int i = 0; i < 1000; i++)
+	{
+		point[i].setRadius(2);
+		point[i].setFillColor(Color::Black);
+	}
+	
+	
+
+	
+	
 
 	Sprite car;
 	Sprite map;
@@ -45,7 +67,7 @@ int main()
 	//Chargement des textures
 	texture.loadFromFile("orange32x16.png", IntRect(0, 0, 32, 16));
 
-	textureMap.loadFromFile("map.png", IntRect(0, 0, 1280, 720));
+	textureMap.loadFromFile("templateMap.png", IntRect(0, 0, 1024, 768));
 
 	textureRedLight.loadFromFile("redLight.png", IntRect(0, 0, 200, 137));
 	textureYellowLight.loadFromFile("yellowLight.png", IntRect(0, 0, 60, 137));
@@ -59,15 +81,16 @@ int main()
 	greenLight.setTexture(textureGreenLight);
 	
 	car.setOrigin(12, 8);
+	map.setPosition(120, 100);
 
 	//Initialisation auto
-	car.setPosition(181, 395);
+	car.setPosition(190, 395);
 	car.rotate(joueur.getDegre());
 
 	//Traffics Lights centrées
-	redLight.setPosition(575, 300);
-	yellowLight.setPosition(575, 300);
-	greenLight.setPosition(575, 300);
+	redLight.setPosition(585, 300);
+	yellowLight.setPosition(585, 300);
+	greenLight.setPosition(585, 300);
 	
 	//Tant que le jeu roule
 	while (window.isOpen())
@@ -79,6 +102,11 @@ int main()
 		while (window.pollEvent(event))
 			if (event.type == sf::Event::Closed || ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)))
 				window.close();
+
+		if (event.MouseButtonPressed)
+		{
+
+		}
 
 		//Gauche
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
@@ -124,9 +152,17 @@ int main()
 
 		}
 
+		coordonates = mouse.getPosition(window);
+		system("cls");
+		cout << coordonates.x << " " << coordonates.y;
+
+
+
 		//Gère l'affichage
-		window.clear();
+		window.clear(Color(0, 150, 0));
 		window.draw(map);
+		//window.draw(innerGreen);
+		//window.draw(innerGreen2);
 		window.draw(car);
 
 		if (temps2.asSeconds() <= 3)
@@ -142,6 +178,8 @@ int main()
 			window.draw(greenLight);
 		}
 		window.display();
+
+
 	}
 	return 0;
 }
