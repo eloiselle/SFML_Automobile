@@ -38,10 +38,10 @@ int main()
 	//Variables
 	automobile joueurs[4];
 
-	joueurs[0].setCouleur(255, 0, 255);
-	joueurs[1].setCouleur(255, 0, 0);
-	joueurs[2].setCouleur(0, 0, 255);
-	joueurs[3].setCouleur(0, 255, 0);
+	//joueurs[0].setCouleur(255, 0, 255);
+	//joueurs[1].setCouleur(255, 0, 0);
+	//joueurs[2].setCouleur(0, 0, 255);
+	//joueurs[3].setCouleur(0, 255, 0);
 
 	for (int i = 1; i < nbJoueurs + 1; i++)
 	{
@@ -50,6 +50,7 @@ int main()
 		sprJoueur[i].setTexture(texture);
 		sprJoueur[i].setOrigin(12, 8);
 
+		//Génère une couleur aléatoire
 		joueurs[i].setCouleur(rand() % 255, rand() % 255, rand() % 255);
 		sprJoueur[i].setColor(Color(joueurs[i].getRed(), joueurs[i].getGreen(), joueurs[i].getBlue()));
 
@@ -64,12 +65,12 @@ int main()
 		//Efface l'affichage précédent
 		window.clear();
 
-		//Réinitialise l'horloge
+		//Réinitialise l'horloge delta, ce qui permet une expérience de jeu fluide sur n'importe quelle machine
 		Time tempsDelta = horlogeDelta.restart();
 
-		//Attend les événements
+		//Si on appuie sur X ou Escape, on ferme le jeu
 		while (window.pollEvent(event))
-			if (event.type == sf::Event::Closed || ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)))
+			if (event.type == Event::Closed || ((event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape)))
 				window.close();
 
 		for (int i = nbJoueurs; i > 0; i--)
@@ -77,11 +78,11 @@ int main()
 			if (i == 1)
 			{
 				//Gauche
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+				if (Keyboard::isKeyPressed(Keyboard::Left))
 					joueurs[i].setVirage(1);
 
 				//Droite
-				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+				else if (Keyboard::isKeyPressed(Keyboard::Right))
 					joueurs[i].setVirage(2);
 
 				//Nulle
@@ -89,22 +90,22 @@ int main()
 					joueurs[i].setVirage(0);
 
 				//Haut
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+				if (Keyboard::isKeyPressed(Keyboard::Up))
 					joueurs[i].effectuerVelocite(1, tempsDelta.asMilliseconds());
 
 				//Bas
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+				if (Keyboard::isKeyPressed(Keyboard::Down))
 					joueurs[i].effectuerVelocite(0, tempsDelta.asMilliseconds());
 			}
 
 			else if (i == 2)
 			{
 				//Gauche
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+				if (Keyboard::isKeyPressed(Keyboard::A))
 					joueurs[i].setVirage(1);
 
 				//Droite
-				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+				else if (Keyboard::isKeyPressed(Keyboard::D))
 					joueurs[i].setVirage(2);
 
 				//Nulle
@@ -112,24 +113,27 @@ int main()
 					joueurs[i].setVirage(0);
 
 				//Haut
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+				if (Keyboard::isKeyPressed(Keyboard::W))
 					joueurs[i].effectuerVelocite(1, tempsDelta.asMilliseconds());
 
 				//Bas
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+				if (Keyboard::isKeyPressed(Keyboard::S))
 					joueurs[i].effectuerVelocite(0, tempsDelta.asMilliseconds());
 			}
 
+			//Gère la collision de joueur 1 vers joueur 2
 			if (sprJoueur[1].getGlobalBounds().intersects(sprJoueur[2].getGlobalBounds()))
 			{
 				joueurs[1].collision();
 			}
 
-			if (sprJoueur[2].getGlobalBounds().intersects(sprJoueur[1].getGlobalBounds()))
+			//Gère la collisison de joueur 2 vers joueur 1
+			else if (sprJoueur[2].getGlobalBounds().intersects(sprJoueur[1].getGlobalBounds()))
 			{
 				joueurs[2].collision();
 			}
 
+			//Empèche les joueurs de virer lorsqu'il y a collisison
 			else
 			{
 				//Gère les virages
@@ -148,10 +152,11 @@ int main()
 			//Affaiblissement de la vélocité
 			joueurs[i].velociteAffaiblir();
 
+			//Affichage de l'auto en question
 			window.draw(sprJoueur[i]);
 		}
 
-		//Rafraîchi l'affichage
+		//Rafraîchi l'affichage au complet
 		window.display();
 	}
 	return 0;
