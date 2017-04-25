@@ -157,6 +157,9 @@
   <ItemGroup>
     <ClInclude Include="auto.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="car.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\sfml-system.redist.2.4.0.0\build\native\sfml-system.redist.targets" Condition="Exists('..\packages\sfml-system.redist.2.4.0.0\build\native\sfml-system.redist.targets')" />
