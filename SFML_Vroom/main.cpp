@@ -8,6 +8,9 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement possi
 //Lien de discussion instantané: https://tlk.io/sfml_automobile
 
 //Directives au pré-processeur
+#include <stdio.h>      /* printf, scanf, puts, NULL */
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
 #include <SFML/Graphics.hpp>
 #include "auto.h"
 using namespace sf;
@@ -15,6 +18,10 @@ using namespace sf;
 //Programme principal
 int main()
 {
+	//Seed pour la génération aléatoire des couleures des autos
+	srand(time(NULL));
+
+	//Nombre de joueurs dans la partie
 	int nbJoueurs = 2;
 
 	//Initialisation SFML
@@ -42,6 +49,8 @@ int main()
 		texture.loadFromFile("car.png");
 		sprJoueur[i].setTexture(texture);
 		sprJoueur[i].setOrigin(12, 8);
+
+		joueurs[i].setCouleur(rand() % 255, rand() % 255, rand() % 255);
 		sprJoueur[i].setColor(Color(joueurs[i].getRed(), joueurs[i].getGreen(), joueurs[i].getBlue()));
 
 		//Initialisation auto
