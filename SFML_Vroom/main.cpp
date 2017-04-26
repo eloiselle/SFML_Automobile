@@ -25,10 +25,12 @@ int main()
 	Texture textureGreenLight;
 	RenderTexture;
 
-	ifstream entree;
-	entree.open("points.txt");
+	ifstream entreeInnerGreen;
+	entreeInnerGreen.open("points.txt");
 
-	
+	ifstream entreePiste;
+	entreePiste.open("pointsPiste.txt");
+
 	Sprite car;
 	Sprite map;
 	Sprite redLight;
@@ -40,24 +42,45 @@ int main()
 	Time temps2;
 	float secondes;
 
-	Vector2f points[100];
+	Vector2f pointsInner[100];
 
 	for (int i = 0; i < 35; i++)
 	{
-		entree >> points[i].x >> points[i].y;
+		entreeInnerGreen >> pointsInner[i].x >> pointsInner[i].y;
 	}
 
+	Vector2f pointsPiste[100];
+
+	for (int i = 0; i < 53; i++)
+	{
+		entreePiste >> pointsPiste[i].x >> pointsPiste[i].y;
+	}
 
 	ConvexShape innerGreen;
 	innerGreen.setPointCount(35);
 
 	for (int i = 0; i < 35; i++)
 	{
-		innerGreen.setPoint(i, points[i]);
+		innerGreen.setPoint(i, pointsInner[i]);
 	}
 
-	innerGreen.setOutlineThickness(2);
+	innerGreen.setOutlineThickness(4);
 	innerGreen.setOutlineColor(Color::White);
+	innerGreen.setFillColor(Color::Transparent);
+
+	ConvexShape collisionPiste;
+	collisionPiste.setPointCount(53);
+
+	for (int i = 0; i < 53; i++)
+	{
+		collisionPiste.setPoint(i, pointsPiste[i]);
+	}
+
+	collisionPiste.setOutlineThickness(4);
+	collisionPiste.setOutlineColor(Color::White);
+	collisionPiste.setFillColor(Color::Transparent);
+
+
 	Event event;
 
 	//Variables
@@ -153,21 +176,23 @@ int main()
 		//Gère l'affichage
 		window.clear(Color(0, 150, 0));
 		window.draw(map);
+		window.draw(collisionPiste);
 		window.draw(innerGreen);
 		window.draw(car);
 
-		if (temps2.asSeconds() <= 3)
+		if (temps2.asSeconds() <= 3)		//lumière rouge
 		{
 			window.draw(redLight);
 		}
-		else if (temps2.asSeconds() <= 5)
+		else if (temps2.asSeconds() <= 5)	//lumière jaune
 		{
 			window.draw(yellowLight);
 		}
-		else if (temps2.asSeconds() <= 6)
+		else if (temps2.asSeconds() <= 6)	//lumière verte
 		{
 			window.draw(greenLight);
 		}
+
 		window.display();
 
 
