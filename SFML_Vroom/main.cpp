@@ -8,6 +8,7 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement possi
 //Directives au pré-processeur
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <fstream>
 #include "auto.h"
 using namespace sf;
 using namespace std;
@@ -24,26 +25,10 @@ int main()
 	Texture textureGreenLight;
 	RenderTexture;
 
-	Mouse mouse;
-
-	float x = 0;
-	float y = 0;
-	Vector2i coordonates;
-
-	Text text;
-
-	CircleShape point[1000];
-	for (int i = 0; i < 1000; i++)
-	{
-		point[i].setRadius(2);
-		point[i].setFillColor(Color::Black);
-	}
-	
-	
+	ifstream entree;
+	entree.open("points.txt");
 
 	
-	
-
 	Sprite car;
 	Sprite map;
 	Sprite redLight;
@@ -55,6 +40,24 @@ int main()
 	Time temps2;
 	float secondes;
 
+	Vector2f points[100];
+
+	for (int i = 0; i < 35; i++)
+	{
+		entree >> points[i].x >> points[i].y;
+	}
+
+
+	ConvexShape innerGreen;
+	innerGreen.setPointCount(35);
+
+	for (int i = 0; i < 35; i++)
+	{
+		innerGreen.setPoint(i, points[i]);
+	}
+
+	innerGreen.setOutlineThickness(2);
+	innerGreen.setOutlineColor(Color::White);
 	Event event;
 
 	//Variables
@@ -103,11 +106,6 @@ int main()
 			if (event.type == sf::Event::Closed || ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)))
 				window.close();
 
-		if (event.MouseButtonPressed)
-		{
-
-		}
-
 		//Gauche
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			joueur.setVirage(1);
@@ -152,17 +150,10 @@ int main()
 
 		}
 
-		coordonates = mouse.getPosition(window);
-		system("cls");
-		cout << coordonates.x << " " << coordonates.y;
-
-
-
 		//Gère l'affichage
 		window.clear(Color(0, 150, 0));
 		window.draw(map);
-		//window.draw(innerGreen);
-		//window.draw(innerGreen2);
+		window.draw(innerGreen);
 		window.draw(car);
 
 		if (temps2.asSeconds() <= 3)
