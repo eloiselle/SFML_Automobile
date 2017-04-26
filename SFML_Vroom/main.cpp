@@ -9,13 +9,15 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement possi
 
 //Directives au pré-processeur
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include "auto.h"
+#include "menu.h"
 using namespace sf;
 
 //Programme principal
 int main()
 {
-	int nbJoueurs = 2;
+
 
 	//Initialisation SFML
 	RenderWindow window(VideoMode(1280, 720), "Vroooom!!!");
@@ -29,12 +31,14 @@ int main()
 	window.setFramerateLimit(60);
 
 	//Variables
+	int nbJoueurs = 2;
+
 	automobile joueurs[4];
 
-	joueurs[0].setCouleur(255, 0, 255);
+	joueurs[0].setCouleur(0, 204, 0);
 	joueurs[1].setCouleur(255, 0, 0);
-	joueurs[2].setCouleur(0, 0, 255);
-	joueurs[3].setCouleur(0, 255, 0);
+	joueurs[2].setCouleur(0, 0, 0);
+	joueurs[3].setCouleur(0, 0, 0);
 
 	for (int i = 1; i < nbJoueurs + 1; i++)
 	{
@@ -42,7 +46,7 @@ int main()
 		texture.loadFromFile("car.png");
 		sprJoueur[i].setTexture(texture);
 		sprJoueur[i].setOrigin(12, 8);
-		sprJoueur[i].setColor(Color(joueurs[i].getRed(), joueurs[i].getGreen(), joueurs[i].getBlue()));
+		sprJoueur[i].setColor(Color(joueurs[i - 1].getRed(), joueurs[i - 1].getGreen(), joueurs[i - 1].getBlue()));
 
 		//Initialisation auto
 		sprJoueur[i].setPosition(100 * i, 100);
@@ -65,14 +69,22 @@ int main()
 
 		for (int i = nbJoueurs; i > 0; i--)
 		{
+			std::map<std::string, MyKeys> Keys;
+			Keyboard::Key up;
+			Keyboard::Key down;
+			Keyboard::Key left;
+			Keyboard::Key right;
+
+			joueurs[i].getUp(up);
+
 			if (i == 1)
 			{
 				//Gauche
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+				if (Keyboard::isKeyPressed(Keyboard::Up))
 					joueurs[i].setVirage(1);
 
 				//Droite
-				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+				else if (Keyboard::isKeyPressed(Keyboard::Right))
 					joueurs[i].setVirage(2);
 
 				//Nulle
@@ -80,11 +92,11 @@ int main()
 					joueurs[i].setVirage(0);
 
 				//Haut
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+				if (Keyboard::isKeyPressed(Keyboard::Up))
 					joueurs[i].effectuerVelocite(1, tempsDelta.asMilliseconds());
 
 				//Bas
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+				if (Keyboard::isKeyPressed(Keyboard::Down))
 					joueurs[i].effectuerVelocite(0, tempsDelta.asMilliseconds());
 			}
 

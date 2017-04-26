@@ -17,24 +17,26 @@ class automobile
 
 private:
 
-	char _controleHaut;
-	char _controleBas;
-	char _controleGauche;
-	char _controleDroite;
+	//Touches pour le joueur
+	char _autoControles[4][6];
 
-	int _autoRGB[3];
-
+	//États de l'auto
 	double _velociteX;
 	double _velociteY;
-	double _vitesseIncrementation;
-	double _vitesseMax;
-	double _vitesseAffaiblir;
-
+	int _virage;
 	double _degree;
 	double _radian;
-	double _angleIncrementation;
 
-	int _virage;
+	//Autres options
+	double _vitesseMax;
+	
+	//Accélérations
+	double _vitesseIncrementation;
+	double _angleIncrementation;
+	double _vitesseAffaiblir;
+
+	//Couleur de l'auto
+	int _autoRGB[3];
 
 public:
 
@@ -72,25 +74,40 @@ public:
 	void velociteAffaiblir();
 
 	void collision();
+
+	//Get touches joueurs
+	void getUp(char *&up);
+	char getDown();
+	char getLeft();
+	char getRight();
 };
 
 automobile::automobile()
 {
-	_velociteX = 0;					//La vitesse actuelle de l'auto
-	_velociteY = 0;
-	_vitesseMax = 250;
-	_vitesseAffaiblir = 0.995;
+	strcpy_s(_autoControles[0] , "Up");
+	strcpy_s(_autoControles[1], "Down");
+	strcpy_s(_autoControles[2], "Left");
+	strcpy_s(_autoControles[3], "Right");
+
+	//États de l'auto
+	_velociteX = 0;					//La vitesse actuelle de l'auto¸(sur l'axe des X)
+	_velociteY = 0;					//La vitesse actuelle de l'auto¸(sur l'axe des Y)
+	_virage = 0;					//1 = Gauche, 2 = Droite, 0 = Nulle
 	_degree = 90;					//L'angle actuel, en degré, de l'auto
 	_radian = 0;					//L'angle actuel, en radian, de l'auto
 
+	//Autres options
+	_vitesseMax = 250;				//Vitesse maximale
+
+	//Accélérations
+	_vitesseIncrementation = 0.4;		//La vitesse à laquelle l'auto fais son accélération
+	_angleIncrementation = 4;		//La vitesse à laquelle l'auto fais ses virage
+	_vitesseAffaiblir = 0.995;		//La vitesse à laquelle l'auto ralenti naturellement
+
+	//Couleur de l'auto
 	_autoRGB[0] = 125;
 	_autoRGB[1] = 125;
 	_autoRGB[2] = 125;
-
-	_vitesseIncrementation = 0.4;		//La vitesse à laquelle l'auto fais son accélération
-	_angleIncrementation = 4;		//La vitesse à laquelle l'auto fais ses virage
-
-	_virage = 0;					//1 = Gauche, 2 = Droite, 0 = Nulle
 }
 
 automobile::~automobile()
@@ -143,6 +160,26 @@ int automobile::getGreen()
 int automobile::getBlue()
 {
 	return _autoRGB[2];
+}
+
+void automobile::getUp(Keyboard::Key up)
+{
+	strcpy(up, _autoControles[0]);
+}
+
+char automobile::getDown()
+{
+	return _autoControles[1];
+}
+
+char automobile::getLeft()
+{
+	return _autoControles[2];
+}
+
+char automobile::getRight()
+{
+	return _autoControles[3];
 }
 #pragma endregion
 
