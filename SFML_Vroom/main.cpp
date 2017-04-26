@@ -32,21 +32,21 @@ int main()
 	window.setFramerateLimit(60);
 
 	//Variables
-	int nbJoueurs = 4;
+	int nbJoueurs = 2;
 
 	automobile joueurs[4];
 
-	joueurs[0].setCouleur(0, 204, 0);
+	joueurs[0].setCouleur(0, 255, 0);
 	joueurs[1].setCouleur(255, 0, 0);
-	joueurs[2].setCouleur(0, 0, 0);
-	joueurs[3].setCouleur(0, 0, 0);
+	joueurs[2].setCouleur(0, 255, 255);
+	joueurs[3].setCouleur(255, 255, 0);
 
 	joueurs[0].setKeys(Keyboard::Up, Keyboard::Down, Keyboard::Left, Keyboard::Right);
-	joueurs[1].setKeys(Keyboard::W, Keyboard::A, Keyboard::S, Keyboard::D);
+	joueurs[1].setKeys(Keyboard::W, Keyboard::S, Keyboard::A, Keyboard::D);
 	joueurs[2].setKeys(Keyboard::I, Keyboard::K, Keyboard::J, Keyboard::L);
 	joueurs[3].setKeys(Keyboard::Num8, Keyboard::Num5, Keyboard::Num4, Keyboard::Num6);
 
-	for (int i = 1; i < nbJoueurs + 1; i++)
+	for (int i = 0; i < nbJoueurs; i++)
 	{
 		//Chargement de la texture pour l'auto spécifiée
 		texture.loadFromFile("car.png");
@@ -73,14 +73,14 @@ int main()
 			if (event.type == Event::Closed || ((event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape)))
 				window.close();
 
-		for (int i = nbJoueurs; i > 0; i--)
+		for (int i = 0; i < nbJoueurs; i++)
 		{
 			//Gauche
-			if (Keyboard::isKeyPressed(Keyboard::Left))
+			if (Keyboard::isKeyPressed(joueurs[i].getLeft()))
 				joueurs[i].setVirage(1);
 
 			//Droite
-			else if (Keyboard::isKeyPressed(Keyboard::Right))
+			else if (Keyboard::isKeyPressed(joueurs[i].getRight()))
 				joueurs[i].setVirage(2);
 
 			//Nulle
@@ -88,11 +88,11 @@ int main()
 				joueurs[i].setVirage(0);
 
 			//Haut
-			if (Keyboard::isKeyPressed(Keyboard::Up))
+			if (Keyboard::isKeyPressed(joueurs[i].getUp()))
 				joueurs[i].effectuerVelocite(1, tempsDelta.asMilliseconds());
 
 			//Bas
-			if (Keyboard::isKeyPressed(Keyboard::Down))
+			if (Keyboard::isKeyPressed(joueurs[i].getDown()))
 				joueurs[i].effectuerVelocite(0, tempsDelta.asMilliseconds());
 
 
