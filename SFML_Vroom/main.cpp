@@ -8,7 +8,10 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement possi
 //Lien de discussion instantané: https://tlk.io/sfml_automobile
 
 //Directives au pré-processeur
+#include <SFML/Main.hpp>
 #include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/System.hpp>
 #include <iostream>
 #include "auto.h"
 #include "menu.h"
@@ -17,8 +20,6 @@ using namespace sf;
 //Programme principal
 int main()
 {
-
-
 	//Initialisation SFML
 	RenderWindow window(VideoMode(1280, 720), "Vroooom!!!");
 	Texture texture;
@@ -31,7 +32,7 @@ int main()
 	window.setFramerateLimit(60);
 
 	//Variables
-	int nbJoueurs = 2;
+	int nbJoueurs = 4;
 
 	automobile joueurs[4];
 
@@ -39,6 +40,11 @@ int main()
 	joueurs[1].setCouleur(255, 0, 0);
 	joueurs[2].setCouleur(0, 0, 0);
 	joueurs[3].setCouleur(0, 0, 0);
+
+	joueurs[0].setKeys(Keyboard::Up, Keyboard::Down, Keyboard::Left, Keyboard::Right);
+	joueurs[1].setKeys(Keyboard::W, Keyboard::A, Keyboard::S, Keyboard::D);
+	joueurs[2].setKeys(Keyboard::I, Keyboard::K, Keyboard::J, Keyboard::L);
+	joueurs[3].setKeys(Keyboard::Num8, Keyboard::Num5, Keyboard::Num4, Keyboard::Num6);
 
 	for (int i = 1; i < nbJoueurs + 1; i++)
 	{
@@ -64,71 +70,38 @@ int main()
 
 		//Attend les événements
 		while (window.pollEvent(event))
-			if (event.type == sf::Event::Closed || ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)))
+			if (event.type == Event::Closed || ((event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape)))
 				window.close();
 
 		for (int i = nbJoueurs; i > 0; i--)
 		{
-			std::map<std::string, MyKeys> Keys;
-			Keyboard::Key up;
-			Keyboard::Key down;
-			Keyboard::Key left;
-			Keyboard::Key right;
+			//Gauche
+			if (Keyboard::isKeyPressed(Keyboard::Left))
+				joueurs[i].setVirage(1);
 
-			joueurs[i].getUp(up);
+			//Droite
+			else if (Keyboard::isKeyPressed(Keyboard::Right))
+				joueurs[i].setVirage(2);
 
-			if (i == 1)
-			{
-				//Gauche
-				if (Keyboard::isKeyPressed(Keyboard::Up))
-					joueurs[i].setVirage(1);
+			//Nulle
+			else
+				joueurs[i].setVirage(0);
 
-				//Droite
-				else if (Keyboard::isKeyPressed(Keyboard::Right))
-					joueurs[i].setVirage(2);
+			//Haut
+			if (Keyboard::isKeyPressed(Keyboard::Up))
+				joueurs[i].effectuerVelocite(1, tempsDelta.asMilliseconds());
 
-				//Nulle
-				else
-					joueurs[i].setVirage(0);
+			//Bas
+			if (Keyboard::isKeyPressed(Keyboard::Down))
+				joueurs[i].effectuerVelocite(0, tempsDelta.asMilliseconds());
 
-				//Haut
-				if (Keyboard::isKeyPressed(Keyboard::Up))
-					joueurs[i].effectuerVelocite(1, tempsDelta.asMilliseconds());
-
-				//Bas
-				if (Keyboard::isKeyPressed(Keyboard::Down))
-					joueurs[i].effectuerVelocite(0, tempsDelta.asMilliseconds());
-			}
-
-			else if (i == 2)
-			{
-				//Gauche
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-					joueurs[i].setVirage(1);
-
-				//Droite
-				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-					joueurs[i].setVirage(2);
-
-				//Nulle
-				else
-					joueurs[i].setVirage(0);
-
-				//Haut
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-					joueurs[i].effectuerVelocite(1, tempsDelta.asMilliseconds());
-
-				//Bas
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-					joueurs[i].effectuerVelocite(0, tempsDelta.asMilliseconds());
-			}
 
 			if (sprJoueur[1].getGlobalBounds().intersects(sprJoueur[2].getGlobalBounds()))
 			{
 				joueurs[1].collision();
 			}
 
-			if (sprJoueur[2].getGlobalBounds().intersects(sprJoueur[1].getGlobalBounds()))
+			else if (sprJoueur[2].getGlobalBounds().intersects(sprJoueur[1].getGlobalBounds()))
 			{
 				joueurs[2].collision();
 			}

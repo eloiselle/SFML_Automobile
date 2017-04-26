@@ -8,6 +8,8 @@ But			: Gérer toutes les variables intéressantes pour une automobile.*/
 //On s'assure que si ce fichier est #include plus d'une fois, il ne sera inclus qu'une seule fois pour tout le programme
 #pragma once
 
+using namespace sf;
+
 //Constantes
 const double PI = atan(1) * 4;
 
@@ -18,7 +20,7 @@ class automobile
 private:
 
 	//Touches pour le joueur
-	char _autoControles[4][6];
+	Keyboard::Key _autoControles[4];
 
 	//États de l'auto
 	double _velociteX;
@@ -29,7 +31,7 @@ private:
 
 	//Autres options
 	double _vitesseMax;
-	
+
 	//Accélérations
 	double _vitesseIncrementation;
 	double _angleIncrementation;
@@ -75,20 +77,18 @@ public:
 
 	void collision();
 
-	//Get touches joueurs
-	void getUp(char *&up);
-	char getDown();
-	char getLeft();
-	char getRight();
+	//Get touches joueur
+	Keyboard::Key getUp();
+	Keyboard::Key getDown();
+	Keyboard::Key getLeft();
+	Keyboard::Key getRight();
+
+	//Set touches joueur
+	void setKeys(Keyboard::Key up, Keyboard::Key down, Keyboard::Key left, Keyboard::Key right);
 };
 
 automobile::automobile()
 {
-	strcpy_s(_autoControles[0] , "Up");
-	strcpy_s(_autoControles[1], "Down");
-	strcpy_s(_autoControles[2], "Left");
-	strcpy_s(_autoControles[3], "Right");
-
 	//États de l'auto
 	_velociteX = 0;					//La vitesse actuelle de l'auto¸(sur l'axe des X)
 	_velociteY = 0;					//La vitesse actuelle de l'auto¸(sur l'axe des Y)
@@ -117,6 +117,7 @@ automobile::~automobile()
 
 //==Get==
 #pragma region "Getters"
+//Informations vitesse
 double automobile::getVelociteX()
 {
 	return _velociteX;
@@ -137,6 +138,7 @@ double automobile::getVitesseMax()
 	return _vitesseMax;
 }
 
+//Informations d'angle
 double automobile::getDegre()
 {
 	return _degree;
@@ -147,6 +149,7 @@ double automobile::getAngleIncrementation()
 	return _angleIncrementation;
 }
 
+//Get couleur du véhicule
 int automobile::getRed()
 {
 	return _autoRGB[0];
@@ -162,22 +165,23 @@ int automobile::getBlue()
 	return _autoRGB[2];
 }
 
-void automobile::getUp(Keyboard::Key up)
+//Get contrôles du véhicule
+Keyboard::Key automobile::getUp()
 {
-	strcpy(up, _autoControles[0]);
+	return _autoControles[0];
 }
 
-char automobile::getDown()
+Keyboard::Key automobile::getDown()
 {
 	return _autoControles[1];
 }
 
-char automobile::getLeft()
+Keyboard::Key automobile::getLeft()
 {
 	return _autoControles[2];
 }
 
-char automobile::getRight()
+Keyboard::Key automobile::getRight()
 {
 	return _autoControles[3];
 }
@@ -203,6 +207,14 @@ void automobile::setDegre(double degree)
 void automobile::setVirage(int virage)
 {
 	_virage = virage;
+}
+
+void automobile::setKeys(Keyboard::Key up, Keyboard::Key down, Keyboard::Key left, Keyboard::Key right)
+{
+	_autoControles[0] = up;
+	_autoControles[1] = down;
+	_autoControles[2] = left;
+	_autoControles[3] = right;
 }
 
 //Changes la couleur d'une auto (RGB)
