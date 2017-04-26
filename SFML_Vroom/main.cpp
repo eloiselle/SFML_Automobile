@@ -32,7 +32,7 @@ int main()
 	window.setFramerateLimit(60);
 
 	//Variables
-	int nbJoueurs = 2;
+	int nbJoueurs = 4;
 
 	automobile joueurs[4];
 
@@ -44,7 +44,7 @@ int main()
 	joueurs[0].setKeys(Keyboard::Up, Keyboard::Down, Keyboard::Left, Keyboard::Right);
 	joueurs[1].setKeys(Keyboard::W, Keyboard::S, Keyboard::A, Keyboard::D);
 	joueurs[2].setKeys(Keyboard::I, Keyboard::K, Keyboard::J, Keyboard::L);
-	joueurs[3].setKeys(Keyboard::Num8, Keyboard::Num5, Keyboard::Num4, Keyboard::Num6);
+	joueurs[3].setKeys(Keyboard::Home, Keyboard::End, Keyboard::Delete, Keyboard::PageDown);
 
 	for (int i = 0; i < nbJoueurs; i++)
 	{
@@ -55,7 +55,7 @@ int main()
 		sprJoueur[i].setColor(Color(joueurs[i - 1].getRed(), joueurs[i - 1].getGreen(), joueurs[i - 1].getBlue()));
 
 		//Initialisation auto
-		sprJoueur[i].setPosition(100 * i, 100);
+		sprJoueur[i].setPosition(100+(100 * i), 100);
 		sprJoueur[i].rotate(joueurs[i].getDegre());
 	}
 
