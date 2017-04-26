@@ -9,9 +9,12 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement possi
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <fstream>
+#include <string>
 #include "auto.h"
 using namespace sf;
 using namespace std;
+
+ConvexShape creationPolyCollision(ifstream& entree, string nomFichierPoints);
 
 //Programme principal
 int main()
@@ -42,44 +45,11 @@ int main()
 	Time temps2;
 	float secondes;
 
-	Vector2f pointsInner[100];
-
-	for (int i = 0; i < 35; i++)
-	{
-		entreeInnerGreen >> pointsInner[i].x >> pointsInner[i].y;
-	}
-
-	Vector2f pointsPiste[100];
-
-	for (int i = 0; i < 53; i++)
-	{
-		entreePiste >> pointsPiste[i].x >> pointsPiste[i].y;
-	}
-
 	ConvexShape innerGreen;
-	innerGreen.setPointCount(35);
-
-	for (int i = 0; i < 35; i++)
-	{
-		innerGreen.setPoint(i, pointsInner[i]);
-	}
-
-	innerGreen.setOutlineThickness(4);
-	innerGreen.setOutlineColor(Color::White);
-	innerGreen.setFillColor(Color::Transparent);
-
 	ConvexShape collisionPiste;
-	collisionPiste.setPointCount(53);
 
-	for (int i = 0; i < 53; i++)
-	{
-		collisionPiste.setPoint(i, pointsPiste[i]);
-	}
-
-	collisionPiste.setOutlineThickness(4);
-	collisionPiste.setOutlineColor(Color::White);
-	collisionPiste.setFillColor(Color::Transparent);
-
+	innerGreen = creationPolyCollision(entreeInnerGreen, "points.txt");
+	collisionPiste = creationPolyCollision(entreePiste, "pointsPiste.txt");
 
 	Event event;
 
@@ -198,4 +168,34 @@ int main()
 
 	}
 	return 0;
+}
+
+ConvexShape creationPolyCollision(ifstream& entree, string nomFichierPoints)
+{
+	int nbPoints;
+	
+	Vector2f points[1000];
+
+	ConvexShape shape;
+
+	entree >> nbPoints;
+
+	for (int i = 0; i < nbPoints; i++)
+	{
+		entree >> points[i].x >> points[i].y;
+	}
+
+	shape.setPointCount(nbPoints);
+
+	for (int i = 0; i < nbPoints; i++)
+	{
+		shape.setPoint(i, points[i]);
+	}
+
+	shape.setFillColor(Color::Transparent);
+	shape.setOutlineThickness(4);
+	shape.setOutlineColor(Color::White);
+
+	return shape;
+
 }
