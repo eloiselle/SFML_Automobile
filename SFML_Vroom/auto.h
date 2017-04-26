@@ -270,7 +270,7 @@ void automobile::effectuerVelocite(int direction, double tempsDelta)
 	}
 }
 
-//Modification naturelle de la vélocité
+//Décélération naturelle de la vélocité
 void automobile::velociteAffaiblir()
 {
 	_velociteX *= _vitesseAffaiblir;
@@ -278,7 +278,7 @@ void automobile::velociteAffaiblir()
 
 }
 
-//Gère la collision entre 2 autos
+//Gère la collision d'un auto
 void automobile::collision()
 {
 	if (_velociteX > 0 && _velociteY > 0)
