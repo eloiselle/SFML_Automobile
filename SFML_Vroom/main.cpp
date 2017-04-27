@@ -54,7 +54,7 @@ int main()
 		texture.loadFromFile("car.png");
 		sprJoueur[i].setTexture(texture);
 		sprJoueur[i].setOrigin(12, 8);
-		sprJoueur[i].setColor(Color(joueurs[i - 1].getRed(), joueurs[i - 1].getGreen(), joueurs[i - 1].getBlue()));
+		sprJoueur[i].setColor(Color(joueurs[i].getRed(), joueurs[i].getGreen(), joueurs[i].getBlue()));
 
 		//Initialisation auto
 		sprJoueur[i].setPosition(100 + (100 * i), 100);
