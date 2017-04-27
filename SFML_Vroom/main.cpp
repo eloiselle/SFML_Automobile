@@ -7,6 +7,8 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement possi
 
 //Lien de discussion instantané: https://tlk.io/sfml_automobile
 
+//Pseudo-code drifts
+
 //Directives au pré-processeur
 #include <SFML/Main.hpp>
 #include <SFML/Graphics.hpp>
