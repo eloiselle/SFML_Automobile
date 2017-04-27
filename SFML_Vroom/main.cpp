@@ -57,7 +57,7 @@ int main()
 		sprJoueur[i].setColor(Color(joueurs[i - 1].getRed(), joueurs[i - 1].getGreen(), joueurs[i - 1].getBlue()));
 
 		//Initialisation auto
-		sprJoueur[i].setPosition(100+(100 * i), 100);
+		sprJoueur[i].setPosition(100 + (100 * i), 100);
 		sprJoueur[i].rotate(joueurs[i].getDegre());
 	}
 
@@ -91,29 +91,34 @@ int main()
 
 			//Haut
 			if (Keyboard::isKeyPressed(joueurs[i].getUp()))
-				joueurs[i].effectuerVelocite(1, tempsDelta.asMilliseconds());
+			{
+				joueurs[i].changerDirection(1);
+				joueurs[i].effectuerVelocite(tempsDelta.asMilliseconds());
+			}
 
 			//Bas
 			if (Keyboard::isKeyPressed(joueurs[i].getDown()))
-				joueurs[i].effectuerVelocite(0, tempsDelta.asMilliseconds());
-
-
-			if (sprJoueur[1].getGlobalBounds().intersects(sprJoueur[2].getGlobalBounds()))
 			{
-				joueurs[1].collision();
+				joueurs[i].changerDirection(0);
+				joueurs[i].effectuerVelocite(tempsDelta.asMilliseconds());
 			}
 
-			else if (sprJoueur[2].getGlobalBounds().intersects(sprJoueur[1].getGlobalBounds()))
+			//Gère les collisions entre chaque autos
+			for (int j = 0; j < nbJoueurs; j++)
 			{
-				joueurs[2].collision();
-			}
+				if (i != j && sprJoueur[i].getGlobalBounds().intersects(sprJoueur[j].getGlobalBounds()))
+				{
+					joueurs[i].collision();
+					break;
+				}
 
-			else
-			{
-				//Gère les virages
-				joueurs[i].effectuerVirage();
-				sprJoueur[i].setRotation(joueurs[i].getDegre());
-				joueurs[i].setVirage(0);
+				if (j == nbJoueurs-1)
+				{
+					//Gère les virages
+					joueurs[i].effectuerVirage();
+					sprJoueur[i].setRotation(joueurs[i].getDegre());
+					joueurs[i].setVirage(0);
+				}
 			}
 
 			//Gère le mouvement du véhicule
@@ -124,7 +129,7 @@ int main()
 					joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds());
 
 			//Affaiblissement de la vélocité
-			joueurs[i].velociteAffaiblir();
+			joueurs[i].velociteAffaiblir(0);
 
 			window.draw(sprJoueur[i]);
 		}

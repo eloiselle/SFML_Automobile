@@ -25,6 +25,8 @@ private:
 	//États de l'auto
 	double _velociteX;
 	double _velociteY;
+	int _derniereDirection;
+
 	int _virage;
 	double _degree;
 	double _radian;
@@ -64,6 +66,7 @@ public:
 	//Change vélocité
 	void setVelociteY(double velociteY);
 	void setVelociteX(double velociteX);
+	void changerDirection(int direction);
 
 	//Change Degré / Virage
 	void setDegre(double degre);
@@ -72,8 +75,8 @@ public:
 
 	double convertDegreeRadian(double degre);
 	void effectuerVirage();
-	void effectuerVelocite(int direction, double tempsDelta);
-	void velociteAffaiblir();
+	void effectuerVelocite(double tempsDelta);
+	void velociteAffaiblir(int multiple);
 
 	void collision();
 
@@ -95,6 +98,7 @@ automobile::automobile()
 	_virage = 0;					//1 = Gauche, 2 = Droite, 0 = Nulle
 	_degree = 90;					//L'angle actuel, en degré, de l'auto
 	_radian = 0;					//L'angle actuel, en radian, de l'auto
+	_derniereDirection = 1;
 
 	//Autres options
 	_vitesseMax = 250;				//Vitesse maximale
@@ -199,6 +203,11 @@ void automobile::setVelociteY(double velociteY)
 	_velociteY = velociteY;
 }
 
+void automobile::changerDirection(int direction)
+{
+	_derniereDirection = direction;
+}
+
 void automobile::setDegre(double degree)
 {
 	_degree = degree;
@@ -248,10 +257,10 @@ void automobile::effectuerVirage()
 }
 
 //Ajuste la vélocité basée sur la direction désirée et le temps écoulé
-void automobile::effectuerVelocite(int direction, double tempsDelta)
+void automobile::effectuerVelocite(double tempsDelta)
 {
 	//Si on avance
-	if (direction == 1)
+	if (_derniereDirection == 1)
 	{
 		//Si la vélocitée est plus petite que la vitesse maximale
 		if (_velociteX < _vitesseMax)
@@ -264,7 +273,7 @@ void automobile::effectuerVelocite(int direction, double tempsDelta)
 	}
 
 	//Si on recule
-	else if (direction == 0)
+	else if (_derniereDirection == 0)
 	{
 		//Si on a pas atteint la vitesse maximale sur X à reculons
 		if (_velociteX > -(_vitesseMax / 2))
@@ -283,19 +292,27 @@ void automobile::effectuerVelocite(int direction, double tempsDelta)
 }
 
 //Décélération naturelle de la vélocité
-void automobile::velociteAffaiblir()
+void automobile::velociteAffaiblir(int multiple)
 {
-	_velociteX *= _vitesseAffaiblir;
-	_velociteY *= _vitesseAffaiblir;
+	_velociteX *= (_vitesseAffaiblir - multiple);
+	_velociteY *= (_vitesseAffaiblir - multiple);
 
 }
 
 //Gère la collision d'un auto
 void automobile::collision()
 {
-	if (_velociteX > 0 && _velociteY > 0)
-	{
-		_velociteX = -(_velociteX / 2);
-		_velociteY = -(_velociteY / 2);
-	}
+	if (_derniereDirection == 1)
+		if (_velociteX > 0 && _velociteY > 0)
+		{
+			_velociteX = -(_velociteX / 2);
+			_velociteY = -(_velociteY / 2);
+		}
+
+	else if (_derniereDirection == 0)
+		if (_velociteX < 0 && _velociteY < 0)
+		{
+			_velociteX = -(_velociteX / 2);
+			_velociteY = -(_velociteY / 2);
+		}
 }
