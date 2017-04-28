@@ -27,14 +27,10 @@ int main()
 	piste pisteCourse("points4");												//objet Piste
 
 	Sprite car;																	//sprite voiture
-	Sprite redLight;															//sprite lumiere rouge
-	Sprite yellowLight;															//sprite lumiere jaune
-	Sprite greenLight;															//sprite lumiere verte
 
 	Clock horlogeDelta;			//https://en.wikipedia.org/wiki/%CE%94T
 	Clock tempsJeu;																//temps depuis debut partie
 	Time temps;																	//utilisé pour prendre le temps de clock tempsJeu
-	float secondes;																//utilisé pour changer les lumieres
 
 	automobile joueur;															//premier joueur
 	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
@@ -89,7 +85,7 @@ int main()
 		}
 
 		//Gère les virages
-		if (canDrive == true)
+		if (canDrive == true)								//course est commencée --> voiture peut bouger
 		{
 			joueur.effectuerVirage();
 			car.setRotation(joueur.getDegre());

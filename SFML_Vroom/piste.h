@@ -12,7 +12,6 @@ But			: Piste de course. Est générée à partir d'un fichier texte.*/
 #include <string>
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include <fstream>
 
 using namespace std;
 using namespace sf;

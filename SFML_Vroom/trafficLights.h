@@ -10,7 +10,6 @@ But			: Traffics Lights. Permet au joueur de s'avoir quand la course débute. De 
 #pragma once
 
 //Directives au pré-processeur
-
 #include <string>
 #include <iostream>
 #include <SFML/Graphics.hpp>
