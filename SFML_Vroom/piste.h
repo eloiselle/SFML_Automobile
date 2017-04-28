@@ -8,6 +8,7 @@ But			: Piste de course. Est générée à partir d'un fichier texte.*/
 //On s'assure que si ce fichier est #include plus d'une fois, il ne sera inclus qu'une seule fois pour tout le programme
 #pragma once
 
+//Directives au pré-processeur
 #include <string>
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -16,12 +17,13 @@ But			: Piste de course. Est générée à partir d'un fichier texte.*/
 using namespace std;
 using namespace sf;
 
-//Classe
+//Objet
 class piste
 {
 
 private:
 	string _nom;										//nom de la piste
+	string _fichierTexture;								//nom du fichier qui contient la texture
 	Texture _texture;									//texture de la piste
 	Sprite _sprite;										//sprite de la piste
 	int _nbCollisions;									//nombre de formes convexes de collisions
@@ -38,10 +40,13 @@ public:
 	int getNbCollisions();								//get le nombre de formes convexes de collisions
 	ConvexShape getCollisions(int i);					//get une forme de collision
 	Sprite getSprite();									//get le sprite de la piste
-	
+
 	//Setteur
 	void setPosition(int x, int y);						//set la position x et y du sprite de la piste
 
+	//Chargement
+	void lireFichierEntete(ifstream& entree);			//lecture de l'entête du fichier et affecte le nom du fichier à le nom du fichier de texture en .png
+	void chargerPiste(ifstream& entree);				//charge la piste selon les informations du fichier texte, ainsi que toutes les formes convexes de collisions
 };
 
 //constructeur sans paramètres
@@ -58,9 +63,10 @@ piste::~piste()
 piste::piste(string nomFichier)
 {
 	ifstream entree;									//fichier texte d'entrée
-	string fichierTexture;
 
 	string nomPiste;									//nom de la piste
+	string fichierTexture;								//nom du fichier texte qui contient la texture
+	
 	Sprite piste;										//sprite de la piste
 
 	ConvexShape collisions[50];							//formes convexes de collisions
@@ -68,27 +74,13 @@ piste::piste(string nomFichier)
 
 	Vector2f point;										//coordonnées x et y d'un point
 
-	entree.open(nomFichier + ".txt");
+	_nom = nomFichier;
+	fichierTexture = _nom + ".png";
 
-	entree >> _nom >> fichierTexture >> _nbCollisions;
+	entree.open(_nom + ".txt");
+	entree >> _nbCollisions;							//lecture entete
 
-	for (int i = 0; i < _nbCollisions; i++)				//pr ch. forme convexe de collision
-	{
-		entree >> nbPoints;
-
-		_collisions[i].setPointCount(nbPoints);
-
-		for (int j = 0; j < nbPoints; j++)				//pr ch. point de la forme
-		{
-			entree >> point.x >> point.y;
-
-			_collisions[i].setPoint(j, point);
-		}
-
-		_collisions[i].setFillColor(Color::Transparent);
-		_collisions[i].setOutlineColor(Color::White);
-		_collisions[i].setOutlineThickness(4);
-	}
+	chargerPiste(entree);
 
 	_texture.loadFromFile(fichierTexture, IntRect(0, 0, 1024, 768));
 	RenderTexture;
@@ -119,4 +111,35 @@ Sprite piste::getSprite()
 void piste::setPosition(int x, int y)
 {
 	_sprite.setPosition(x, y);
+}
+
+//lecture de l'entête du fichier 
+void piste::lireFichierEntete(ifstream& entree)
+{
+	
+}
+
+//charge la piste selon les informations du fichier texte, ainsi que toutes les formes convexes de collisions
+void piste::chargerPiste(ifstream& entree)
+{
+	int nbPoints;											//nb de points par forme
+	Vector2f point;											//coordonnées d'un point
+
+	for (int i = 0; i < _nbCollisions; i++)					//pr ch. forme convexe de collision
+	{
+		entree >> nbPoints;
+
+		_collisions[i].setPointCount(nbPoints);
+
+		for (int j = 0; j < nbPoints; j++)					//pr ch. point de la forme
+		{
+			entree >> point.x >> point.y;
+
+			_collisions[i].setPoint(j, point);
+		}
+
+		_collisions[i].setFillColor(Color::Transparent);	//a titre de visibilitépour tests
+		_collisions[i].setOutlineColor(Color::White);
+		_collisions[i].setOutlineThickness(4);
+	}
 }

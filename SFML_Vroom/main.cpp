@@ -15,8 +15,6 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement possi
 using namespace sf;
 using namespace std;
 
-ConvexShape creationPolyCollision(ifstream& entree, string nomFichierPoints);
-
 //Programme principal
 int main()
 {
@@ -60,15 +58,12 @@ int main()
 	car.setOrigin(12, 8);														//offre rotation plus juste
 	pisteCourse.setPosition(120, 100);
 
-	//Initialisation auto
-	car.setPosition(190, 395);
+	car.setPosition(190, 395);													//Initialisation auto
 	car.rotate(joueur.getDegre());
 
-	//Traffics Lights centrées
-	redLight.setPosition(585, 300);
+	redLight.setPosition(585, 300);												//Traffics Lights centrées
 	yellowLight.setPosition(585, 300);
 	greenLight.setPosition(585, 300);
-	
 	
 	while (window.isOpen())														//Tant que le jeu roule
 	{
@@ -121,23 +116,24 @@ int main()
 
 		//Gère l'affichage
 		window.clear(Color(0, 150, 0));
-		window.draw(pisteCourse.getSprite());
+		window.draw(pisteCourse.getSprite());						//affiche piste
 
-		for (int i = 0; i < pisteCourse.getNbCollisions(); i++)
+		for (int i = 0; i < pisteCourse.getNbCollisions(); i++)		//affiche toutes les formes de collisions
 		{
 			window.draw(pisteCourse.getCollisions(i));
 		}
-		window.draw(car);
 
-		if (temps.asSeconds() <= 3)			//lumière rouge
+		window.draw(car);											//affiche voiture
+
+		if (temps.asSeconds() <= 3)									//lumière rouge
 		{
 			window.draw(redLight);
 		}
-		else if (temps.asSeconds() <= 5)	//lumière jaune
+		else if (temps.asSeconds() <= 5)							//lumière jaune
 		{
 			window.draw(yellowLight);
 		}
-		else if (temps.asSeconds() <= 6)	//lumière verte
+		else if (temps.asSeconds() <= 6)							//lumière verte
 		{
 			window.draw(greenLight);
 		}
@@ -147,34 +143,4 @@ int main()
 
 	}
 	return 0;
-}
-//Creation de polygones convexes à partir de points reccueillis dans un fichier texte, préalablement générer avec le programme getPoints(TM). Retourne une forme convexe
-ConvexShape creationPolyCollision(ifstream& entree, string nomFichierPoints)
-{
-	int nbPoints;								//nb points que la forme contient
-	
-	Vector2f points[1000];						//coordonnées x et y des points, 1000 est une valeur arbitraire
-
-	ConvexShape shape;							//forme convexe
-
-	entree >> nbPoints;			
-
-	shape.setPointCount(nbPoints);
-
-	for (int i = 0; i < nbPoints; i++)			//pr tous les points de la forme
-	{
-		entree >> points[i].x >> points[i].y;
-	}
-
-	for (int i = 0; i < nbPoints; i++)			//pr tous les points de la forme	
-	{
-		shape.setPoint(i, points[i]);
-	}
-
-	shape.setFillColor(Color::Transparent);
-	shape.setOutlineThickness(4);				
-	shape.setOutlineColor(Color::White);
-
-	return shape;
-
 }
