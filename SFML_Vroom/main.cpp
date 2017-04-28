@@ -7,87 +7,116 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement possi
 
 //Directives au pré-processeur
 #include <SFML/Graphics.hpp>
+#include <iostream>
+#include <fstream>
+#include <string>
 #include "auto.h"
+#include "piste.h"
+#include "trafficLights.h"
 using namespace sf;
+using namespace std;
 
 //Programme principal
 int main()
 {
 	//Initialisation SFML
-	RenderWindow window(VideoMode(1280, 720), "Vroooom!!!");
-	Texture texture;
-	RenderTexture;
-	Sprite sprite;
-	Event event;
+	RenderWindow window(VideoMode(1280, 768), "Vroooom!!!");					//fenetre
+	Texture textureCar;															//texture voiture
+	RenderTexture;				
+
+	piste pisteCourse("points4");												//objet Piste
+
+	Sprite car;																	//sprite voiture
+
 	Clock horlogeDelta;			//https://en.wikipedia.org/wiki/%CE%94T
+	Clock tempsJeu;																//temps depuis debut partie
+	Time temps;																	//utilisé pour prendre le temps de clock tempsJeu
 
-	//Variables
-	automobile joueur;
+	automobile joueur;															//premier joueur
+	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
+	trafficLights lights;
 
-	//Limite le nombre d'images par secondes
-	window.setFramerateLimit(60);
+	Event event;
 
-	//Chargement de la texture de l'auto
-	texture.loadFromFile("orange32x16.png", IntRect(0, 0, 32, 16));
+	window.setFramerateLimit(60);												//Limite le nombre d'images par secondes
 
-	//Insertion de la texture dans le sprite et changement du point d'origine
-	sprite.setTexture(texture);
-	sprite.setOrigin(12, 8);
+	textureCar.loadFromFile("orange32x16.png", IntRect(0, 0, 32, 16));			//Chargement des textures
+	
+	car.setTexture(textureCar);													//Insertion des textures dans leur sprite réspectifs
+	
+	car.setOrigin(12, 8);														//offre rotation plus juste
+	pisteCourse.setPosition(120, 100);
+	lights.setPosition(585, 300);
 
-	//Initialisation auto
-	sprite.setPosition(100, 100);
-	sprite.rotate(joueur.getDegre());
-
-	//Tant que le jeu roule
-	while (window.isOpen())
+	car.setPosition(190, 395);													//Initialisation auto
+	car.rotate(joueur.getDegre());
+	
+	while (window.isOpen())														//Tant que le jeu roule
 	{
-		//Réinitialise l'horloge
-		Time tempsDelta = horlogeDelta.restart();
+		Time tempsDelta = horlogeDelta.restart();								//Réinitialise l'horloge
 
 		//Attend les événements
 		while (window.pollEvent(event))
-			if(event.type == sf::Event::Closed || ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)))
+			if (event.type == sf::Event::Closed || ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)))
 				window.close();
 
-		//Gauche
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))						//Gauche
 			joueur.setVirage(1);
 
-		//Droite
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))				//Droite
 			joueur.setVirage(2);
-
-		//Nulle
+	
 		else
-			joueur.setVirage(0);
+			joueur.setVirage(0);												//Nulle
 
-		//Haut
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))						//Haut
 			joueur.effectuerVelocite(1, tempsDelta.asMilliseconds());
 
-		//Bas
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))						//Bas
 			joueur.effectuerVelocite(0, tempsDelta.asMilliseconds());
 
+		temps = tempsJeu.getElapsedTime();
+		
+		if (temps.asSeconds() >= 5)												//pas bouger pendant traffic lights
+		{
+			canDrive = true;
+		}
+
 		//Gère les virages
-		joueur.effectuerVirage();
-		sprite.setRotation(joueur.getDegre());
-		joueur.setVirage(0);
+		if (canDrive == true)								//course est commencée --> voiture peut bouger
+		{
+			joueur.effectuerVirage();
+			car.setRotation(joueur.getDegre());
+			joueur.setVirage(0);
 
-		//Gère le mouvement du véhicule
-		sprite.move(
-			joueur.getVelociteX() * cos(
-				joueur.convertDegreeRadian(joueur.getDegre())) * tempsDelta.asSeconds() , 
-			joueur.getVelociteY() * sin(
-				joueur.convertDegreeRadian(joueur.getDegre())) * tempsDelta.asSeconds());
+			//Gère le mouvement du véhicule
+			car.move(joueur.getVelociteX() * cos(joueur.convertDegreeRadian(joueur.getDegre())) * tempsDelta.asSeconds(),
+					 joueur.getVelociteY() * sin(joueur.convertDegreeRadian(joueur.getDegre())) * tempsDelta.asSeconds());
 
-		//Affaiblissement de la vélocité
-		joueur.velociteAffaiblir();
+			//Affaiblissement de la vélocité
+			joueur.velociteAffaiblir();
+
+		}
 
 		//Gère l'affichage
-		window.clear();
-		window.draw(sprite);
+		window.clear(Color(0, 150, 0));
+		window.draw(pisteCourse.getSprite());						//affiche piste
+
+		for (int i = 0; i < pisteCourse.getNbCollisions(); i++)		//affiche toutes les formes de collisions
+		{
+			window.draw(pisteCourse.getCollisions(i));
+		}
+
+		window.draw(car);											//affiche voiture
+
+		lights.changerLumiere(tempsJeu);
+		window.draw(lights.getSprite());
+
 		window.display();
+
+
 	}
 	return 0;
 }
