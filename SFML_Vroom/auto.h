@@ -28,6 +28,7 @@ private:
 	int _derniereDirection;
 
 	int _virage;
+	double _degreeDrift;
 	double _degree;
 	double _radian;
 
@@ -57,6 +58,7 @@ public:
 
 	//Obtient Degré / Vitesse de virage
 	double getDegre();
+	double getDegreDrift();
 	double getAngleIncrementation();
 	int getRed();
 	int getGreen();
@@ -69,6 +71,7 @@ public:
 
 	//Change Degré / Virage
 	void setDegre(double degre);
+	void setDegreeDrift(double degree);
 	void setVirage(int virage);
 	void setCouleur(int red, int green, int blue);
 
@@ -95,6 +98,7 @@ automobile::automobile()
 	_velociteX = 0;					//La vitesse actuelle de l'auto¸(sur l'axe des X)
 	_velociteY = 0;					//La vitesse actuelle de l'auto¸(sur l'axe des Y)
 	_virage = 0;					//1 = Gauche, 2 = Droite, 0 = Nulle
+	_degreeDrift = 90;
 	_degree = 90;					//L'angle actuel, en degré, de l'auto
 	_radian = 0;					//L'angle actuel, en radian, de l'auto
 	_derniereDirection = 1;
@@ -103,8 +107,8 @@ automobile::automobile()
 	_vitesseMax = 250;				//Vitesse maximale
 
 	//Accélérations
-	_vitesseIncrementation = 0.4;		//La vitesse à laquelle l'auto fais son accélération
-	_angleIncrementation = 2.5;		//La vitesse à laquelle l'auto fais ses virage
+	_vitesseIncrementation = 0.2;		//La vitesse à laquelle l'auto fais son accélération
+	_angleIncrementation = 4;		//La vitesse à laquelle l'auto fais ses virage
 	_vitesseAffaiblir = 0.995;		//La vitesse à laquelle l'auto ralenti naturellement
 
 	//Couleur de l'auto
@@ -142,6 +146,11 @@ double automobile::getVitesseMax()
 double automobile::getDegre()
 {
 	return _degree;
+}
+
+double automobile::getDegreDrift()
+{
+	return _degreeDrift;
 }
 
 double automobile::getAngleIncrementation()
@@ -207,6 +216,11 @@ void automobile::changerDirection(int direction)
 void automobile::setDegre(double degree)
 {
 	_degree = degree;
+}
+
+void automobile::setDegreeDrift(double degreeDrift)
+{
+	_degreeDrift = degreeDrift;
 }
 
 void automobile::setVirage(int virage)

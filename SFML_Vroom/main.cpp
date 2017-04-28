@@ -142,14 +142,22 @@ int main()
 				}
 			}
 
+			if (joueurs[i].getDegreDrift() < joueurs[i].getDegre())
+			{
+				joueurs[i].setDegreeDrift(joueurs[i].getDegreDrift() + (joueurs[i].getDegre()-joueurs[i].getDegreDrift()));
+			}
 
+			if (joueurs[i].getDegreDrift() > joueurs[i].getDegre())
+			{
+				joueurs[i].setDegreeDrift(joueurs[i].getDegreDrift() - (joueurs[i].getDegre() - joueurs[i].getDegreDrift()));
+			}
 
 			//Applique la vélocité
 			sprJoueur[i].move(
 				joueurs[i].getVelociteX() * cos(
-					joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds(),
+					joueurs[i].convertDegreeRadian(joueurs[i].getDegreDrift())) * tempsDelta.asSeconds(),
 				joueurs[i].getVelociteY() * sin(
-					joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds());
+					joueurs[i].convertDegreeRadian(joueurs[i].getDegreDrift())) * tempsDelta.asSeconds());
 
 			//Affaiblissement de la vélocité
 			joueurs[i].velociteAffaiblir(0);
