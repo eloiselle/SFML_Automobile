@@ -1,18 +1,22 @@
-/* En-tête du programme
+/* En-tÃªte du programme
 =========================
-Auteurs		: Émile Loiselle et Francis Forest
+Auteurs		: Ã‰mile Loiselle et Francis Forest
 Nom du CPP	: main.cpp
 Date		: 21 avril 2017
-But			: Contrôler un automobile sur une piste de course le plus rapidement possible. */
+But			: ContrÃ´ler un automobile sur une piste de course le plus rapidement possible. */
 
-//Directives au pré-processeur
+//Lien de discussion instantanÃ©: https://tlk.io/sfml_automobile
+
+//Pseudo-code drifts
+
+//Directives au prÃ©-processeur
+#include <SFML/Main.hpp>
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include "auto.h"
 #include "piste.h"
-#include "trafficLights.h"
 using namespace sf;
 using namespace std;
 
@@ -26,11 +30,37 @@ int main()
 
 	piste pisteCourse("points4");												//objet Piste
 
-	Sprite car;																	//sprite voiture
+	Sprite sprJoueur[4];															//sprite voiture
+	int nbJoueurs = 4;
+  
+  automobile joueurs[4];
 
+	joueurs[0].setCouleur(0, 255, 0);
+	joueurs[1].setCouleur(255, 0, 0);
+	joueurs[2].setCouleur(0, 255, 255);
+	joueurs[3].setCouleur(255, 255, 0);
+
+	joueurs[0].setKeys(Keyboard::Up, Keyboard::Down, Keyboard::Left, Keyboard::Right);
+	joueurs[1].setKeys(Keyboard::W, Keyboard::S, Keyboard::A, Keyboard::D);
+	joueurs[2].setKeys(Keyboard::I, Keyboard::K, Keyboard::J, Keyboard::L);
+	joueurs[3].setKeys(Keyboard::Home, Keyboard::End, Keyboard::Delete, Keyboard::PageDown);
+  
+  	for (int i = 0; i < nbJoueurs; i++)
+	{
+		//Chargement de la texture pour l'auto spÃ©cifiÃ©e
+		texture.loadFromFile("car.png");
+		sprJoueur[i].setTexture(texture);
+		sprJoueur[i].setOrigin(12, 8);
+		sprJoueur[i].setColor(Color(joueurs[i].getRed(), joueurs[i].getGreen(), joueurs[i].getBlue()));
+
+		//Initialisation auto
+		sprJoueur[i].setPosition(100 + (100 * i), 100);
+		sprJoueur[i].rotate(joueurs[i].getDegre());
+	}
+  
 	Clock horlogeDelta;			//https://en.wikipedia.org/wiki/%CE%94T
 	Clock tempsJeu;																//temps depuis debut partie
-	Time temps;																	//utilisé pour prendre le temps de clock tempsJeu
+	Time temps;																	//utilisÃ© pour prendre le temps de clock tempsJeu
 
 	automobile joueur;															//premier joueur
 	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
@@ -42,7 +72,7 @@ int main()
 
 	textureCar.loadFromFile("orange32x16.png", IntRect(0, 0, 32, 16));			//Chargement des textures
 	
-	car.setTexture(textureCar);													//Insertion des textures dans leur sprite réspectifs
+	car.setTexture(textureCar);													//Insertion des textures dans leur sprite rÃ©spectifs
 	
 	car.setOrigin(12, 8);														//offre rotation plus juste
 	pisteCourse.setPosition(120, 100);
@@ -53,29 +83,72 @@ int main()
 	
 	while (window.isOpen())														//Tant que le jeu roule
 	{
-		Time tempsDelta = horlogeDelta.restart();								//Réinitialise l'horloge
+		//Efface l'affichage prÃ©cÃ©dent
+		window.clear();
 
-		//Attend les événements
+		//RÃ©initialise l'horloge
+		Time tempsDelta = horlogeDelta.restart();
+
+		//Attend les Ã©vÃ©nements
 		while (window.pollEvent(event))
-			if (event.type == sf::Event::Closed || ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)))
+			if (event.type == Event::Closed || ((event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape)))
 				window.close();
 
-		
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))						//Gauche
-			joueur.setVirage(1);
+		for (int i = 0; i < nbJoueurs; i++)
+		{
+			//Gauche
+			if (Keyboard::isKeyPressed(joueurs[i].getLeft()))
+				joueurs[i].setVirage(1);
 
-		
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))				//Droite
-			joueur.setVirage(2);
-	
-		else
-			joueur.setVirage(0);												//Nulle
+			//Droite
+			else if (Keyboard::isKeyPressed(joueurs[i].getRight()))
+				joueurs[i].setVirage(2);
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))						//Haut
-			joueur.effectuerVelocite(1, tempsDelta.asMilliseconds());
+			//Nulle
+			else
+				joueurs[i].setVirage(0);
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))						//Bas
-			joueur.effectuerVelocite(0, tempsDelta.asMilliseconds());
+			//Haut
+			if (Keyboard::isKeyPressed(joueurs[i].getUp()))
+			{
+				joueurs[i].changerDirection(1);
+				joueurs[i].effectuerVelocite(tempsDelta.asMilliseconds());
+			}
+
+			//Bas
+			if (Keyboard::isKeyPressed(joueurs[i].getDown()))
+			{
+				joueurs[i].changerDirection(0);
+				joueurs[i].effectuerVelocite(tempsDelta.asMilliseconds());
+			}
+
+			//GÃ¨re les collisions entre chaque autos
+			for (int j = 0; j < nbJoueurs; j++)
+			{
+				if (i != j && sprJoueur[i].getGlobalBounds().intersects(sprJoueur[j].getGlobalBounds()))
+				{
+					joueurs[i].collision();
+					break;
+				}
+
+				if (j == nbJoueurs-1)
+				{
+					//GÃ¨re les virages
+					joueurs[i].effectuerVirage();
+					sprJoueur[i].setRotation(joueurs[i].getDegre());
+					joueurs[i].setVirage(0);
+				}
+			}
+      
+      sprJoueur[i].move(
+				joueurs[i].getVelociteX() * cos(
+					joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds(),
+				joueurs[i].getVelociteY() * sin(
+					joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds());
+      
+    window.draw(sprJoueur[i]);
+			
+		}
 
 		temps = tempsJeu.getElapsedTime();
 		
@@ -84,23 +157,7 @@ int main()
 			canDrive = true;
 		}
 
-		//Gère les virages
-		if (canDrive == true)								//course est commencée --> voiture peut bouger
-		{
-			joueur.effectuerVirage();
-			car.setRotation(joueur.getDegre());
-			joueur.setVirage(0);
-
-			//Gère le mouvement du véhicule
-			car.move(joueur.getVelociteX() * cos(joueur.convertDegreeRadian(joueur.getDegre())) * tempsDelta.asSeconds(),
-					 joueur.getVelociteY() * sin(joueur.convertDegreeRadian(joueur.getDegre())) * tempsDelta.asSeconds());
-
-			//Affaiblissement de la vélocité
-			joueur.velociteAffaiblir();
-
-		}
-
-		//Gère l'affichage
+		//GÃ¨re l'affichage
 		window.clear(Color(0, 150, 0));
 		window.draw(pisteCourse.getSprite());						//affiche piste
 
