@@ -82,8 +82,7 @@ piste::piste(string nomFichier)
 	chargerPiste(entree);
 
 	_texture.loadFromFile(fichierTexture, IntRect(0, 0, 1024, 768));
-	RenderTexture;
-
+	
 	_sprite.setTexture(_texture);
 
 }

@@ -27,31 +27,33 @@ int main()
 	//Initialisation SFML
 	RenderWindow window(VideoMode(1280, 768), "Vroooom!!!");					//fenetre
 	Texture textureCar;															//texture voiture
-	RenderTexture;
-	Clock horlogeDelta;			//https://en.wikipedia.org/wiki/%CE%94T
+	Clock horlogeDelta;															//https://en.wikipedia.org/wiki/%CE%94T
 	Clock tempsJeu;																//temps depuis debut partie
 	Time temps;																	//utilisé pour prendre le temps de clock tempsJeu
-	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
-	trafficLights lights;
 	Event event;
 
+	trafficLights lights;
 	piste pisteCourse("points4");												//objet Piste
 
-	Sprite sprJoueur[4];															//sprite voiture
 	int nbJoueurs = 4;
+	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
 
 	automobile joueurs[4];
+	Sprite sprJoueur[4];
 
+	//Change les couleures de chaque joueurs
 	joueurs[0].setCouleur(0, 255, 0);
 	joueurs[1].setCouleur(255, 0, 0);
 	joueurs[2].setCouleur(0, 255, 255);
 	joueurs[3].setCouleur(255, 255, 0);
 
+	//Applique les touches à utiliser pour chaques joueurs
 	joueurs[0].setKeys(Keyboard::Up, Keyboard::Down, Keyboard::Left, Keyboard::Right);
 	joueurs[1].setKeys(Keyboard::W, Keyboard::S, Keyboard::A, Keyboard::D);
 	joueurs[2].setKeys(Keyboard::I, Keyboard::K, Keyboard::J, Keyboard::L);
 	joueurs[3].setKeys(Keyboard::T, Keyboard::G, Keyboard::F, Keyboard::H);
 
+	//Chargement de chaque joueurs
 	for (int i = 0; i < nbJoueurs; i++)
 	{
 		//Chargement de la texture pour l'auto spécifiée
@@ -60,32 +62,18 @@ int main()
 		sprJoueur[i].setOrigin(12, 8);
 		sprJoueur[i].setColor(Color(joueurs[i].getRed(), joueurs[i].getGreen(), joueurs[i].getBlue()));
 
-		//Initialisation auto
+		//Initialisation automobile
 		sprJoueur[i].setPosition(100 + (100 * i), 100);
 		sprJoueur[i].rotate(joueurs[i].getDegre());
 	}
+	//Limite le nombre d'images par secondes
+	window.setFramerateLimit(60);
 
-
-
-	window.setFramerateLimit(60);												//Limite le nombre d'images par secondes
 	pisteCourse.setPosition(120, 100);
 	lights.setPosition(585, 300);
 
 	while (window.isOpen())														//Tant que le jeu roule
 	{
-		//Efface l'affichage précédent
-		window.clear();
-
-		window.draw(pisteCourse.getSprite());						//affiche piste
-
-		for (int i = 0; i < pisteCourse.getNbCollisions(); i++)		//affiche toutes les formes de collisions --> afin de tester collisions
-		{
-			window.draw(pisteCourse.getCollisions(i));
-		}
-
-		lights.changerLumiere(tempsJeu);
-		window.draw(lights.getSprite());
-
 		temps = tempsJeu.getElapsedTime();
 
 		if (temps.asSeconds() >= 5)												//pas bouger pendant traffic lights
@@ -96,16 +84,17 @@ int main()
 		//Réinitialise l'horloge
 		Time tempsDelta = horlogeDelta.restart();
 
-		//Attend les événements
+		//Attend les événements de fermeture
 		while (window.pollEvent(event))
 			if (event.type == Event::Closed || ((event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape)))
 				window.close();
+
+		//Événements de jeu
 		for (int i = 0; i < nbJoueurs; i++)
 		{
+			//Si le départ n'a pas été lancé
 			if (canDrive == false)
-			{
 				break;
-			}
 
 			//Gauche
 			if (Keyboard::isKeyPressed(joueurs[i].getLeft()))
@@ -136,12 +125,14 @@ int main()
 			//Gère les collisions entre chaque autos
 			for (int j = 0; j < nbJoueurs; j++)
 			{
+				//Si on touche une auto
 				if (i != j && sprJoueur[i].getGlobalBounds().intersects(sprJoueur[j].getGlobalBounds()))
 				{
 					joueurs[i].collision();
 					break;
 				}
 
+				//Si on a touché personne
 				if (j == nbJoueurs - 1)
 				{
 					//Gère les virages
@@ -151,22 +142,40 @@ int main()
 				}
 			}
 
+
+
+			//Applique la vélocité
 			sprJoueur[i].move(
 				joueurs[i].getVelociteX() * cos(
 					joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds(),
 				joueurs[i].getVelociteY() * sin(
 					joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds());
 
-			window.draw(sprJoueur[i]);
+			//Affaiblissement de la vélocité
+			joueurs[i].velociteAffaiblir(0);
 		}
 
+		//Efface l'affichage précédent
+		window.clear(Color(0,125,0));
+
+		//Affiche la piste
+		window.draw(pisteCourse.getSprite());
+
+		//Affiche toutes les formes de collisions --> afin de tester collisions
+		for (int i = 0; i < pisteCourse.getNbCollisions(); i++)		
+			window.draw(pisteCourse.getCollisions(i));
+
+		//Affiche la lumière au départ
+		lights.changerLumiere(tempsJeu);
+		window.draw(lights.getSprite());
+
+		//Affichage de tous les joueurs
 		for (int i = 0; i < nbJoueurs; i++)
-		{
 			window.draw(sprJoueur[i]);
-		}
 
+		//Rfraîchi l'affichage
 		window.display();
-
 	}
+
 	return 0;
 }

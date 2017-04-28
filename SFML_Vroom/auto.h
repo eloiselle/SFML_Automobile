@@ -46,7 +46,6 @@ public:
 
 	//Constructeur / Déconstructeur
 	automobile();
-	~automobile();
 
 	//Obtient vélocité
 	double getVelociteX();
@@ -105,7 +104,7 @@ automobile::automobile()
 
 	//Accélérations
 	_vitesseIncrementation = 0.4;		//La vitesse à laquelle l'auto fais son accélération
-	_angleIncrementation = 4;		//La vitesse à laquelle l'auto fais ses virage
+	_angleIncrementation = 2.5;		//La vitesse à laquelle l'auto fais ses virage
 	_vitesseAffaiblir = 0.995;		//La vitesse à laquelle l'auto ralenti naturellement
 
 	//Couleur de l'auto
@@ -114,11 +113,6 @@ automobile::automobile()
 	_autoRGB[2] = 125;
 
 	_virage = 0;						//1 = Gauche, 2 = Droite, 0 = Nulle
-}
-
-automobile::~automobile()
-{
-
 }
 
 //==Get==
