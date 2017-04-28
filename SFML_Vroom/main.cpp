@@ -17,6 +17,7 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement poss
 #include <string>
 #include "auto.h"
 #include "piste.h"
+#include "trafficLights.h"
 using namespace sf;
 using namespace std;
 
@@ -26,14 +27,20 @@ int main()
 	//Initialisation SFML
 	RenderWindow window(VideoMode(1280, 768), "Vroooom!!!");					//fenetre
 	Texture textureCar;															//texture voiture
-	RenderTexture;				
+	RenderTexture;
+	Clock horlogeDelta;			//https://en.wikipedia.org/wiki/%CE%94T
+	Clock tempsJeu;																//temps depuis debut partie
+	Time temps;																	//utilisé pour prendre le temps de clock tempsJeu
+	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
+	trafficLights lights;
+	Event event;
 
 	piste pisteCourse("points4");												//objet Piste
 
 	Sprite sprJoueur[4];															//sprite voiture
 	int nbJoueurs = 4;
-  
-  automobile joueurs[4];
+
+	automobile joueurs[4];
 
 	joueurs[0].setCouleur(0, 255, 0);
 	joueurs[1].setCouleur(255, 0, 0);
@@ -44,12 +51,12 @@ int main()
 	joueurs[1].setKeys(Keyboard::W, Keyboard::S, Keyboard::A, Keyboard::D);
 	joueurs[2].setKeys(Keyboard::I, Keyboard::K, Keyboard::J, Keyboard::L);
 	joueurs[3].setKeys(Keyboard::Home, Keyboard::End, Keyboard::Delete, Keyboard::PageDown);
-  
-  	for (int i = 0; i < nbJoueurs; i++)
+
+	for (int i = 0; i < nbJoueurs; i++)
 	{
 		//Chargement de la texture pour l'auto spécifiée
-		texture.loadFromFile("car.png");
-		sprJoueur[i].setTexture(texture);
+		textureCar.loadFromFile("car.png");
+		sprJoueur[i].setTexture(textureCar);
 		sprJoueur[i].setOrigin(12, 8);
 		sprJoueur[i].setColor(Color(joueurs[i].getRed(), joueurs[i].getGreen(), joueurs[i].getBlue()));
 
@@ -57,30 +64,13 @@ int main()
 		sprJoueur[i].setPosition(100 + (100 * i), 100);
 		sprJoueur[i].rotate(joueurs[i].getDegre());
 	}
-  
-	Clock horlogeDelta;			//https://en.wikipedia.org/wiki/%CE%94T
-	Clock tempsJeu;																//temps depuis debut partie
-	Time temps;																	//utilisé pour prendre le temps de clock tempsJeu
 
-	automobile joueur;															//premier joueur
-	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
-	trafficLights lights;
 
-	Event event;
 
 	window.setFramerateLimit(60);												//Limite le nombre d'images par secondes
-
-	textureCar.loadFromFile("orange32x16.png", IntRect(0, 0, 32, 16));			//Chargement des textures
-	
-	car.setTexture(textureCar);													//Insertion des textures dans leur sprite réspectifs
-	
-	car.setOrigin(12, 8);														//offre rotation plus juste
 	pisteCourse.setPosition(120, 100);
 	lights.setPosition(585, 300);
 
-	car.setPosition(190, 395);													//Initialisation auto
-	car.rotate(joueur.getDegre());
-	
 	while (window.isOpen())														//Tant que le jeu roule
 	{
 		//Efface l'affichage précédent
@@ -131,7 +121,7 @@ int main()
 					break;
 				}
 
-				if (j == nbJoueurs-1)
+				if (j == nbJoueurs - 1)
 				{
 					//Gère les virages
 					joueurs[i].effectuerVirage();
@@ -139,19 +129,19 @@ int main()
 					joueurs[i].setVirage(0);
 				}
 			}
-      
-      sprJoueur[i].move(
+
+			sprJoueur[i].move(
 				joueurs[i].getVelociteX() * cos(
 					joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds(),
 				joueurs[i].getVelociteY() * sin(
 					joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds());
-      
-    window.draw(sprJoueur[i]);
-			
+
+			window.draw(sprJoueur[i]);
+
 		}
 
 		temps = tempsJeu.getElapsedTime();
-		
+
 		if (temps.asSeconds() >= 5)												//pas bouger pendant traffic lights
 		{
 			canDrive = true;
@@ -165,8 +155,6 @@ int main()
 		{
 			window.draw(pisteCourse.getCollisions(i));
 		}
-
-		window.draw(car);											//affiche voiture
 
 		lights.changerLumiere(tempsJeu);
 		window.draw(lights.getSprite());
