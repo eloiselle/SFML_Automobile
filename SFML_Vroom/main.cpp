@@ -37,6 +37,7 @@ int main()
 
 	int nbJoueurs = 4;
 	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
+	int inc[4];
 
 	automobile joueurs[4];
 	Sprite sprJoueur[4];
@@ -142,16 +143,25 @@ int main()
 				}
 			}
 
-			if (joueurs[i].getDegreDrift() < joueurs[i].getDegre())
+			if (joueurs[i].getDegreDrift() == joueurs[i].getDegre())
 			{
-				joueurs[i].setDegreeDrift(joueurs[i].getDegreDrift() + (joueurs[i].getDegre()-joueurs[i].getDegreDrift()));
+				joueurs[i].setDegreeDrift(joueurs[i].getDegre());
 			}
-
-			if (joueurs[i].getDegreDrift() > joueurs[i].getDegre())
+			else
 			{
-				joueurs[i].setDegreeDrift(joueurs[i].getDegreDrift() - (joueurs[i].getDegre() - joueurs[i].getDegreDrift()));
-			}
+				inc[i] = abs(joueurs[i].getDegre() - joueurs[i].getDegreDrift()) / (abs((joueurs[i].getVelociteX()) + abs(joueurs[i].getVelociteY()) / 2)/3);
 
+				if (joueurs[i].getDegreDrift() < joueurs[i].getDegre())
+				{
+					joueurs[i].setDegreeDrift(joueurs[i].getDegreDrift() + inc[i]);
+				}
+
+				if (joueurs[i].getDegreDrift() > joueurs[i].getDegre())
+				{
+					joueurs[i].setDegreeDrift(joueurs[i].getDegreDrift() - inc[i]);
+				}
+			}
+			
 			//Applique la vélocité
 			sprJoueur[i].move(
 				joueurs[i].getVelociteX() * cos(
