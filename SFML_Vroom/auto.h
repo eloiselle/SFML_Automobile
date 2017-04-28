@@ -1,9 +1,9 @@
-/*En-tête du fichier d'en-tête
+/*En-tÃªte du fichier d'en-tÃªte
 ================================
-Auteurs		: Émile Loiselle et Francis Forest
+Auteurs		: Ã‰mile Loiselle et Francis Forest
 Nom du .h	: auto.h
 Date		: 21 avril 2017
-But			: Gérer toutes les variables intéressantes pour une automobile.*/
+But			: GÃ©rer toutes les variables intÃ©ressantes pour une automobile.*/
 
 //On s'assure que si ce fichier est #include plus d'une fois, il ne sera inclus qu'une seule fois pour tout le programme
 #pragma once
@@ -22,7 +22,7 @@ private:
 	//Touches pour le joueur
 	Keyboard::Key _autoControles[4];
 
-	//États de l'auto
+	//Ã‰tats de l'auto
 	double _velociteX;
 	double _velociteY;
 	int _derniereDirection;
@@ -34,7 +34,7 @@ private:
 	//Autres options
 	double _vitesseMax;
 
-	//Accélérations
+	//AccÃ©lÃ©rations
 	double _vitesseIncrementation;
 	double _angleIncrementation;
 	double _vitesseAffaiblir;
@@ -44,31 +44,31 @@ private:
 
 public:
 
-	//Constructeur / Déconstructeur
+	//Constructeur / DÃ©constructeur
 	automobile();
 	~automobile();
 
-	//Obtient vélocité
+	//Obtient vÃ©locitÃ©
 	double getVelociteX();
 	double getVelociteY();
 
-	//Accélération / Vitesse Max
+	//AccÃ©lÃ©ration / Vitesse Max
 	double getVitesseIncrementation();
 	double getVitesseMax();
 
-	//Obtient Degré / Vitesse de virage
+	//Obtient DegrÃ© / Vitesse de virage
 	double getDegre();
 	double getAngleIncrementation();
 	int getRed();
 	int getGreen();
 	int getBlue();
 
-	//Change vélocité
+	//Change vÃ©locitÃ©
 	void setVelociteY(double velociteY);
 	void setVelociteX(double velociteX);
 	void changerDirection(int direction);
 
-	//Change Degré / Virage
+	//Change DegrÃ© / Virage
 	void setDegre(double degre);
 	void setVirage(int virage);
 	void setCouleur(int red, int green, int blue);
@@ -92,26 +92,28 @@ public:
 
 automobile::automobile()
 {
-	//États de l'auto
-	_velociteX = 0;					//La vitesse actuelle de l'auto¸(sur l'axe des X)
-	_velociteY = 0;					//La vitesse actuelle de l'auto¸(sur l'axe des Y)
+	//Ã‰tats de l'auto
+	_velociteX = 0;					//La vitesse actuelle de l'autoÂ¸(sur l'axe des X)
+	_velociteY = 0;					//La vitesse actuelle de l'autoÂ¸(sur l'axe des Y)
 	_virage = 0;					//1 = Gauche, 2 = Droite, 0 = Nulle
-	_degree = 90;					//L'angle actuel, en degré, de l'auto
+	_degree = 90;					//L'angle actuel, en degrÃ©, de l'auto
 	_radian = 0;					//L'angle actuel, en radian, de l'auto
 	_derniereDirection = 1;
 
 	//Autres options
 	_vitesseMax = 250;				//Vitesse maximale
 
-	//Accélérations
-	_vitesseIncrementation = 0.4;		//La vitesse à laquelle l'auto fais son accélération
-	_angleIncrementation = 4;		//La vitesse à laquelle l'auto fais ses virage
-	_vitesseAffaiblir = 0.995;		//La vitesse à laquelle l'auto ralenti naturellement
+	//AccÃ©lÃ©rations
+	_vitesseIncrementation = 0.4;		//La vitesse Ã  laquelle l'auto fais son accÃ©lÃ©ration
+	_angleIncrementation = 4;		//La vitesse Ã  laquelle l'auto fais ses virage
+	_vitesseAffaiblir = 0.995;		//La vitesse Ã  laquelle l'auto ralenti naturellement
 
 	//Couleur de l'auto
 	_autoRGB[0] = 125;
 	_autoRGB[1] = 125;
 	_autoRGB[2] = 125;
+
+	_virage = 0;						//1 = Gauche, 2 = Droite, 0 = Nulle
 }
 
 automobile::~automobile()
@@ -153,7 +155,7 @@ double automobile::getAngleIncrementation()
 	return _angleIncrementation;
 }
 
-//Get couleur du véhicule
+//Get couleur du vÃ©hicule
 int automobile::getRed()
 {
 	return _autoRGB[0];
@@ -169,7 +171,7 @@ int automobile::getBlue()
 	return _autoRGB[2];
 }
 
-//Get contrôles du véhicule
+//Get contrÃ´les du vÃ©hicule
 Keyboard::Key automobile::getUp()
 {
 	return _autoControles[0];
@@ -241,7 +243,7 @@ double automobile::convertDegreeRadian(double degree)
 	return 2 * PI * (degree / 360);
 }
 
-//Effectue un virage selon l'angle actuel et la direction du virage désirée
+//Effectue un virage selon l'angle actuel et la direction du virage dÃ©sirÃ©e
 void automobile::effectuerVirage()
 {
 	//Gauche
@@ -256,18 +258,18 @@ void automobile::effectuerVirage()
 	}
 }
 
-//Ajuste la vélocité basée sur la direction désirée et le temps écoulé
+//Ajuste la vÃ©locitÃ© basÃ©e sur la direction dÃ©sirÃ©e et le temps Ã©coulÃ©
 void automobile::effectuerVelocite(double tempsDelta)
 {
 	//Si on avance
 	if (_derniereDirection == 1)
 	{
-		//Si la vélocitée est plus petite que la vitesse maximale
+		//Si la vÃ©locitÃ©e est plus petite que la vitesse maximale
 		if (_velociteX < _vitesseMax)
 			//On ajoute de la vitesse
 			_velociteX += _vitesseIncrementation * tempsDelta;
 
-		//Même chose pour Y
+		//MÃªme chose pour Y
 		if (_velociteY < _vitesseMax)
 			_velociteY += _vitesseIncrementation * tempsDelta;
 	}
@@ -275,7 +277,7 @@ void automobile::effectuerVelocite(double tempsDelta)
 	//Si on recule
 	else if (_derniereDirection == 0)
 	{
-		//Si on a pas atteint la vitesse maximale sur X à reculons
+		//Si on a pas atteint la vitesse maximale sur X Ã  reculons
 		if (_velociteX > -(_vitesseMax / 2))
 			//On recule plus vite
 			_velociteX -= (_vitesseIncrementation / 2) * tempsDelta;
@@ -283,7 +285,7 @@ void automobile::effectuerVelocite(double tempsDelta)
 			//Sinon la vitesse du reculons est celle maximale
 			_velociteX = -(_vitesseMax / 2);
 
-		//Même chose pour le Y
+		//MÃªme chose pour le Y
 		if (_velociteY > -(_vitesseMax / 2))
 			_velociteY -= (_vitesseIncrementation / 2) * tempsDelta;
 		else
@@ -291,7 +293,7 @@ void automobile::effectuerVelocite(double tempsDelta)
 	}
 }
 
-//Décélération naturelle de la vélocité
+//DÃ©cÃ©lÃ©ration naturelle de la vÃ©locitÃ©
 void automobile::velociteAffaiblir(int multiple)
 {
 	_velociteX *= (_vitesseAffaiblir - multiple);
@@ -299,7 +301,7 @@ void automobile::velociteAffaiblir(int multiple)
 
 }
 
-//Gère la collision d'un auto
+//GÃ¨re la collision d'un auto
 void automobile::collision()
 {
 	if (_derniereDirection == 1)
