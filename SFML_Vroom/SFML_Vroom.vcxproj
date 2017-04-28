@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClInclude Include="auto.h" />
     <ClInclude Include="piste.h" />
+    <ClInclude Include="trafficLights.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -12,6 +12,7 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement possi
 #include <string>
 #include "auto.h"
 #include "piste.h"
+#include "trafficLights.h"
 using namespace sf;
 using namespace std;
 
@@ -21,9 +22,6 @@ int main()
 	//Initialisation SFML
 	RenderWindow window(VideoMode(1280, 768), "Vroooom!!!");					//fenetre
 	Texture textureCar;															//texture voiture
-	Texture textureRedLight;													//texture lumiere rouge
-	Texture textureYellowLight;													//texture lumiere jaune
-	Texture textureGreenLight;													//texture lumiere verte
 	RenderTexture;				
 
 	piste pisteCourse("points4");												//objet Piste
@@ -40,30 +38,22 @@ int main()
 
 	automobile joueur;															//premier joueur
 	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
+	trafficLights lights;
 
 	Event event;
 
 	window.setFramerateLimit(60);												//Limite le nombre d'images par secondes
 
 	textureCar.loadFromFile("orange32x16.png", IntRect(0, 0, 32, 16));			//Chargement des textures
-	textureRedLight.loadFromFile("redLight.png", IntRect(0, 0, 200, 137));
-	textureYellowLight.loadFromFile("yellowLight.png", IntRect(0, 0, 60, 137));
-	textureGreenLight.loadFromFile("greenLight.png", IntRect(0, 0, 60, 137));
-
+	
 	car.setTexture(textureCar);													//Insertion des textures dans leur sprite réspectifs
-	redLight.setTexture(textureRedLight);
-	yellowLight.setTexture(textureYellowLight);
-	greenLight.setTexture(textureGreenLight);
 	
 	car.setOrigin(12, 8);														//offre rotation plus juste
 	pisteCourse.setPosition(120, 100);
+	lights.setPosition(585, 300);
 
 	car.setPosition(190, 395);													//Initialisation auto
 	car.rotate(joueur.getDegre());
-
-	redLight.setPosition(585, 300);												//Traffics Lights centrées
-	yellowLight.setPosition(585, 300);
-	greenLight.setPosition(585, 300);
 	
 	while (window.isOpen())														//Tant que le jeu roule
 	{
@@ -125,18 +115,8 @@ int main()
 
 		window.draw(car);											//affiche voiture
 
-		if (temps.asSeconds() <= 3)									//lumière rouge
-		{
-			window.draw(redLight);
-		}
-		else if (temps.asSeconds() <= 5)							//lumière jaune
-		{
-			window.draw(yellowLight);
-		}
-		else if (temps.asSeconds() <= 6)							//lumière verte
-		{
-			window.draw(greenLight);
-		}
+		lights.changerLumiere(tempsJeu);
+		window.draw(lights.getSprite());
 
 		window.display();
 
