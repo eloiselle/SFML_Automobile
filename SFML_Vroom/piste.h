@@ -84,6 +84,10 @@ piste::piste(string nomFichier)
 
 			_collisions[i].setPoint(j, point);
 		}
+
+		_collisions[i].setFillColor(Color::Transparent);
+		_collisions[i].setOutlineColor(Color::White);
+		_collisions[i].setOutlineThickness(4);
 	}
 
 	_texture.loadFromFile(fichierTexture, IntRect(0, 0, 1024, 768));
@@ -116,4 +120,3 @@ void piste::setPosition(int x, int y)
 {
 	_sprite.setPosition(x, y);
 }
-
