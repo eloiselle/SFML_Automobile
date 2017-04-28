@@ -104,7 +104,7 @@ int main()
 		window.clear(Color(0, 150, 0));
 		window.draw(pisteCourse.getSprite());						//affiche piste
 
-		for (int i = 0; i < pisteCourse.getNbCollisions(); i++)		//affiche toutes les formes de collisions
+		for (int i = 0; i < pisteCourse.getNbCollisions(); i++)		//affiche toutes les formes de collisions --> afin de tester collisions
 		{
 			window.draw(pisteCourse.getCollisions(i));
 		}
