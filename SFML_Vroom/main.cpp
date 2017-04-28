@@ -50,7 +50,7 @@ int main()
 	joueurs[0].setKeys(Keyboard::Up, Keyboard::Down, Keyboard::Left, Keyboard::Right);
 	joueurs[1].setKeys(Keyboard::W, Keyboard::S, Keyboard::A, Keyboard::D);
 	joueurs[2].setKeys(Keyboard::I, Keyboard::K, Keyboard::J, Keyboard::L);
-	joueurs[3].setKeys(Keyboard::Home, Keyboard::End, Keyboard::Delete, Keyboard::PageDown);
+	joueurs[3].setKeys(Keyboard::T, Keyboard::G, Keyboard::F, Keyboard::H);
 
 	for (int i = 0; i < nbJoueurs; i++)
 	{
@@ -76,6 +76,23 @@ int main()
 		//Efface l'affichage précédent
 		window.clear();
 
+		window.draw(pisteCourse.getSprite());						//affiche piste
+
+		for (int i = 0; i < pisteCourse.getNbCollisions(); i++)		//affiche toutes les formes de collisions --> afin de tester collisions
+		{
+			window.draw(pisteCourse.getCollisions(i));
+		}
+
+		lights.changerLumiere(tempsJeu);
+		window.draw(lights.getSprite());
+
+		temps = tempsJeu.getElapsedTime();
+
+		if (temps.asSeconds() >= 5)												//pas bouger pendant traffic lights
+		{
+			canDrive = true;
+		}
+
 		//Réinitialise l'horloge
 		Time tempsDelta = horlogeDelta.restart();
 
@@ -83,9 +100,13 @@ int main()
 		while (window.pollEvent(event))
 			if (event.type == Event::Closed || ((event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape)))
 				window.close();
-
 		for (int i = 0; i < nbJoueurs; i++)
 		{
+			if (canDrive == false)
+			{
+				break;
+			}
+
 			//Gauche
 			if (Keyboard::isKeyPressed(joueurs[i].getLeft()))
 				joueurs[i].setVirage(1);
@@ -137,30 +158,14 @@ int main()
 					joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds());
 
 			window.draw(sprJoueur[i]);
-
 		}
 
-		temps = tempsJeu.getElapsedTime();
-
-		if (temps.asSeconds() >= 5)												//pas bouger pendant traffic lights
+		for (int i = 0; i < nbJoueurs; i++)
 		{
-			canDrive = true;
+			window.draw(sprJoueur[i]);
 		}
-
-		//Gère l'affichage
-		window.clear(Color(0, 150, 0));
-		window.draw(pisteCourse.getSprite());						//affiche piste
-
-		for (int i = 0; i < pisteCourse.getNbCollisions(); i++)		//affiche toutes les formes de collisions --> afin de tester collisions
-		{
-			window.draw(pisteCourse.getCollisions(i));
-		}
-
-		lights.changerLumiere(tempsJeu);
-		window.draw(lights.getSprite());
 
 		window.display();
-
 
 	}
 	return 0;
