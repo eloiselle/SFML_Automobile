@@ -105,11 +105,11 @@ automobile::automobile()
 	_derniereDirection = 1;
 
 	//Autres options
-	_vitesseMax = 250;				//Vitesse maximale
+	_vitesseMax = 350;				//Vitesse maximale
 
 	//Accélérations
 	_vitesseIncrementation = 0.2;		//La vitesse à laquelle l'auto fais son accélération
-	_angleIncrementation = 4;		//La vitesse à laquelle l'auto fais ses virage
+	_angleIncrementation = 5;		//La vitesse à laquelle l'auto fais ses virage
 	_vitesseAffaiblir = 0.995;		//La vitesse à laquelle l'auto ralenti naturellement
 
 	//Couleur de l'auto
@@ -331,5 +331,13 @@ void automobile::collision()
 void automobile::calculDrift(int orientation)
 {
 	double velociteAbsolue = (abs(_velociteX) + abs(_velociteY)) / 2;
-	_degreVelocite -= 0.4 * velociteAbsolue;
+	if (_degreVelocite < _degre)
+	{
+		_degreVelocite += 2;
+	}
+
+	if (_degreVelocite > _degre)
+	{
+		_degreVelocite -= 2;
+	}
 }

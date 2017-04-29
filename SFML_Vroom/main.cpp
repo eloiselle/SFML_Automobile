@@ -146,6 +146,7 @@ int main()
 			//Contrôles de la drift
 			joueurs[i].calculDrift(0);
 
+
 			//Applique la vélocité
 			sprJoueur[i].move(
 				joueurs[i].getVelociteX() * cos(
