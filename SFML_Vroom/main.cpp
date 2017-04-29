@@ -37,6 +37,7 @@ int main()
 
 	int nbJoueurs = 4;
 	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
+	double diff = 0;
 
 	automobile joueurs[4];
 	Sprite sprJoueur[4];
@@ -64,7 +65,7 @@ int main()
 
 		//Initialisation automobile
 		sprJoueur[i].setPosition(100 + (100 * i), 100);
-		sprJoueur[i].rotate(joueurs[i].getDegre());
+		sprJoueur[i].rotate(joueurs[i].getDegreAuto());
 	}
 	//Limite le nombre d'images par secondes
 	window.setFramerateLimit(60);
@@ -137,40 +138,33 @@ int main()
 				{
 					//Gère les virages
 					joueurs[i].effectuerVirage();
-					sprJoueur[i].setRotation(joueurs[i].getDegre());
+					sprJoueur[i].setRotation(joueurs[i].getDegreAuto());
 					joueurs[i].setVirage(0);
 				}
 			}
 
-			if (joueurs[i].getDegreDrift() < joueurs[i].getDegre())
-			{
-				joueurs[i].setDegreeDrift(joueurs[i].getDegreDrift() + (joueurs[i].getDegre()-joueurs[i].getDegreDrift()));
-			}
-
-			if (joueurs[i].getDegreDrift() > joueurs[i].getDegre())
-			{
-				joueurs[i].setDegreeDrift(joueurs[i].getDegreDrift() - (joueurs[i].getDegre() - joueurs[i].getDegreDrift()));
-			}
+			//Contrôles de la drift
+			joueurs[i].calculDrift(0);
 
 			//Applique la vélocité
 			sprJoueur[i].move(
 				joueurs[i].getVelociteX() * cos(
-					joueurs[i].convertDegreeRadian(joueurs[i].getDegreDrift())) * tempsDelta.asSeconds(),
+					joueurs[i].convertDegreeRadian(joueurs[i].getDegreVelocite())) * tempsDelta.asSeconds(),
 				joueurs[i].getVelociteY() * sin(
-					joueurs[i].convertDegreeRadian(joueurs[i].getDegreDrift())) * tempsDelta.asSeconds());
+					joueurs[i].convertDegreeRadian(joueurs[i].getDegreVelocite())) * tempsDelta.asSeconds());
 
 			//Affaiblissement de la vélocité
 			joueurs[i].velociteAffaiblir(0);
 		}
 
 		//Efface l'affichage précédent
-		window.clear(Color(0,125,0));
+		window.clear(Color(0, 125, 0));
 
 		//Affiche la piste
 		window.draw(pisteCourse.getSprite());
 
 		//Affiche toutes les formes de collisions --> afin de tester collisions
-		for (int i = 0; i < pisteCourse.getNbCollisions(); i++)		
+		for (int i = 0; i < pisteCourse.getNbCollisions(); i++)
 			window.draw(pisteCourse.getCollisions(i));
 
 		//Affiche la lumière au départ
