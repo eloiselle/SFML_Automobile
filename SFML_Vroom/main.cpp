@@ -129,8 +129,7 @@ int main()
 				//Si on touche une auto
 				if (i != j && sprJoueur[i].getGlobalBounds().intersects(sprJoueur[j].getGlobalBounds()))
 				{
-					joueurs[i].collision();
-					break;
+					joueurs[i].collisionAuto(joueurs[j]);
 				}
 
 				//Si on a touché personne
@@ -144,7 +143,7 @@ int main()
 			}
 
 			//Contrôles de la drift
-			joueurs[i].calculDrift(0);
+			joueurs[i].calculDrift();
 
 
 			//Applique la vélocité

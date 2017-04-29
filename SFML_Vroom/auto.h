@@ -43,6 +43,8 @@ private:
 	//Couleur de l'auto
 	int _autoRGB[3];
 
+	float collisionCooldown[4];
+
 public:
 
 	//Constructeur / Déconstructeur
@@ -78,10 +80,11 @@ public:
 	double convertDegreeRadian(double degre);
 	void effectuerVirage();
 	void effectuerVelocite(double tempsDelta);
-	void velociteAffaiblir(int multiple);
+	void velociteAffaiblir(float multiple);
 
-	void collision();
-	void calculDrift(int orientation);
+	void collisionMurs();
+	void collisionAuto(automobile destination);
+	void calculDrift();
 
 	//Get touches joueur
 	Keyboard::Key getUp();
@@ -105,11 +108,11 @@ automobile::automobile()
 	_derniereDirection = 1;
 
 	//Autres options
-	_vitesseMax = 350;				//Vitesse maximale
+	_vitesseMax = 300;				//Vitesse maximale
 
 	//Accélérations
 	_vitesseIncrementation = 0.2;		//La vitesse à laquelle l'auto fais son accélération
-	_angleIncrementation = 5;		//La vitesse à laquelle l'auto fais ses virage
+	_angleIncrementation = 4;		//La vitesse à laquelle l'auto fais ses virage
 	_vitesseAffaiblir = 0.995;		//La vitesse à laquelle l'auto ralenti naturellement
 
 	//Couleur de l'auto
@@ -303,15 +306,15 @@ void automobile::effectuerVelocite(double tempsDelta)
 }
 
 //Décélération naturelle de la vélocité
-void automobile::velociteAffaiblir(int multiple)
+void automobile::velociteAffaiblir(float multiple)
 {
 	_velociteX *= (_vitesseAffaiblir - multiple);
 	_velociteY *= (_vitesseAffaiblir - multiple);
 
 }
 
-//Gère la collision d'un auto
-void automobile::collision()
+//Gère la collision d'une auto
+void automobile::collisionMurs()
 {
 	if (_derniereDirection == 1)
 		if (_velociteX > 0 && _velociteY > 0)
@@ -328,16 +331,30 @@ void automobile::collision()
 		}
 }
 
-void automobile::calculDrift(int orientation)
+//Gère la collision d'une auto vers une autre auto
+void automobile::collisionAuto(automobile destination)
+{
+	if (abs(_velociteX) + abs(_velociteY) > abs(destination.getVelociteX()) + abs(destination.getVelociteY()))
+	{
+		destination.setVelociteX(_velociteX + 25);
+		destination.setVelociteY(_velociteY + 25);
+
+		destination.setDegreVelocite(_degreVelocite);
+
+		this->velociteAffaiblir(0.4);
+	}
+}
+
+void automobile::calculDrift()
 {
 	double velociteAbsolue = (abs(_velociteX) + abs(_velociteY)) / 2;
-	if (_degreVelocite < _degre)
+	if (_degreVelocite < _degre && velociteAbsolue != 0)
 	{
-		_degreVelocite += 2;
+		_degreVelocite += (350 / (velociteAbsolue / 1.6));
 	}
 
-	if (_degreVelocite > _degre)
+	if (_degreVelocite > _degre && velociteAbsolue != 0)
 	{
-		_degreVelocite -= 2;
+		_degreVelocite -= (350 / (velociteAbsolue / 1.6));
 	}
 }
