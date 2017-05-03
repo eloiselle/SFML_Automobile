@@ -24,6 +24,15 @@ using namespace std;
 //Programme principal
 int main()
 {
+	//Variables
+	trafficLights lights;
+	piste pisteCourse("points4");												//objet Piste
+	automobile joueurs[4];
+
+	int nbJoueurs = 4;	//Nombre de joueurs, entre 1 et 4
+	bool canDrive = true;														//voiture peut pas bouger pendant traffic lights
+	double diff = 0;
+
 	//Initialisation SFML
 	RenderWindow window(VideoMode(1280, 768), "Vroooom!!!");					//fenetre
 	Texture textureCar;															//texture voiture
@@ -31,15 +40,6 @@ int main()
 	Clock tempsJeu;																//temps depuis debut partie
 	Time temps;																	//utilisé pour prendre le temps de clock tempsJeu
 	Event event;
-
-	trafficLights lights;
-	piste pisteCourse("points4");												//objet Piste
-
-	int nbJoueurs = 4;
-	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
-	double diff = 0;
-
-	automobile joueurs[4];
 	Sprite sprJoueur[4];
 
 	//Change les couleures de chaque joueurs
@@ -127,7 +127,7 @@ int main()
 			for (int j = 0; j < nbJoueurs; j++)
 			{
 				//Si on touche une auto
-				if (i != j && sprJoueur[i].getGlobalBounds().intersects(sprJoueur[j].getGlobalBounds()))
+				if (i != j && sprJoueur[i].getGlobalBounds().intersects(sprJoueur[j].getGlobalBounds()) && temps.asMilliseconds() % 2 == 0)
 				{
 					joueurs[i].collisionAuto(joueurs[j]);
 				}
