@@ -64,7 +64,7 @@ void trafficLights::changerLumiere(Clock clock)
 	if (temps.asSeconds() <= 3)							//lumière rouge
 	{
 		_texture.loadFromFile(_nom + "Rouge.png", IntRect(0, 0, 200, 137));
-		RenderTexture;
+		
 
 		_sprite.setTexture(_texture);
 	}
@@ -72,21 +72,16 @@ void trafficLights::changerLumiere(Clock clock)
 	else if (temps.asSeconds() <= 5)					//lumière jaune
 	{
 		_texture.loadFromFile(_nom + "Jaune.png", IntRect(0, 0, 200, 137));
-		RenderTexture;
+		
 
 		_sprite.setTexture(_texture);
 	}
 	else if (temps.asSeconds() <= 6)					//lumière verte
 	{
 		_texture.loadFromFile(_nom + "Verte.png", IntRect(0, 0, 200, 137));
-		RenderTexture;
+		
 
 		_sprite.setTexture(_texture);
-	}
-
-	else												//couleur transparente
-	{
-		_sprite.setColor(Color::Transparent);
 	}
 }
 
