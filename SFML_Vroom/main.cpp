@@ -54,8 +54,6 @@ int main()
 	bool jouer = false;
 	bool quitter = false;
 
-
-
 	//Fonts et text
 	font.loadFromFile("Roboto-Italic.ttf");
 	chrono.setFont(font);
@@ -131,12 +129,15 @@ int main()
 				}
 			}
 
-			
 			temps = tempsJeu.getElapsedTime();
 
 			if (temps.asSeconds() >= 5)												//pas bouger pendant traffic lights
 			{
 				canDrive = true;
+			}
+			else
+			{
+				canDrive = false;
 			}
 
 			//Réinitialise l'horloge
@@ -232,7 +233,12 @@ int main()
 
 			//Affiche la lumière au départ
 			lights.changerLumiere(tempsJeu);
-			window.draw(lights.getSprite());
+
+			if (temps.asSeconds() <= 6)
+			{
+				window.draw(lights.getSprite());
+			}
+			
 
 			//Affichage de tous les joueurs
 			for (int i = 0; i < nbJoueurs; i++)
@@ -242,7 +248,6 @@ int main()
 
 			//Rfraîchi l'affichage
 			window.display();
-
 		}
 
 	}
@@ -267,8 +272,6 @@ bool afficherMenu(RenderWindow& window, Font font)
 	window.draw(spriteMenu);
 	window.draw(txtJouer);
 	window.display();
-
-
 
 	while (1)
 	{
