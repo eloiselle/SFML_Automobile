@@ -44,7 +44,7 @@ private:
 	int _autoRGB[3];
 #pragma endregion
 public:
-	
+
 #pragma region "Fonctions"
 
 	//Constructeur
@@ -91,6 +91,7 @@ public:
 
 	//Défini les touches du joueur
 	void setKeys(Keyboard::Key up, Keyboard::Key down, Keyboard::Key left, Keyboard::Key right);
+	void checkKeys(Time &tempsDelta);
 
 
 	//Modifications du degré
@@ -106,6 +107,7 @@ public:
 	void collisionMurs();
 	void collisionAuto(automobile &destination);
 
+	void fonctionnement(Sprite &sprJoueur, Time &tempsDelta);
 };
 
 automobile::automobile()
@@ -330,8 +332,8 @@ void automobile::collisionAuto(automobile &destination)
 		_velociteX -= _velociteX / 2;
 		_velociteY -= _velociteY / 2;
 
-		destination.setVelociteX(_velociteX*2);
-		destination.setVelociteY(_velociteY*2);
+		destination.setVelociteX(_velociteX * 2);
+		destination.setVelociteY(_velociteY * 2);
 		destination.setDegreVelocite(_degreVelocite);
 	}
 }
@@ -361,4 +363,56 @@ void automobile::calculDrift()
 		if (_degreVelocite > _degre && velociteAbsolue != 0)
 			_degreVelocite -= (350 / (velociteAbsolue / 1.6));
 	}
+}
+
+void automobile::checkKeys(Time &tempsDelta)
+{
+	//Gauche
+	if (Keyboard::isKeyPressed(this->getLeft()))
+		this->setVirage(1);
+
+	//Droite
+	else if (Keyboard::isKeyPressed(this->getRight()))
+		this->setVirage(2);
+
+	//Nulle
+	else
+		this->setVirage(0);
+
+	//Haut
+	if (Keyboard::isKeyPressed(this->getUp()))
+	{
+		this->changerDirection(1);
+		this->effectuerVelocite(tempsDelta.asMilliseconds());
+	}
+
+	//Bas
+	if (Keyboard::isKeyPressed(this->getDown()))
+	{
+		this->changerDirection(0);
+		this->effectuerVelocite(tempsDelta.asMilliseconds());
+	}
+}
+
+void automobile::fonctionnement(Sprite &sprJoueur, Time &tempsDelta)
+{
+	//Vérifie si le joueurs a appuyé sur l'une de ses touches assignées
+	this->checkKeys(tempsDelta);
+
+	//Gère les virages
+	this->effectuerVirage();
+	sprJoueur.setRotation(this->getDegreAuto());
+	this->setVirage(0);
+
+	this->calculDrift();
+
+	//Applique la vélocité basée sur le temps et le degré actuel
+	sprJoueur.move(
+		this->getVelociteX() * cos(
+			this->convertDegreeRadian(this->getDegreVelocite())) * tempsDelta.asSeconds(),
+		this->getVelociteY() * sin(
+			this->convertDegreeRadian(this->getDegreVelocite())) * tempsDelta.asSeconds());
+
+	//Affaiblissement de la vélocité
+	this->velociteAffaiblir(0);
 }

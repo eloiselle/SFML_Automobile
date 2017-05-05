@@ -36,6 +36,7 @@ int main()
 	bool canDrive = false;														//Voiture peut pas bouger pendant traffic lights
 	bool jouer = false;
 	bool quitter = false;
+	bool options = false;
 
 	//Initialisation SFML
 	RenderWindow window(VideoMode(1280, 768), "Vroooom!!!");					//Fenêtre
@@ -62,6 +63,7 @@ int main()
 	font.loadFromFile("Roboto-Italic.ttf");
 	chrono.setFont(font);
 	chrono.setPosition(20, 20);
+	lights.setPosition(585, 300);
 
 	//Change les couleures de chaque joueurs
 	joueurs[0].setCouleur(0, 255, 0);
@@ -89,6 +91,7 @@ int main()
 		sprJoueur[i].rotate(joueurs[i].getDegreAuto());
 	}
 
+	//Menu
 	while (!quitter)
 	{
 		jouer = afficherMenu(window, font);
@@ -115,49 +118,28 @@ int main()
 				}
 			}
 
-			lights.setPosition(585, 300);
+			//***************************Événements de jeu***************************
+			//***********************************************************************
+
+			//Gère la lumière de départ
 			temps = tempsJeu.getElapsedTime();
 
-			if (temps.asSeconds() >= 5)												//pas bouger pendant traffic lights
+			if (temps.asSeconds() >= 5)	
 				canDrive = true;
 			else
 				canDrive = false;
 
-			//Réinitialise l'horloge
+			//Réinitialise l'horloge pour une expérience uniforme sur toutes les plateformes
 			Time tempsDelta = horlogeDelta.restart();
 
-			//Événements de jeu
 			for (int i = 0; i < nbJoueurs; i++)
 			{
 				//Si le départ n'a pas été lancé
 				if (canDrive == false)
 					break;
 
-				//Gauche
-				if (Keyboard::isKeyPressed(joueurs[i].getLeft()))
-					joueurs[i].setVirage(1);
-
-				//Droite
-				else if (Keyboard::isKeyPressed(joueurs[i].getRight()))
-					joueurs[i].setVirage(2);
-
-				//Nulle
-				else
-					joueurs[i].setVirage(0);
-
-				//Haut
-				if (Keyboard::isKeyPressed(joueurs[i].getUp()))
-				{
-					joueurs[i].changerDirection(1);
-					joueurs[i].effectuerVelocite(tempsDelta.asMilliseconds());
-				}
-
-				//Bas
-				if (Keyboard::isKeyPressed(joueurs[i].getDown()))
-				{
-					joueurs[i].changerDirection(0);
-					joueurs[i].effectuerVelocite(tempsDelta.asMilliseconds());
-				}
+				//***************************Effectue toutes les actions reliées au joueur***************************
+				joueurs[i].fonctionnement(sprJoueur[i], tempsDelta);
 
 				//Gère les collisions entre chaque autos
 				for (int j = 0; j < nbJoueurs; j++)
@@ -168,29 +150,11 @@ int main()
 						joueurs[i].collisionAuto(joueurs[j]);
 						break;
 					}
-
-					//Gère les virages
-					joueurs[i].effectuerVirage();
-					sprJoueur[i].setRotation(joueurs[i].getDegreAuto());
-					joueurs[i].setVirage(0);
 				}
-
-				//MOUVEMENT DES AUTOS*******************************************************************
-				//**************************************************************************************
-				sprJoueur[i].move(
-					joueurs[i].getVelociteX() * cos(
-						joueurs[i].convertDegreeRadian(joueurs[i].getDegreVelocite())) * tempsDelta.asSeconds(),
-					joueurs[i].getVelociteY() * sin(
-						joueurs[i].convertDegreeRadian(joueurs[i].getDegreVelocite())) * tempsDelta.asSeconds());
-
-				joueurs[i].calculDrift();
-
-				//Affaiblissement de la vélocité
-				joueurs[i].velociteAffaiblir(0);
 			}
 
-			//AFFICHAGE*****************************************************************************
-			//**************************************************************************************
+			//***************************Affichage***************************
+			//***************************************************************
 
 			//Efface l'affichage précédent
 			window.clear(Color(0, 125, 0));
@@ -207,23 +171,17 @@ int main()
 
 			//Affiche toutes les formes de collisions --> afin de tester collisions
 			for (int i = 0; i < pisteCourse.getNbCollisions(); i++)
-			{
 				window.draw(pisteCourse.getCollisions(i));
-			}
 
 			//Affiche la lumière au départ
 			lights.changerLumiere(tempsJeu);
 
 			if (temps.asSeconds() <= 6)
-			{
 				window.draw(lights.getSprite());
-			}
 
 			//Affichage de tous les joueurs
 			for (int i = 0; i < nbJoueurs; i++)
-			{
 				window.draw(sprJoueur[i]);
-			}
 
 			//Rfraîchi l'affichage
 			window.display();
@@ -233,10 +191,10 @@ int main()
 	return 0;
 }
 
-
+//(Fonction) Affiche le menu et attends une réponse du joueur
 bool afficherMenu(RenderWindow& window, Font font)
 {
-	//TEXTURES ET SPRITES
+	//Textures et sprites
 	Texture textureMenu;
 	Sprite spriteMenu;
 
@@ -265,3 +223,36 @@ bool afficherMenu(RenderWindow& window, Font font)
 		}
 	}
 }
+
+/*//(Fonction) Affiche les options du joueur
+bool afficherMenu(RenderWindow& window, Font font)
+{
+	//Textures et sprites
+	Texture textureMenu;
+	Sprite spriteMenu;
+
+	Text txtJouer;
+
+	textureMenu.loadFromFile("titleScreen.png");
+	spriteMenu.setTexture(textureMenu);
+
+	txtJouer.setFont(font);
+	txtJouer.setString("Appuyez sur espace pour jouer");
+
+	window.draw(spriteMenu);
+	window.draw(txtJouer);
+	window.display();
+
+	while (1)
+	{
+		if (Keyboard::isKeyPressed(Keyboard::Space))
+		{
+			return true;
+		}
+
+		if (Keyboard::isKeyPressed(Keyboard::Escape))
+		{
+			return false;
+		}
+	}
+}*/
