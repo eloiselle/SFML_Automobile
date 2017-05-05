@@ -50,7 +50,6 @@ public:
 	//Constructeur
 	automobile();
 
-#pragma region "Get"
 
 	//Obtient vélocité
 	double getVelociteX();
@@ -76,9 +75,6 @@ public:
 	Keyboard::Key getLeft();
 	Keyboard::Key getRight();
 
-#pragma endregion
-
-#pragma region "Set"
 
 	//Change vélocité
 	void setVelociteY(double velociteY);
@@ -96,7 +92,6 @@ public:
 	//Défini les touches du joueur
 	void setKeys(Keyboard::Key up, Keyboard::Key down, Keyboard::Key left, Keyboard::Key right);
 
-#pragma endregion
 
 	//Modifications du degré
 	void effectuerVirage();
@@ -111,7 +106,6 @@ public:
 	void collisionMurs();
 	void collisionAuto(automobile &destination);
 
-#pragma endregion
 };
 
 automobile::automobile()
@@ -121,7 +115,7 @@ automobile::automobile()
 	_velociteY = 0;					//La vitesse actuelle de l'auto¸(sur l'axe des Y)
 	_virage = 0;					//1 = Gauche, 2 = Droite, 0 = Nulle
 	_degreVelocite = 0;
-	_degre = 0;					//L'angle actuel, en degré, de l'auto
+	_degre = 0;						//L'angle actuel, en degré, de l'auto
 	_radian = 0;					//L'angle actuel, en radian, de l'auto
 	_derniereDirection = 1;
 
@@ -129,7 +123,7 @@ automobile::automobile()
 	_vitesseMax = 300;				//Vitesse maximale
 
 	//Accélérations
-	_vitesseIncrementation = 0.2;		//La vitesse à laquelle l'auto fais son accélération
+	_vitesseIncrementation = 0.2;	//La vitesse à laquelle l'auto fais son accélération
 	_angleIncrementation = 4;		//La vitesse à laquelle l'auto fais ses virage
 	_vitesseAffaiblir = 0.995;		//La vitesse à laquelle l'auto ralenti naturellement
 
@@ -138,7 +132,7 @@ automobile::automobile()
 	_autoRGB[1] = 125;
 	_autoRGB[2] = 125;
 
-	_virage = 0;						//1 = Gauche, 2 = Droite, 0 = Nulle
+	_virage = 0;					//1 = Gauche, 2 = Droite, 0 = Nulle
 }
 
 //==Get==

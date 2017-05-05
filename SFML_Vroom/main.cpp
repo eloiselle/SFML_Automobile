@@ -21,50 +21,48 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement poss
 using namespace sf;
 using namespace std;
 
+//Prototypes
 bool afficherMenu(RenderWindow& window, Font font);
-
 
 //Programme principal
 int main()
 {
 	//Variables
 	trafficLights lights;
-	piste pisteCourse("mapFinale2");													//objet Piste
+	piste pisteCourse("mapFinale2");											//Objet Piste
 	automobile joueurs[4];
 
-	int nbJoueurs = 4;	        //Nombre de joueurs, entre 1 et 4
-	bool canDrive = false;			//voiture peut pas bouger pendant traffic lights
+	int nbJoueurs = 4;															//Nombre de joueurs, entre 1 et 4
+	bool canDrive = false;														//Voiture peut pas bouger pendant traffic lights
 	bool jouer = false;
 	bool quitter = false;
-  double diff = 0;
 
 	//Initialisation SFML
-	RenderWindow window(VideoMode(1280, 768), "Vroooom!!!");					//fenetre
-	window.setFramerateLimit(60);
+	RenderWindow window(VideoMode(1280, 768), "Vroooom!!!");					//Fenêtre
+	window.setFramerateLimit(60);												//Limite le nombre d'images par secondes
 
-	Texture textureCar;															//texture voiture
+	Sprite sprJoueur[4];														//Affiche les joueurs
+	Texture textureCar;															//Texture voiture
 
-	//TEMPS ET CLOCKS
+	//Temps et horloges
 	Clock horlogeDelta;															//https://en.wikipedia.org/wiki/%CE%94T
-	Clock tempsJeu;																//temps depuis debut partie
+	Clock tempsJeu;																//Temps écoulé depuis début partie
 
-	Time temps;																	//utilisé pour prendre le temps de clock tempsJeu
+	Time temps;																	//Utilisé pour prendre le temps de clock tempsJeu
 	Time tempsTest;
 	Clock tempsMenu;
 
-	//EVENT
+	//Event
 	Event event;
-  
-  //Font et texts
+
+	//Polices et textes
 	Font font;
 	Text chrono;
-  
+
 	font.loadFromFile("Roboto-Italic.ttf");
 	chrono.setFont(font);
 	chrono.setPosition(20, 20);
 
-  Sprite sprJoueur[4];
-  
 	//Change les couleures de chaque joueurs
 	joueurs[0].setCouleur(0, 255, 0);
 	joueurs[1].setCouleur(255, 0, 0);
@@ -90,24 +88,17 @@ int main()
 		sprJoueur[i].setPosition(100 + (100 * i), 100);
 		sprJoueur[i].rotate(joueurs[i].getDegreAuto());
 	}
-	//Limite le nombre d'images par secondes
-
-	lights.setPosition(585, 300);
 
 	while (!quitter)
 	{
-		
 		jouer = afficherMenu(window, font);
 		tempsJeu.restart();
 
 		if (!jouer)															//On quitte le programme
-		{
 			return 0;
-		}
 
 		while (jouer)														//Tant que le jeu roule
 		{
-
 			//Attend les événements de fermeture
 			while (window.pollEvent(event))
 			{
@@ -124,16 +115,13 @@ int main()
 				}
 			}
 
+			lights.setPosition(585, 300);
 			temps = tempsJeu.getElapsedTime();
 
 			if (temps.asSeconds() >= 5)												//pas bouger pendant traffic lights
-			{
 				canDrive = true;
-			}
 			else
-			{
 				canDrive = false;
-			}
 
 			//Réinitialise l'horloge
 			Time tempsDelta = horlogeDelta.restart();
@@ -162,14 +150,14 @@ int main()
 				{
 					joueurs[i].changerDirection(1);
 					joueurs[i].effectuerVelocite(tempsDelta.asMilliseconds());
-        }
-        
-        //Bas
+				}
+
+				//Bas
 				if (Keyboard::isKeyPressed(joueurs[i].getDown()))
 				{
 					joueurs[i].changerDirection(0);
 					joueurs[i].effectuerVelocite(tempsDelta.asMilliseconds());
-        }
+				}
 
 				//Gère les collisions entre chaque autos
 				for (int j = 0; j < nbJoueurs; j++)
@@ -177,10 +165,10 @@ int main()
 					//Si on touche une auto
 					if (i != j && sprJoueur[i].getGlobalBounds().intersects(sprJoueur[j].getGlobalBounds()))
 					{
-						joueurs[i].collision();
+						joueurs[i].collisionAuto(joueurs[j]);
 						break;
 					}
-          
+
 					//Gère les virages
 					joueurs[i].effectuerVirage();
 					sprJoueur[i].setRotation(joueurs[i].getDegreAuto());
@@ -191,17 +179,18 @@ int main()
 				//**************************************************************************************
 				sprJoueur[i].move(
 					joueurs[i].getVelociteX() * cos(
-						joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds(),
+						joueurs[i].convertDegreeRadian(joueurs[i].getDegreVelocite())) * tempsDelta.asSeconds(),
 					joueurs[i].getVelociteY() * sin(
-						joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds());
+						joueurs[i].convertDegreeRadian(joueurs[i].getDegreVelocite())) * tempsDelta.asSeconds());
 
-        //AFFICHAGE*****************************************************************************
-			//**************************************************************************************
-			joueurs[i].calculDrift();
-        
+				joueurs[i].calculDrift();
+
 				//Affaiblissement de la vélocité
 				joueurs[i].velociteAffaiblir(0);
 			}
+
+			//AFFICHAGE*****************************************************************************
+			//**************************************************************************************
 
 			//Efface l'affichage précédent
 			window.clear(Color(0, 125, 0));
