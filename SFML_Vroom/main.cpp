@@ -21,41 +21,47 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement poss
 using namespace sf;
 using namespace std;
 
+bool afficherMenu(RenderWindow& window, Font font);
+
 
 //Programme principal
 int main()
 {
 	//Initialisation SFML
 	RenderWindow window(VideoMode(1280, 768), "Vroooom!!!");					//fenetre
+	window.setFramerateLimit(60);
+
+
 	Texture textureCar;															//texture voiture
+
+
+	//TEMPS ET CLOCKS
 	Clock horlogeDelta;															//https://en.wikipedia.org/wiki/%CE%94T
 	Clock tempsJeu;																//temps depuis debut partie
-	Time temps;																	//utilisé pour prendre le temps de clock tempsJeu
-	Event event;
-	
-	//Font et text
-	Font font;
-	Text chrono;
-	Text txtjouer;
 
+	Time temps;																	//utilisé pour prendre le temps de clock tempsJeu
 	Time tempsTest;
 	Clock tempsMenu;
 
-	Texture textureMenu;
-	Sprite spriteMenu;
+	//EVENT
+	Event event;
 
-	bool menu = true;
+	//Font et texts
+	Font font;
+	Text chrono;
 
-	textureMenu.loadFromFile("titleScreen.png", IntRect(0, 0, 1280, 768));
-	spriteMenu.setTexture(textureMenu);
-	
+
+	bool jouer = false;
+	bool quitter = false;
+
+
+
 	//Fonts et text
 	font.loadFromFile("Roboto-Italic.ttf");
 	chrono.setFont(font);
-	txtjouer.setFont(font);
+
 	chrono.setPosition(20, 20);
-	txtjouer.setPosition(0, 0);
-	//txtjouer.setFillColor(Color::Black);
+
 
 	trafficLights lights;
 	piste pisteCourse("map3");													//objet Piste
@@ -92,28 +98,40 @@ int main()
 		sprJoueur[i].rotate(joueurs[i].getDegre());
 	}
 	//Limite le nombre d'images par secondes
-	window.setFramerateLimit(60);
 
 	lights.setPosition(585, 300);
 
-	while (window.isOpen())														//Tant que le jeu roule
+	while (!quitter)
 	{
-		if (!menu)
+		
+		jouer = afficherMenu(window, font);
+		tempsJeu.restart();
+
+		if (!jouer)															//On quitte le programme
 		{
-			
-			if (Keyboard::isKeyPressed(Keyboard::Space))
+			return 0;
+		}
+
+		while (jouer)														//Tant que le jeu roule
+		{
+
+			//Attend les événements de fermeture
+			while (window.pollEvent(event))
 			{
-				menu = false;
+				if (event.type == Event::Closed || ((event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape)))
+				{
+					if (jouer)
+					{
+						jouer = false;
+					}
+					else
+					{
+						return 0;
+					}
+				}
 			}
 
-			window.clear();
-			//window.draw(spriteMenu);
-			window.draw(txtjouer);
-			window.display();
-		}
-		else
-		{
-
+			
 			temps = tempsJeu.getElapsedTime();
 
 			if (temps.asSeconds() >= 5)												//pas bouger pendant traffic lights
@@ -123,15 +141,6 @@ int main()
 
 			//Réinitialise l'horloge
 			Time tempsDelta = horlogeDelta.restart();
-
-			//Attend les événements de fermeture
-			while (window.pollEvent(event))
-			{
-				if (event.type == Event::Closed || ((event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape)))
-				{
-					window.close();
-				}
-			}
 
 			//Événements de jeu
 			for (int i = 0; i < nbJoueurs; i++)
@@ -186,9 +195,9 @@ int main()
 					}
 				}
 
-
-
-				//Applique la vélocité
+				//MOUVEMENT DES AUTOS*******************************************************************
+				//**************************************************************************************
+							//Applique la vélocité
 				sprJoueur[i].move(
 					joueurs[i].getVelociteX() * cos(
 						joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds(),
@@ -199,8 +208,8 @@ int main()
 				joueurs[i].velociteAffaiblir(0);
 			}
 
-			//AFFICHAGE**************************************
-			//***********************************************
+			//AFFICHAGE*****************************************************************************
+			//**************************************************************************************
 
 			//Efface l'affichage précédent
 			window.clear(Color(0, 125, 0));
@@ -227,13 +236,50 @@ int main()
 
 			//Affichage de tous les joueurs
 			for (int i = 0; i < nbJoueurs; i++)
+			{
 				window.draw(sprJoueur[i]);
+			}
 
 			//Rfraîchi l'affichage
 			window.display();
-		}
-	}
 
+		}
+
+	}
 	return 0;
 }
 
+
+bool afficherMenu(RenderWindow& window, Font font)
+{
+	//TEXTURES ET SPRITES
+	Texture textureMenu;
+	Sprite spriteMenu;
+
+	Text txtJouer;
+
+	textureMenu.loadFromFile("titleScreen.png");
+	spriteMenu.setTexture(textureMenu);
+
+	txtJouer.setFont(font);
+	txtJouer.setString("allo");
+
+	window.draw(spriteMenu);
+	window.draw(txtJouer);
+	window.display();
+
+
+
+	while (1)
+	{
+		if (Keyboard::isKeyPressed(Keyboard::Space))
+		{
+			return true;
+		}
+
+		if (Keyboard::isKeyPressed(Keyboard::Escape))
+		{
+			return false;
+		}
+	}
+}
