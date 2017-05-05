@@ -18,7 +18,6 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement poss
 #include "auto.h"
 #include "piste.h"
 #include "trafficLights.h"
-#include "screen.h"
 using namespace sf;
 using namespace std;
 
