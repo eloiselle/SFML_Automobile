@@ -33,7 +33,7 @@ int main()
 	Event event;
 
 	trafficLights lights;
-	piste pisteCourse("points4");												//objet Piste
+	piste pisteCourse("map3");												//objet Piste
 
 	int nbJoueurs = 4;
 	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
@@ -69,7 +69,6 @@ int main()
 	//Limite le nombre d'images par secondes
 	window.setFramerateLimit(60);
 
-	pisteCourse.setPosition(120, 100);
 	lights.setPosition(585, 300);
 
 	while (window.isOpen())														//Tant que le jeu roule
