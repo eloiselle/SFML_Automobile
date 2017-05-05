@@ -27,13 +27,22 @@ bool afficherMenu(RenderWindow& window, Font font);
 //Programme principal
 int main()
 {
+	//Variables
+	trafficLights lights;
+	piste pisteCourse("mapFinale2");													//objet Piste
+	automobile joueurs[4];
+
+	int nbJoueurs = 4;	        //Nombre de joueurs, entre 1 et 4
+	bool canDrive = false;			//voiture peut pas bouger pendant traffic lights
+	bool jouer = false;
+	bool quitter = false;
+  double diff = 0;
+
 	//Initialisation SFML
 	RenderWindow window(VideoMode(1280, 768), "Vroooom!!!");					//fenetre
 	window.setFramerateLimit(60);
 
-
 	Texture textureCar;															//texture voiture
-
 
 	//TEMPS ET CLOCKS
 	Clock horlogeDelta;															//https://en.wikipedia.org/wiki/%CE%94T
@@ -45,31 +54,17 @@ int main()
 
 	//EVENT
 	Event event;
-
-	//Font et texts
+  
+  //Font et texts
 	Font font;
 	Text chrono;
-
-
-	bool jouer = false;
-	bool quitter = false;
-
-	//Fonts et text
+  
 	font.loadFromFile("Roboto-Italic.ttf");
 	chrono.setFont(font);
-
 	chrono.setPosition(20, 20);
 
-
-	trafficLights lights;
-	piste pisteCourse("mapFinale2");													//objet Piste
-
-	int nbJoueurs = 4;
-	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
-
-	automobile joueurs[4];
-	Sprite sprJoueur[4];
-
+  Sprite sprJoueur[4];
+  
 	//Change les couleures de chaque joueurs
 	joueurs[0].setCouleur(0, 255, 0);
 	joueurs[1].setCouleur(255, 0, 0);
@@ -93,7 +88,7 @@ int main()
 
 		//Initialisation automobile
 		sprJoueur[i].setPosition(100 + (100 * i), 100);
-		sprJoueur[i].rotate(joueurs[i].getDegre());
+		sprJoueur[i].rotate(joueurs[i].getDegreAuto());
 	}
 	//Limite le nombre d'images par secondes
 
@@ -167,14 +162,14 @@ int main()
 				{
 					joueurs[i].changerDirection(1);
 					joueurs[i].effectuerVelocite(tempsDelta.asMilliseconds());
-				}
-
-				//Bas
+        }
+        
+        //Bas
 				if (Keyboard::isKeyPressed(joueurs[i].getDown()))
 				{
 					joueurs[i].changerDirection(0);
 					joueurs[i].effectuerVelocite(tempsDelta.asMilliseconds());
-				}
+        }
 
 				//Gère les collisions entre chaque autos
 				for (int j = 0; j < nbJoueurs; j++)
@@ -185,32 +180,28 @@ int main()
 						joueurs[i].collision();
 						break;
 					}
-
-					//Si on a touché personne
-					if (j == nbJoueurs - 1)
-					{
-						//Gère les virages
-						joueurs[i].effectuerVirage();
-						sprJoueur[i].setRotation(joueurs[i].getDegre());
-						joueurs[i].setVirage(0);
-					}
+          
+					//Gère les virages
+					joueurs[i].effectuerVirage();
+					sprJoueur[i].setRotation(joueurs[i].getDegreAuto());
+					joueurs[i].setVirage(0);
 				}
 
 				//MOUVEMENT DES AUTOS*******************************************************************
 				//**************************************************************************************
-							//Applique la vélocité
 				sprJoueur[i].move(
 					joueurs[i].getVelociteX() * cos(
 						joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds(),
 					joueurs[i].getVelociteY() * sin(
 						joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds());
 
+        //AFFICHAGE*****************************************************************************
+			//**************************************************************************************
+			joueurs[i].calculDrift();
+        
 				//Affaiblissement de la vélocité
 				joueurs[i].velociteAffaiblir(0);
 			}
-
-			//AFFICHAGE*****************************************************************************
-			//**************************************************************************************
 
 			//Efface l'affichage précédent
 			window.clear(Color(0, 125, 0));
@@ -238,7 +229,6 @@ int main()
 			{
 				window.draw(lights.getSprite());
 			}
-			
 
 			//Affichage de tous les joueurs
 			for (int i = 0; i < nbJoueurs; i++)

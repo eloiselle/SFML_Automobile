@@ -18,7 +18,7 @@ class automobile
 {
 
 private:
-
+#pragma region "Variables"
 	//Touches pour le joueur
 	Keyboard::Key _autoControles[4];
 
@@ -28,7 +28,8 @@ private:
 	int _derniereDirection;
 
 	int _virage;
-	double _degree;
+	double _degreVelocite;
+	double _degre;
 	double _radian;
 
 	//Autres options
@@ -41,26 +42,43 @@ private:
 
 	//Couleur de l'auto
 	int _autoRGB[3];
-
+#pragma endregion
 public:
+	
+#pragma region "Fonctions"
 
-	//Constructeur / Déconstructeur
+	//Constructeur
 	automobile();
+
+#pragma region "Get"
 
 	//Obtient vélocité
 	double getVelociteX();
 	double getVelociteY();
 
-	//Accélération / Vitesse Max
+	//Obtient accélération / vitesse Max
 	double getVitesseIncrementation();
 	double getVitesseMax();
 
-	//Obtient Degré / Vitesse de virage
-	double getDegre();
+	//Obtient degré / degré selon la vélocité / vitesse de virage
+	double getDegreAuto();
+	double getDegreVelocite();
 	double getAngleIncrementation();
+
+	//Obtient les couleurs de l'auto (RGB)
 	int getRed();
 	int getGreen();
 	int getBlue();
+
+	//Obtient touches joueur
+	Keyboard::Key getUp();
+	Keyboard::Key getDown();
+	Keyboard::Key getLeft();
+	Keyboard::Key getRight();
+
+#pragma endregion
+
+#pragma region "Set"
 
 	//Change vélocité
 	void setVelociteY(double velociteY);
@@ -69,24 +87,31 @@ public:
 
 	//Change Degré / Virage
 	void setDegre(double degre);
+	void setDegreVelocite(double degree);
 	void setVirage(int virage);
+
+	//Couleur de l'auto
 	void setCouleur(int red, int green, int blue);
 
-	double convertDegreeRadian(double degre);
-	void effectuerVirage();
-	void effectuerVelocite(double tempsDelta);
-	void velociteAffaiblir(int multiple);
-
-	void collision();
-
-	//Get touches joueur
-	Keyboard::Key getUp();
-	Keyboard::Key getDown();
-	Keyboard::Key getLeft();
-	Keyboard::Key getRight();
-
-	//Set touches joueur
+	//Défini les touches du joueur
 	void setKeys(Keyboard::Key up, Keyboard::Key down, Keyboard::Key left, Keyboard::Key right);
+
+#pragma endregion
+
+	//Modifications du degré
+	void effectuerVirage();
+	void calculDrift();
+	double convertDegreeRadian(double degre);
+
+	//Modifications de la vélocité
+	void effectuerVelocite(double tempsDelta);
+	void velociteAffaiblir(float multiple);
+
+	//Gère les collisions
+	void collisionMurs();
+	void collisionAuto(automobile &destination);
+
+#pragma endregion
 };
 
 automobile::automobile()
@@ -95,16 +120,17 @@ automobile::automobile()
 	_velociteX = 0;					//La vitesse actuelle de l'auto¸(sur l'axe des X)
 	_velociteY = 0;					//La vitesse actuelle de l'auto¸(sur l'axe des Y)
 	_virage = 0;					//1 = Gauche, 2 = Droite, 0 = Nulle
-	_degree = 90;					//L'angle actuel, en degré, de l'auto
+	_degreVelocite = 0;
+	_degre = 0;					//L'angle actuel, en degré, de l'auto
 	_radian = 0;					//L'angle actuel, en radian, de l'auto
 	_derniereDirection = 1;
 
 	//Autres options
-	_vitesseMax = 250;				//Vitesse maximale
+	_vitesseMax = 300;				//Vitesse maximale
 
 	//Accélérations
-	_vitesseIncrementation = 0.4;		//La vitesse à laquelle l'auto fais son accélération
-	_angleIncrementation = 2.5;		//La vitesse à laquelle l'auto fais ses virage
+	_vitesseIncrementation = 0.2;		//La vitesse à laquelle l'auto fais son accélération
+	_angleIncrementation = 4;		//La vitesse à laquelle l'auto fais ses virage
 	_vitesseAffaiblir = 0.995;		//La vitesse à laquelle l'auto ralenti naturellement
 
 	//Couleur de l'auto
@@ -117,100 +143,91 @@ automobile::automobile()
 
 //==Get==
 #pragma region "Getters"
+
 //Informations vitesse
-double automobile::getVelociteX()
-{
+double automobile::getVelociteX() {
 	return _velociteX;
 }
 
-double automobile::getVelociteY()
-{
+double automobile::getVelociteY() {
 	return _velociteY;
 }
 
-double automobile::getVitesseIncrementation()
-{
+double automobile::getVitesseIncrementation() {
 	return _vitesseIncrementation;
 }
 
-double automobile::getVitesseMax()
-{
+double automobile::getVitesseMax() {
 	return _vitesseMax;
 }
 
 //Informations d'angle
-double automobile::getDegre()
-{
-	return _degree;
+double automobile::getDegreAuto() {
+	return _degre;
 }
 
-double automobile::getAngleIncrementation()
-{
+double automobile::getDegreVelocite() {
+	return _degreVelocite;
+}
+
+double automobile::getAngleIncrementation() {
 	return _angleIncrementation;
 }
 
 //Get couleur du véhicule
-int automobile::getRed()
-{
+int automobile::getRed() {
 	return _autoRGB[0];
 }
 
-int automobile::getGreen()
-{
+int automobile::getGreen() {
 	return _autoRGB[1];
 }
 
-int automobile::getBlue()
-{
+int automobile::getBlue() {
 	return _autoRGB[2];
 }
 
 //Get contrôles du véhicule
-Keyboard::Key automobile::getUp()
-{
+Keyboard::Key automobile::getUp() {
 	return _autoControles[0];
 }
 
-Keyboard::Key automobile::getDown()
-{
+Keyboard::Key automobile::getDown() {
 	return _autoControles[1];
 }
 
-Keyboard::Key automobile::getLeft()
-{
+Keyboard::Key automobile::getLeft() {
 	return _autoControles[2];
 }
 
-Keyboard::Key automobile::getRight()
-{
+Keyboard::Key automobile::getRight() {
 	return _autoControles[3];
 }
 #pragma endregion
 
 //==Set==
 #pragma region "Setters"
-void automobile::setVelociteX(double velociteX)
-{
+void automobile::setVelociteX(double velociteX) {
 	_velociteX = velociteX;
 }
 
-void automobile::setVelociteY(double velociteY)
-{
+void automobile::setVelociteY(double velociteY) {
 	_velociteY = velociteY;
 }
 
-void automobile::changerDirection(int direction)
-{
+void automobile::changerDirection(int direction) {
 	_derniereDirection = direction;
 }
 
-void automobile::setDegre(double degree)
-{
-	_degree = degree;
+void automobile::setDegre(double degree) {
+	_degre = degree;
 }
 
-void automobile::setVirage(int virage)
-{
+void automobile::setDegreVelocite(double degreeDrift) {
+	_degreVelocite = degreeDrift;
+}
+
+void automobile::setVirage(int virage) {
 	_virage = virage;
 }
 
@@ -232,8 +249,7 @@ void automobile::setCouleur(int red, int green, int blue)
 #pragma endregion
 
 //Convertit un angle en degree vers un radian
-double automobile::convertDegreeRadian(double degree)
-{
+double automobile::convertDegreeRadian(double degree) {
 	return 2 * PI * (degree / 360);
 }
 
@@ -243,12 +259,12 @@ void automobile::effectuerVirage()
 	//Gauche
 	if (_virage == 1)
 	{
-		_degree = _degree - _angleIncrementation;
+		_degre = _degre - _angleIncrementation;
 	}
 	//Droite
 	else if (_virage == 2)
 	{
-		_degree = _degree + _angleIncrementation;
+		_degre = _degre + _angleIncrementation;
 	}
 }
 
@@ -288,15 +304,14 @@ void automobile::effectuerVelocite(double tempsDelta)
 }
 
 //Décélération naturelle de la vélocité
-void automobile::velociteAffaiblir(int multiple)
+void automobile::velociteAffaiblir(float multiple)
 {
 	_velociteX *= (_vitesseAffaiblir - multiple);
 	_velociteY *= (_vitesseAffaiblir - multiple);
-
 }
 
-//Gère la collision d'un auto
-void automobile::collision()
+//Gère la collision d'une auto
+void automobile::collisionMurs()
 {
 	if (_derniereDirection == 1)
 		if (_velociteX > 0 && _velociteY > 0)
@@ -305,10 +320,51 @@ void automobile::collision()
 			_velociteY = -(_velociteY / 2);
 		}
 
-	else if (_derniereDirection == 0)
-		if (_velociteX < 0 && _velociteY < 0)
-		{
-			_velociteX = -(_velociteX / 2);
-			_velociteY = -(_velociteY / 2);
-		}
+		else if (_derniereDirection == 0)
+			if (_velociteX < 0 && _velociteY < 0)
+			{
+				_velociteX = -(_velociteX / 2);
+				_velociteY = -(_velociteY / 2);
+			}
+}
+
+//Gère la collision d'une auto vers une autre auto
+void automobile::collisionAuto(automobile &destination)
+{
+	if (abs(_velociteX) + abs(_velociteY) > abs(destination.getVelociteX()) + abs(destination.getVelociteY()))
+	{
+		_velociteX -= _velociteX / 2;
+		_velociteY -= _velociteY / 2;
+
+		destination.setVelociteX(_velociteX*2);
+		destination.setVelociteY(_velociteY*2);
+		destination.setDegreVelocite(_degreVelocite);
+	}
+}
+
+//Applique une simulation de "Drift" à l'auto, selon sa vitesse
+void automobile::calculDrift()
+{
+	double velociteAbsolue = (abs(_velociteX) + abs(_velociteY)) / 2;
+
+	if (velociteAbsolue < 10)
+		_degreVelocite = _degre;
+
+	else if (_degreVelocite + 90 < _degre || _degreVelocite - 90 > _degre)
+	{
+		if (_degreVelocite < _degre && velociteAbsolue != 0)
+			_degreVelocite += (350 / (velociteAbsolue / 10));
+
+		if (_degreVelocite > _degre && velociteAbsolue != 0)
+			_degreVelocite -= (350 / (velociteAbsolue / 10));
+	}
+
+	else
+	{
+		if (_degreVelocite < _degre && velociteAbsolue != 0)
+			_degreVelocite += (350 / (velociteAbsolue / 1.6));
+
+		if (_degreVelocite > _degre && velociteAbsolue != 0)
+			_degreVelocite -= (350 / (velociteAbsolue / 1.6));
+	}
 }
