@@ -157,6 +157,7 @@
   <ItemGroup>
     <Image Include="car.png" />
     <ClInclude Include="piste.h" />
+    <ClInclude Include="screen.h" />
     <ClInclude Include="trafficLights.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

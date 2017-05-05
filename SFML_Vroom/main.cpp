@@ -18,8 +18,10 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement poss
 #include "auto.h"
 #include "piste.h"
 #include "trafficLights.h"
+#include "screen.h"
 using namespace sf;
 using namespace std;
+
 
 //Programme principal
 int main()
@@ -31,9 +33,33 @@ int main()
 	Clock tempsJeu;																//temps depuis debut partie
 	Time temps;																	//utilisé pour prendre le temps de clock tempsJeu
 	Event event;
+	
+	//Font et text
+	Font font;
+	Text chrono;
+	Text txtjouer;
+
+	Time tempsTest;
+	Clock tempsMenu;
+
+	Texture textureMenu;
+	Sprite spriteMenu;
+
+	bool menu = true;
+
+	textureMenu.loadFromFile("titleScreen.png", IntRect(0, 0, 1280, 768));
+	spriteMenu.setTexture(textureMenu);
+	
+	//Fonts et text
+	font.loadFromFile("Roboto-Italic.ttf");
+	chrono.setFont(font);
+	txtjouer.setFont(font);
+	chrono.setPosition(20, 20);
+	txtjouer.setPosition(0, 0);
+	//txtjouer.setFillColor(Color::Black);
 
 	trafficLights lights;
-	piste pisteCourse("map3");												//objet Piste
+	piste pisteCourse("map3");													//objet Piste
 
 	int nbJoueurs = 4;
 	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
@@ -73,108 +99,142 @@ int main()
 
 	while (window.isOpen())														//Tant que le jeu roule
 	{
-		temps = tempsJeu.getElapsedTime();
-
-		if (temps.asSeconds() >= 5)												//pas bouger pendant traffic lights
+		if (!menu)
 		{
-			canDrive = true;
+			
+			if (Keyboard::isKeyPressed(Keyboard::Space))
+			{
+				menu = false;
+			}
+
+			window.clear();
+			//window.draw(spriteMenu);
+			window.draw(txtjouer);
+			window.display();
 		}
-
-		//Réinitialise l'horloge
-		Time tempsDelta = horlogeDelta.restart();
-
-		//Attend les événements de fermeture
-		while (window.pollEvent(event))
-			if (event.type == Event::Closed || ((event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape)))
-				window.close();
-
-		//Événements de jeu
-		for (int i = 0; i < nbJoueurs; i++)
+		else
 		{
-			//Si le départ n'a pas été lancé
-			if (canDrive == false)
-				break;
 
-			//Gauche
-			if (Keyboard::isKeyPressed(joueurs[i].getLeft()))
-				joueurs[i].setVirage(1);
+			temps = tempsJeu.getElapsedTime();
 
-			//Droite
-			else if (Keyboard::isKeyPressed(joueurs[i].getRight()))
-				joueurs[i].setVirage(2);
-
-			//Nulle
-			else
-				joueurs[i].setVirage(0);
-
-			//Haut
-			if (Keyboard::isKeyPressed(joueurs[i].getUp()))
+			if (temps.asSeconds() >= 5)												//pas bouger pendant traffic lights
 			{
-				joueurs[i].changerDirection(1);
-				joueurs[i].effectuerVelocite(tempsDelta.asMilliseconds());
+				canDrive = true;
 			}
 
-			//Bas
-			if (Keyboard::isKeyPressed(joueurs[i].getDown()))
-			{
-				joueurs[i].changerDirection(0);
-				joueurs[i].effectuerVelocite(tempsDelta.asMilliseconds());
-			}
+			//Réinitialise l'horloge
+			Time tempsDelta = horlogeDelta.restart();
 
-			//Gère les collisions entre chaque autos
-			for (int j = 0; j < nbJoueurs; j++)
+			//Attend les événements de fermeture
+			while (window.pollEvent(event))
 			{
-				//Si on touche une auto
-				if (i != j && sprJoueur[i].getGlobalBounds().intersects(sprJoueur[j].getGlobalBounds()))
+				if (event.type == Event::Closed || ((event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape)))
 				{
-					joueurs[i].collision();
+					window.close();
+				}
+			}
+
+			//Événements de jeu
+			for (int i = 0; i < nbJoueurs; i++)
+			{
+				//Si le départ n'a pas été lancé
+				if (canDrive == false)
 					break;
+
+				//Gauche
+				if (Keyboard::isKeyPressed(joueurs[i].getLeft()))
+					joueurs[i].setVirage(1);
+
+				//Droite
+				else if (Keyboard::isKeyPressed(joueurs[i].getRight()))
+					joueurs[i].setVirage(2);
+
+				//Nulle
+				else
+					joueurs[i].setVirage(0);
+
+				//Haut
+				if (Keyboard::isKeyPressed(joueurs[i].getUp()))
+				{
+					joueurs[i].changerDirection(1);
+					joueurs[i].effectuerVelocite(tempsDelta.asMilliseconds());
 				}
 
-				//Si on a touché personne
-				if (j == nbJoueurs - 1)
+				//Bas
+				if (Keyboard::isKeyPressed(joueurs[i].getDown()))
 				{
-					//Gère les virages
-					joueurs[i].effectuerVirage();
-					sprJoueur[i].setRotation(joueurs[i].getDegre());
-					joueurs[i].setVirage(0);
+					joueurs[i].changerDirection(0);
+					joueurs[i].effectuerVelocite(tempsDelta.asMilliseconds());
 				}
+
+				//Gère les collisions entre chaque autos
+				for (int j = 0; j < nbJoueurs; j++)
+				{
+					//Si on touche une auto
+					if (i != j && sprJoueur[i].getGlobalBounds().intersects(sprJoueur[j].getGlobalBounds()))
+					{
+						joueurs[i].collision();
+						break;
+					}
+
+					//Si on a touché personne
+					if (j == nbJoueurs - 1)
+					{
+						//Gère les virages
+						joueurs[i].effectuerVirage();
+						sprJoueur[i].setRotation(joueurs[i].getDegre());
+						joueurs[i].setVirage(0);
+					}
+				}
+
+
+
+				//Applique la vélocité
+				sprJoueur[i].move(
+					joueurs[i].getVelociteX() * cos(
+						joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds(),
+					joueurs[i].getVelociteY() * sin(
+						joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds());
+
+				//Affaiblissement de la vélocité
+				joueurs[i].velociteAffaiblir(0);
 			}
 
+			//AFFICHAGE**************************************
+			//***********************************************
 
+			//Efface l'affichage précédent
+			window.clear(Color(0, 125, 0));
 
-			//Applique la vélocité
-			sprJoueur[i].move(
-				joueurs[i].getVelociteX() * cos(
-					joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds(),
-				joueurs[i].getVelociteY() * sin(
-					joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds());
+			//Affiche la piste
+			window.draw(pisteCourse.getSprite());
 
-			//Affaiblissement de la vélocité
-			joueurs[i].velociteAffaiblir(0);
+			//affiche chrono
+			if (temps.asSeconds() >= 5)
+			{
+				chrono.setString(to_string(temps.asSeconds() - 5));
+				window.draw(chrono);
+			}
+
+			//Affiche toutes les formes de collisions --> afin de tester collisions
+			for (int i = 0; i < pisteCourse.getNbCollisions(); i++)
+			{
+				window.draw(pisteCourse.getCollisions(i));
+			}
+
+			//Affiche la lumière au départ
+			lights.changerLumiere(tempsJeu);
+			window.draw(lights.getSprite());
+
+			//Affichage de tous les joueurs
+			for (int i = 0; i < nbJoueurs; i++)
+				window.draw(sprJoueur[i]);
+
+			//Rfraîchi l'affichage
+			window.display();
 		}
-
-		//Efface l'affichage précédent
-		window.clear(Color(0,125,0));
-
-		//Affiche la piste
-		window.draw(pisteCourse.getSprite());
-
-		//Affiche toutes les formes de collisions --> afin de tester collisions
-		for (int i = 0; i < pisteCourse.getNbCollisions(); i++)		
-			window.draw(pisteCourse.getCollisions(i));
-
-		//Affiche la lumière au départ
-		lights.changerLumiere(tempsJeu);
-		window.draw(lights.getSprite());
-
-		//Affichage de tous les joueurs
-		for (int i = 0; i < nbJoueurs; i++)
-			window.draw(sprJoueur[i]);
-
-		//Rfraîchi l'affichage
-		window.display();
 	}
 
 	return 0;
 }
+
