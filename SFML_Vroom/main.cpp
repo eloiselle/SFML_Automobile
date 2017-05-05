@@ -62,7 +62,7 @@ int main()
 
 
 	trafficLights lights;
-	piste pisteCourse("mapFinale");													//objet Piste
+	piste pisteCourse("mapFinale2");													//objet Piste
 
 	int nbJoueurs = 4;
 	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
@@ -267,7 +267,7 @@ bool afficherMenu(RenderWindow& window, Font font)
 	spriteMenu.setTexture(textureMenu);
 
 	txtJouer.setFont(font);
-	txtJouer.setString("Pesez sur espace pour jouer");
+	txtJouer.setString("Appuyez sur espace pour jouer");
 
 	window.draw(spriteMenu);
 	window.draw(txtJouer);
