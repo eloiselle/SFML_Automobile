@@ -23,6 +23,7 @@ using namespace std;
 
 //Prototypes
 bool afficherMenu(RenderWindow& window, Font font);
+bool verifierFermeture(RenderWindow& window, Event event);
 
 //Programme principal
 int main()
@@ -32,11 +33,13 @@ int main()
 	piste pisteCourse("mapFinale2");											//Objet Piste
 	automobile joueurs[4];
 
-	int nbJoueurs = 4;															//Nombre de joueurs, entre 1 et 4
 	bool canDrive = false;														//Voiture peut pas bouger pendant traffic lights
 	bool jouer = false;
 	bool quitter = false;
 	bool options = false;
+
+	//Génération de nombres aléatoires (seed)
+	srand(time(NULL));
 
 	//Initialisation SFML
 	RenderWindow window(VideoMode(1280, 768), "Vroooom!!!");					//Fenêtre
@@ -65,58 +68,47 @@ int main()
 	chrono.setPosition(20, 20);
 	lights.setPosition(585, 300);
 
-	//Change les couleures de chaque joueurs
-	joueurs[0].setCouleur(0, 255, 0);
-	joueurs[1].setCouleur(255, 0, 0);
-	joueurs[2].setCouleur(0, 255, 255);
-	joueurs[3].setCouleur(255, 255, 0);
-
-	//Applique les touches à utiliser pour chaques joueurs
-	joueurs[0].setKeys(Keyboard::Up, Keyboard::Down, Keyboard::Left, Keyboard::Right);
-	joueurs[1].setKeys(Keyboard::W, Keyboard::S, Keyboard::A, Keyboard::D);
-	joueurs[2].setKeys(Keyboard::I, Keyboard::K, Keyboard::J, Keyboard::L);
-	joueurs[3].setKeys(Keyboard::T, Keyboard::G, Keyboard::F, Keyboard::H);
-
-	//Chargement de chaque joueurs
-	for (int i = 0; i < nbJoueurs; i++)
-	{
-		//Chargement de la texture pour l'auto spécifiée
-		textureCar.loadFromFile("car.png");
-		sprJoueur[i].setTexture(textureCar);
-		sprJoueur[i].setOrigin(12, 8);
-		sprJoueur[i].setColor(Color(joueurs[i].getRed(), joueurs[i].getGreen(), joueurs[i].getBlue()));
-
-		//Initialisation automobile
-		sprJoueur[i].setPosition(100 + (100 * i), 100);
-		sprJoueur[i].rotate(joueurs[i].getDegreAuto());
-	}
-
 	//Menu
 	while (!quitter)
 	{
+		//Attend les événements de fermeture
+		while (window.pollEvent(event))
+			quitter = verifierFermeture(window, event);
+
+		//Nombre de joueurs, entre 1 et 4
+		int nbJoueurs = 1;
+
+		//Applique les touches à utiliser pour chaques joueurs
+		joueurs[0].setKeys(Keyboard::Up, Keyboard::Down, Keyboard::Left, Keyboard::Right);
+		joueurs[1].setKeys(Keyboard::W, Keyboard::S, Keyboard::A, Keyboard::D);
+		joueurs[2].setKeys(Keyboard::I, Keyboard::K, Keyboard::J, Keyboard::L);
+		joueurs[3].setKeys(Keyboard::T, Keyboard::G, Keyboard::F, Keyboard::H);
+
+		//Chargement de chaque joueurs
+		for (int i = 0; i < nbJoueurs; i++)
+		{
+			//Génère une couleure aléatoire pour chaque auto
+			joueurs[i].setCouleur(rand() % 25 * 10, rand() % 25 * 10, rand() % 25 * 10);
+
+			//Chargement de la texture pour l'auto spécifiée
+			textureCar.loadFromFile("car.png");
+			sprJoueur[i].setTexture(textureCar);
+			sprJoueur[i].setOrigin(12, 8);
+			sprJoueur[i].setColor(Color(joueurs[i].getRed(), joueurs[i].getGreen(), joueurs[i].getBlue()));
+
+			//Initialisation automobile
+			sprJoueur[i].setPosition(100 + (100 * i), 100);
+			sprJoueur[i].rotate(joueurs[i].getDegreAuto());
+		}
+
 		jouer = afficherMenu(window, font);
 		tempsJeu.restart();
 
-		if (!jouer)															//On quitte le programme
-			return 0;
-
-		while (jouer)														//Tant que le jeu roule
+		while (jouer)	//Tant que le jeu roule
 		{
 			//Attend les événements de fermeture
 			while (window.pollEvent(event))
-			{
-				if (event.type == Event::Closed || ((event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape)))
-				{
-					if (jouer)
-					{
-						jouer = false;
-					}
-					else
-					{
-						return 0;
-					}
-				}
-			}
+				jouer = !verifierFermeture(window, event);
 
 			//***************************Événements de jeu***************************
 			//***********************************************************************
@@ -124,7 +116,7 @@ int main()
 			//Gère la lumière de départ
 			temps = tempsJeu.getElapsedTime();
 
-			if (temps.asSeconds() >= 5)	
+			if (temps.asSeconds() >= 5)
 				canDrive = true;
 			else
 				canDrive = false;
@@ -198,7 +190,18 @@ bool afficherMenu(RenderWindow& window, Font font)
 	Texture textureMenu;
 	Sprite spriteMenu;
 
+	RectangleShape nbJoueursSel[4];
 	Text txtJouer;
+
+	for (int i = 0; i < 4; i++)
+	{
+		nbJoueursSel[i].setSize(sf::Vector2f(200, 100));
+
+		nbJoueursSel[i].setFillColor(Color::Black);
+		nbJoueursSel[i].setOutlineColor(sf::Color::White);
+		nbJoueursSel[i].setOutlineThickness(5);
+		nbJoueursSel[i].setPosition(200 + (i * 225), 20);
+	}
 
 	textureMenu.loadFromFile("titleScreen.png");
 	spriteMenu.setTexture(textureMenu);
@@ -206,8 +209,13 @@ bool afficherMenu(RenderWindow& window, Font font)
 	txtJouer.setFont(font);
 	txtJouer.setString("Appuyez sur espace pour jouer");
 
+	//******Affichage******
 	window.draw(spriteMenu);
 	window.draw(txtJouer);
+
+	for (int i = 0; i < 4; i++)
+		window.draw(nbJoueursSel[i]);
+
 	window.display();
 
 	while (1)
@@ -224,35 +232,11 @@ bool afficherMenu(RenderWindow& window, Font font)
 	}
 }
 
-/*//(Fonction) Affiche les options du joueur
-bool afficherMenu(RenderWindow& window, Font font)
+//Attend les événements de fermeture
+bool verifierFermeture(RenderWindow& window, Event event)
 {
-	//Textures et sprites
-	Texture textureMenu;
-	Sprite spriteMenu;
-
-	Text txtJouer;
-
-	textureMenu.loadFromFile("titleScreen.png");
-	spriteMenu.setTexture(textureMenu);
-
-	txtJouer.setFont(font);
-	txtJouer.setString("Appuyez sur espace pour jouer");
-
-	window.draw(spriteMenu);
-	window.draw(txtJouer);
-	window.display();
-
-	while (1)
-	{
-		if (Keyboard::isKeyPressed(Keyboard::Space))
-		{
-			return true;
-		}
-
-		if (Keyboard::isKeyPressed(Keyboard::Escape))
-		{
-			return false;
-		}
-	}
-}*/
+	if (event.type == Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape))
+		return true;
+	else
+		return false;
+}
