@@ -199,6 +199,8 @@ int afficherMenu(RenderWindow& window, Font font)
 
 	RectangleShape nbJoueursSel[4];
 	Text txtJouer;
+	Text infoNbJrs;
+	Text nombreJrs[4];
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -208,6 +210,15 @@ int afficherMenu(RenderWindow& window, Font font)
 		nbJoueursSel[i].setOutlineThickness(5);
 		nbJoueursSel[i].setOutlineColor(sf::Color::Red);
 		nbJoueursSel[i].setPosition(200 + (i * 225), (window.getSize().y - nbJoueursSel[i].getSize().y) - 20);
+
+		nombreJrs[i].setFont(font);
+		nombreJrs[i].setString(to_string(i + 1));
+
+		Vector2f temp = nbJoueursSel[i].getSize();
+		temp.x = temp.x / 2 - 10;
+		temp.y = temp.y / 2 - 20;
+
+		nombreJrs[i].setPosition(nbJoueursSel[i].getPosition() + temp);
 	}
 
 	nbJoueursSel[0].setOutlineColor(sf::Color::Green);
@@ -218,7 +229,12 @@ int afficherMenu(RenderWindow& window, Font font)
 	txtJouer.setFont(font);
 	txtJouer.setString("Appuyez sur espace pour jouer");
 
-	while (1)
+	infoNbJrs.setFont(font);
+	infoNbJrs.setString("Nombre de joueurs: ");
+	infoNbJrs.setPosition(200, 600);
+	infoNbJrs.setFillColor(Color::Black);
+
+	while (true)
 	{
 		//******Affichage******
 		window.draw(spriteMenu);
@@ -245,6 +261,8 @@ int afficherMenu(RenderWindow& window, Font font)
 						nbJoueursSel[j].setOutlineColor(sf::Color::Red);
 			}
 			window.draw(nbJoueursSel[i]);
+			window.draw(nombreJrs[i]);
+			window.draw(infoNbJrs);
 		}
 		window.display();
 	}
