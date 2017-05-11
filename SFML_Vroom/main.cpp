@@ -22,8 +22,7 @@ using namespace sf;
 using namespace std;
 
 //Prototypes
-bool afficherMenu(RenderWindow& window, Font font);
-bool verifierFermeture(RenderWindow& window, Event event);
+int afficherMenu(RenderWindow& window, Font font);
 
 //Programme principal
 int main()
@@ -34,7 +33,7 @@ int main()
 	automobile joueurs[4];
 
 	bool canDrive = false;														//Voiture peut pas bouger pendant traffic lights
-	bool jouer = false;
+	bool jouer = true;
 	bool quitter = false;
 	bool options = false;
 
@@ -73,10 +72,20 @@ int main()
 	{
 		//Attend les événements de fermeture
 		while (window.pollEvent(event))
-			quitter = verifierFermeture(window, event);
+		{
+			if (event.type == Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape))
+				quitter = true;
+			else
+				quitter = false;
+		}
 
-		//Nombre de joueurs, entre 1 et 4
-		int nbJoueurs = 1;
+		int nbJoueurs = afficherMenu(window, font);
+		tempsJeu.restart();
+
+		if (nbJoueurs == 0)
+			quitter = true;
+		else
+			jouer = true;
 
 		//Applique les touches à utiliser pour chaques joueurs
 		joueurs[0].setKeys(Keyboard::Up, Keyboard::Down, Keyboard::Left, Keyboard::Right);
@@ -101,14 +110,12 @@ int main()
 			sprJoueur[i].rotate(joueurs[i].getDegreAuto());
 		}
 
-		jouer = afficherMenu(window, font);
-		tempsJeu.restart();
-
 		while (jouer)	//Tant que le jeu roule
 		{
 			//Attend les événements de fermeture
 			while (window.pollEvent(event))
-				jouer = !verifierFermeture(window, event);
+				if (event.type == Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape))
+					jouer = false;
 
 			//***************************Événements de jeu***************************
 			//***********************************************************************
@@ -135,14 +142,12 @@ int main()
 
 				//Gère les collisions entre chaque autos
 				for (int j = 0; j < nbJoueurs; j++)
-				{
 					//Si on touche une auto
 					if (i != j && sprJoueur[i].getGlobalBounds().intersects(sprJoueur[j].getGlobalBounds()))
 					{
 						joueurs[i].collisionAuto(joueurs[j]);
 						break;
 					}
-				}
 			}
 
 			//***************************Affichage***************************
@@ -184,8 +189,10 @@ int main()
 }
 
 //(Fonction) Affiche le menu et attends une réponse du joueur
-bool afficherMenu(RenderWindow& window, Font font)
+int afficherMenu(RenderWindow& window, Font font)
 {
+	int nbJoueurs = 1;
+
 	//Textures et sprites
 	Texture textureMenu;
 	Sprite spriteMenu;
@@ -198,10 +205,12 @@ bool afficherMenu(RenderWindow& window, Font font)
 		nbJoueursSel[i].setSize(sf::Vector2f(200, 100));
 
 		nbJoueursSel[i].setFillColor(Color::Black);
-		nbJoueursSel[i].setOutlineColor(sf::Color::White);
 		nbJoueursSel[i].setOutlineThickness(5);
-		nbJoueursSel[i].setPosition(200 + (i * 225), 20);
+		nbJoueursSel[i].setOutlineColor(sf::Color::Red);
+		nbJoueursSel[i].setPosition(200 + (i * 225), (window.getSize().y - nbJoueursSel[i].getSize().y) - 20);
 	}
+
+	nbJoueursSel[0].setOutlineColor(sf::Color::Green);
 
 	textureMenu.loadFromFile("titleScreen.png");
 	spriteMenu.setTexture(textureMenu);
@@ -209,34 +218,34 @@ bool afficherMenu(RenderWindow& window, Font font)
 	txtJouer.setFont(font);
 	txtJouer.setString("Appuyez sur espace pour jouer");
 
-	//******Affichage******
-	window.draw(spriteMenu);
-	window.draw(txtJouer);
-
-	for (int i = 0; i < 4; i++)
-		window.draw(nbJoueursSel[i]);
-
-	window.display();
-
 	while (1)
 	{
+		//******Affichage******
+		window.draw(spriteMenu);
+		window.draw(txtJouer);
+
 		if (Keyboard::isKeyPressed(Keyboard::Space))
-		{
-			return true;
-		}
+			return nbJoueurs;
 
 		if (Keyboard::isKeyPressed(Keyboard::Escape))
-		{
-			return false;
-		}
-	}
-}
+			return 0;
 
-//Attend les événements de fermeture
-bool verifierFermeture(RenderWindow& window, Event event)
-{
-	if (event.type == Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape))
-		return true;
-	else
-		return false;
+		//Vérifie quel bouton a été sélectionné, et ajuste le nombre de joueurs désiré
+		for (int i = 0; i < 4; i++)
+		{
+			if (Mouse::isButtonPressed(Mouse::Button::Left) &&
+				Mouse::getPosition(window).x > nbJoueursSel[i].getPosition().x && Mouse::getPosition(window).x < (nbJoueursSel[i].getPosition().x + nbJoueursSel[i].getSize().x) &&
+				Mouse::getPosition(window).y > nbJoueursSel[i].getPosition().y && Mouse::getPosition(window).y < (nbJoueursSel[i].getPosition().y + nbJoueursSel[i].getSize().y))
+			{
+				nbJoueurs = i + 1;
+				nbJoueursSel[i].setOutlineColor(sf::Color::Green);
+
+				for (int j = 0; j < 4; j++)
+					if (j != i)
+						nbJoueursSel[j].setOutlineColor(sf::Color::Red);
+			}
+			window.draw(nbJoueursSel[i]);
+		}
+		window.display();
+	}
 }
