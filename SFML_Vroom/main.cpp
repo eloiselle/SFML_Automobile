@@ -50,6 +50,9 @@ int main()
 	Font font;
 	Text chrono;
 
+	Text laps;
+	int tour = 0;
+
 
 	bool jouer = false;
 	bool quitter = false;
@@ -60,6 +63,9 @@ int main()
 
 	chrono.setPosition(20, 20);
 
+	laps.setFont(font);
+	laps.setPosition(400, 400);
+
 
 	trafficLights lights;
 	piste pisteCourse("mapFinale2");													//objet Piste
@@ -69,6 +75,18 @@ int main()
 
 	automobile joueurs[4];
 	Sprite sprJoueur[4];
+
+	ConvexShape ligne;
+
+	ligne.setPointCount(4);
+
+	ligne.setPoint(0, Vector2f(200, 200));
+	ligne.setPoint(1, Vector2f(200, 500));
+	ligne.setPoint(2, Vector2f(100, 300));
+	ligne.setPoint(3, Vector2f(300, 200));
+	ligne.setFillColor(Color::Transparent);
+	ligne.setOutlineThickness(2);
+	ligne.setOutlineColor(Color::White);
 
 	//Change les couleures de chaque joueurs
 	joueurs[0].setCouleur(0, 255, 0);
@@ -245,9 +263,21 @@ int main()
 			{
 				window.draw(sprJoueur[i]);
 			}
+			
+			if (ligne.getLocalBounds().intersects(sprJoueur[0].getGlobalBounds()))
+			{
+				tour++;
+			}
+
+			laps.setString(to_string(tour) + "/3");
+			window.draw(laps);
+			window.draw(ligne);
 
 			//Rfraîchi l'affichage
 			window.display();
+
+		
+			
 		}
 
 	}
