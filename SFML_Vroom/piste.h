@@ -41,7 +41,7 @@ public:
 	Sprite getSprite();									//get le sprite de la piste
 
 	//Setteur
-	void setPosition(int x, int y);						//set la position x et y du sprite de la piste
+	void setPosition(float x, float y);						//set la position x et y du sprite de la piste
 
 	//Chargement
 	void lireFichierEntete(ifstream& entree);			//lecture de l'entête du fichier et affecte le nom du fichier à le nom du fichier de texture en .png
@@ -69,7 +69,6 @@ piste::piste(string nomFichier)
 	Sprite piste;										//sprite de la piste
 
 	ConvexShape collisions[50];							//formes convexes de collisions
-	int nbPoints;										//nombre de points d'une forme de collision
 
 	Vector2f point;										//coordonnées x et y d'un point
 
@@ -106,7 +105,7 @@ Sprite piste::getSprite()
 }
 
 //set la position du sprite de la piste selon les coordonnées x et y
-void piste::setPosition(int x, int y)
+void piste::setPosition(float x, float y)
 {
 	_sprite.setPosition(x, y);
 }
