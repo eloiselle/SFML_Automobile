@@ -227,107 +227,107 @@ int main()
 			//Affichage de tous les joueurs
 			for (int i = 0; i < nbJoueurs; i++)
 				window.draw(sprJoueur[i]);
+			laps.setString(to_string(tour) + "/3");
+			window.draw(laps);
+
+			window.draw(checkPoint1);
+			if (sprJoueur[0].getGlobalBounds().intersects(checkPoint1.getGlobalBounds()))
+			{
+				isCheckPoint1 = true;
+			}
+
+			if (sprJoueur[0].getGlobalBounds().intersects(ligneArivee.getGlobalBounds()) && isCheckPoint1)
+			{
+				isCheckPoint1 = false;
+				tour++;
+			}
+
+			window.draw(ligneArivee);
+
+			//Rfraîchi l'affichage
+			window.display();
 		}
-		laps.setString(to_string(tour) + "/3");
-		window.draw(laps);
-
-		window.draw(checkPoint1);
-		if (sprJoueur[0].getGlobalBounds().intersects(checkPoint1.getGlobalBounds()))
-		{
-			isCheckPoint1 = true;
-		}
-
-		if (sprJoueur[0].getGlobalBounds().intersects(ligneArivee.getGlobalBounds()) && isCheckPoint1)
-		{
-			isCheckPoint1 = false;
-			tour++;
-		}
-
-		window.draw(ligneArivee);
-
-		//Rfraîchi l'affichage
-		window.display();
 	}
 	return 0;
 }
 
 
-//(Fonction) Affiche le menu et attends une réponse du joueur
-int afficherMenu(RenderWindow& window, Font font)
-{
-	int nbJoueurs = 1;
-
-	//Textures et sprites
-	Texture textureMenu;
-	Sprite spriteMenu;
-
-	RectangleShape nbJoueursSel[4];
-	Text txtJouer;
-	Text infoNbJrs;
-	Text nombreJrs[4];
-
-	for (int i = 0; i < 4; i++)
+	//(Fonction) Affiche le menu et attends une réponse du joueur
+	int afficherMenu(RenderWindow& window, Font font)
 	{
-		nbJoueursSel[i].setSize(sf::Vector2f(200, 100));
+		int nbJoueurs = 1;
 
-		nbJoueursSel[i].setFillColor(Color::Black);
-		nbJoueursSel[i].setOutlineThickness(5);
-		nbJoueursSel[i].setOutlineColor(sf::Color::Red);
-		nbJoueursSel[i].setPosition(200 + (i * 225), (window.getSize().y - nbJoueursSel[i].getSize().y) - 20);
+		//Textures et sprites
+		Texture textureMenu;
+		Sprite spriteMenu;
 
-		nombreJrs[i].setFont(font);
-		nombreJrs[i].setString(to_string(i + 1));
+		RectangleShape nbJoueursSel[4];
+		Text txtJouer;
+		Text infoNbJrs;
+		Text nombreJrs[4];
 
-		Vector2f temp = nbJoueursSel[i].getSize();
-		temp.x = temp.x / 2 - 10;
-		temp.y = temp.y / 2 - 20;
-
-		nombreJrs[i].setPosition(nbJoueursSel[i].getPosition() + temp);
-	}
-
-	nbJoueursSel[0].setOutlineColor(sf::Color::Green);
-
-	textureMenu.loadFromFile("titleScreen.png");
-	spriteMenu.setTexture(textureMenu);
-
-	txtJouer.setFont(font);
-	txtJouer.setString("Appuyez sur espace pour jouer");
-
-	infoNbJrs.setFont(font);
-	infoNbJrs.setString("Nombre de joueurs: ");
-	infoNbJrs.setPosition(200, 600);
-	infoNbJrs.setFillColor(Color::Black);
-
-	while (true)
-	{
-		//******Affichage******
-		window.draw(spriteMenu);
-		window.draw(txtJouer);
-
-		if (Keyboard::isKeyPressed(Keyboard::Space))
-			return nbJoueurs;
-
-		if (Keyboard::isKeyPressed(Keyboard::Escape))
-			return 0;
-
-		//Vérifie quel bouton a été sélectionné, et ajuste le nombre de joueurs désiré
 		for (int i = 0; i < 4; i++)
 		{
-			if (Mouse::isButtonPressed(Mouse::Button::Left) &&
-				Mouse::getPosition(window).x > nbJoueursSel[i].getPosition().x && Mouse::getPosition(window).x < (nbJoueursSel[i].getPosition().x + nbJoueursSel[i].getSize().x) &&
-				Mouse::getPosition(window).y > nbJoueursSel[i].getPosition().y && Mouse::getPosition(window).y < (nbJoueursSel[i].getPosition().y + nbJoueursSel[i].getSize().y))
-			{
-				nbJoueurs = i + 1;
-				nbJoueursSel[i].setOutlineColor(sf::Color::Green);
+			nbJoueursSel[i].setSize(sf::Vector2f(200, 100));
 
-				for (int j = 0; j < 4; j++)
-					if (j != i)
-						nbJoueursSel[j].setOutlineColor(sf::Color::Red);
-			}
-			window.draw(nbJoueursSel[i]);
-			window.draw(nombreJrs[i]);
-			window.draw(infoNbJrs);
+			nbJoueursSel[i].setFillColor(Color::Black);
+			nbJoueursSel[i].setOutlineThickness(5);
+			nbJoueursSel[i].setOutlineColor(sf::Color::Red);
+			nbJoueursSel[i].setPosition(200 + (i * 225), (window.getSize().y - nbJoueursSel[i].getSize().y) - 20);
+
+			nombreJrs[i].setFont(font);
+			nombreJrs[i].setString(to_string(i + 1));
+
+			Vector2f temp = nbJoueursSel[i].getSize();
+			temp.x = temp.x / 2 - 10;
+			temp.y = temp.y / 2 - 20;
+
+			nombreJrs[i].setPosition(nbJoueursSel[i].getPosition() + temp);
 		}
-		window.display();
+
+		nbJoueursSel[0].setOutlineColor(sf::Color::Green);
+
+		textureMenu.loadFromFile("titleScreen.png");
+		spriteMenu.setTexture(textureMenu);
+
+		txtJouer.setFont(font);
+		txtJouer.setString("Appuyez sur espace pour jouer");
+
+		infoNbJrs.setFont(font);
+		infoNbJrs.setString("Nombre de joueurs: ");
+		infoNbJrs.setPosition(200, 600);
+		infoNbJrs.setFillColor(Color::Black);
+
+		while (true)
+		{
+			//******Affichage******
+			window.draw(spriteMenu);
+			window.draw(txtJouer);
+
+			if (Keyboard::isKeyPressed(Keyboard::Space))
+				return nbJoueurs;
+
+			if (Keyboard::isKeyPressed(Keyboard::Escape))
+				return 0;
+
+			//Vérifie quel bouton a été sélectionné, et ajuste le nombre de joueurs désiré
+			for (int i = 0; i < 4; i++)
+			{
+				if (Mouse::isButtonPressed(Mouse::Button::Left) &&
+					Mouse::getPosition(window).x > nbJoueursSel[i].getPosition().x && Mouse::getPosition(window).x < (nbJoueursSel[i].getPosition().x + nbJoueursSel[i].getSize().x) &&
+					Mouse::getPosition(window).y > nbJoueursSel[i].getPosition().y && Mouse::getPosition(window).y < (nbJoueursSel[i].getPosition().y + nbJoueursSel[i].getSize().y))
+				{
+					nbJoueurs = i + 1;
+					nbJoueursSel[i].setOutlineColor(sf::Color::Green);
+
+					for (int j = 0; j < 4; j++)
+						if (j != i)
+							nbJoueursSel[j].setOutlineColor(sf::Color::Red);
+				}
+				window.draw(nbJoueursSel[i]);
+				window.draw(nombreJrs[i]);
+				window.draw(infoNbJrs);
+			}
+			window.display();
+		}
 	}
-}
