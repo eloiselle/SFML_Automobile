@@ -27,19 +27,6 @@ int afficherMenu(RenderWindow& window, Font font);
 //Programme principal
 int main()
 {
-	//Variables
-	trafficLights lights;
-	piste pisteCourse("mapFinale2");											//Objet Piste
-	automobile joueurs[4];
-
-	bool canDrive = false;														//Voiture peut pas bouger pendant traffic lights
-	bool jouer = true;
-	bool quitter = false;
-	bool options = false;
-
-	//Génération de nombres aléatoires (seed)
-	srand(time(NULL));
-
 	//Initialisation SFML
 	RenderWindow window(VideoMode(1280, 768), "Vroooom!!!");					//Fenêtre
 	window.setFramerateLimit(60);												//Limite le nombre d'images par secondes
@@ -61,10 +48,73 @@ int main()
 	//Polices et textes
 	Font font;
 	Text chrono;
+  
+	Text laps;
+	int tour = 0;
 
+	bool isCheckPoint1 = false;
+	bool jouer = false;
+	bool quitter = false;
+
+	//Fonts et text
 	font.loadFromFile("Roboto-Italic.ttf");
 	chrono.setFont(font);
 	chrono.setPosition(20, 20);
+
+	laps.setFont(font);
+	laps.setPosition(400, 400);
+
+
+	trafficLights lights;
+	piste pisteCourse("mapFinale2");													//objet Piste
+
+	int nbJoueurs = 4;
+	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
+
+	automobile joueurs[4];
+	Sprite sprJoueur[4];
+
+	RectangleShape checkPoint1;
+	RectangleShape ligneArivee;
+
+	checkPoint1.setPosition(555, 605);
+	checkPoint1.setSize(Vector2f(20, 130));
+	checkPoint1.setFillColor(Color::Transparent);
+	checkPoint1.setOutlineThickness(2);
+	checkPoint1.setOutlineColor(Color::White);
+
+	ligneArivee.setPosition(555, 15);
+	ligneArivee.setSize(Vector2f(20, 160));
+	ligneArivee.setFillColor(Color::Transparent);
+	ligneArivee.setOutlineThickness(2);
+	ligneArivee.setOutlineColor(Color::White);
+
+	//Change les couleures de chaque joueurs
+	joueurs[0].setCouleur(0, 255, 0);
+	joueurs[1].setCouleur(255, 0, 0);
+	joueurs[2].setCouleur(0, 255, 255);
+	joueurs[3].setCouleur(255, 255, 0);
+
+	//Applique les touches à utiliser pour chaques joueurs
+	joueurs[0].setKeys(Keyboard::Up, Keyboard::Down, Keyboard::Left, Keyboard::Right);
+	joueurs[1].setKeys(Keyboard::W, Keyboard::S, Keyboard::A, Keyboard::D);
+	joueurs[2].setKeys(Keyboard::I, Keyboard::K, Keyboard::J, Keyboard::L);
+	joueurs[3].setKeys(Keyboard::T, Keyboard::G, Keyboard::F, Keyboard::H);
+
+	//Chargement de chaque joueurs
+	for (int i = 0; i < nbJoueurs; i++)
+	{
+		//Chargement de la texture pour l'auto spécifiée
+		textureCar.loadFromFile("car.png");
+		sprJoueur[i].setTexture(textureCar);
+		sprJoueur[i].setOrigin(12, 8);
+		sprJoueur[i].setColor(Color(joueurs[i].getRed(), joueurs[i].getGreen(), joueurs[i].getBlue()));
+
+		//Initialisation automobile
+		sprJoueur[i].setPosition(100 + (100 * i), 100);
+		sprJoueur[i].rotate(joueurs[i].getDegreAuto());
+	}
+	//Limite le nombre d'images par secondes
 	lights.setPosition(585, 300);
 
 	//Menu
@@ -179,6 +229,23 @@ int main()
 			//Affichage de tous les joueurs
 			for (int i = 0; i < nbJoueurs; i++)
 				window.draw(sprJoueur[i]);
+			}
+			laps.setString(to_string(tour) + "/3");
+			window.draw(laps);
+			
+			window.draw(checkPoint1);
+			if (sprJoueur[0].getGlobalBounds().intersects(checkPoint1.getGlobalBounds()))
+			{
+				isCheckPoint1 = true;
+			}
+
+			if (sprJoueur[0].getGlobalBounds().intersects(ligneArivee.getGlobalBounds()) && isCheckPoint1)
+			{
+				isCheckPoint1 = false;
+				tour++;
+			}
+
+			window.draw(ligneArivee);
 
 			//Rfraîchi l'affichage
 			window.display();
