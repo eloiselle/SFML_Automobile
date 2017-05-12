@@ -48,7 +48,7 @@ int main()
 	//Polices et textes
 	Font font;
 	Text chrono;
-  
+
 	Text laps;
 	int tour = 0;
 
@@ -67,12 +67,10 @@ int main()
 
 	trafficLights lights;
 	piste pisteCourse("mapFinale2");													//objet Piste
+	automobile joueurs[4];
 
 	int nbJoueurs = 4;
 	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
-
-	automobile joueurs[4];
-	Sprite sprJoueur[4];
 
 	RectangleShape checkPoint1;
 	RectangleShape ligneArivee;
@@ -229,31 +227,30 @@ int main()
 			//Affichage de tous les joueurs
 			for (int i = 0; i < nbJoueurs; i++)
 				window.draw(sprJoueur[i]);
-			}
-			laps.setString(to_string(tour) + "/3");
-			window.draw(laps);
-			
-			window.draw(checkPoint1);
-			if (sprJoueur[0].getGlobalBounds().intersects(checkPoint1.getGlobalBounds()))
-			{
-				isCheckPoint1 = true;
-			}
+		}
+		laps.setString(to_string(tour) + "/3");
+		window.draw(laps);
 
-			if (sprJoueur[0].getGlobalBounds().intersects(ligneArivee.getGlobalBounds()) && isCheckPoint1)
-			{
-				isCheckPoint1 = false;
-				tour++;
-			}
-
-			window.draw(ligneArivee);
-
-			//Rfraîchi l'affichage
-			window.display();
+		window.draw(checkPoint1);
+		if (sprJoueur[0].getGlobalBounds().intersects(checkPoint1.getGlobalBounds()))
+		{
+			isCheckPoint1 = true;
 		}
 
+		if (sprJoueur[0].getGlobalBounds().intersects(ligneArivee.getGlobalBounds()) && isCheckPoint1)
+		{
+			isCheckPoint1 = false;
+			tour++;
+		}
+
+		window.draw(ligneArivee);
+
+		//Rfraîchi l'affichage
+		window.display();
 	}
 	return 0;
 }
+
 
 //(Fonction) Affiche le menu et attends une réponse du joueur
 int afficherMenu(RenderWindow& window, Font font)
