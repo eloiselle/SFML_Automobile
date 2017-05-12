@@ -29,6 +29,9 @@ int main()
 {
 	//Initialisation SFML
 	RenderWindow window(VideoMode(1280, 768), "Vroooom!!!");					//Fenêtre
+	Image icon;
+	icon.loadFromFile("car.png");
+	window.setIcon(32, 32, icon.getPixelsPtr());
 	window.setFramerateLimit(60);												//Limite le nombre d'images par secondes
 
 	Sprite sprJoueur[4];														//Affiche les joueurs
@@ -255,6 +258,7 @@ int main()
 	//(Fonction) Affiche le menu et attends une réponse du joueur
 	int afficherMenu(RenderWindow& window, Font font)
 	{
+		Event event;
 		int nbJoueurs = 1;
 
 		//Textures et sprites
@@ -307,8 +311,9 @@ int main()
 			if (Keyboard::isKeyPressed(Keyboard::Space))
 				return nbJoueurs;
 
-			if (Keyboard::isKeyPressed(Keyboard::Escape))
-				return 0;
+			while (window.pollEvent(event))
+				if (event.type == Event::Closed || Keyboard::isKeyPressed(Keyboard::Escape))
+					return 0;
 
 			//Vérifie quel bouton a été sélectionné, et ajuste le nombre de joueurs désiré
 			for (int i = 0; i < 4; i++)
