@@ -39,6 +39,7 @@ private:
 	double _vitesseIncrementation;
 	double _angleIncrementation;
 	double _vitesseAffaiblir;
+	bool _no_virage;
 
 	//Couleur de l'auto
 	int _autoRGB[3];
@@ -128,6 +129,7 @@ automobile::automobile()
 	_vitesseIncrementation = 0.2;	//La vitesse à laquelle l'auto fais son accélération
 	_angleIncrementation = 4;		//La vitesse à laquelle l'auto fais ses virage
 	_vitesseAffaiblir = 0.995;		//La vitesse à laquelle l'auto ralenti naturellement
+	_no_virage = false;
 
 	//Couleur de l'auto
 	_autoRGB[0] = 125;

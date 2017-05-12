@@ -100,12 +100,6 @@ int main()
 	cercle.setOutlineColor(Color::White);
 	cercle.setOutlineThickness(2);
 
-	//Change les couleures de chaque joueurs
-	joueurs[0].setCouleur(0, 255, 0);
-	joueurs[1].setCouleur(255, 0, 0);
-	joueurs[2].setCouleur(0, 255, 255);
-	joueurs[3].setCouleur(255, 255, 0);
-
 	//Applique les touches à utiliser pour chaques joueurs
 	joueurs[0].setKeys(Keyboard::Up, Keyboard::Down, Keyboard::Left, Keyboard::Right);
 	joueurs[1].setKeys(Keyboard::W, Keyboard::S, Keyboard::A, Keyboard::D);
@@ -158,7 +152,7 @@ int main()
 		for (int i = 0; i < nbJoueurs; i++)
 		{
 			//Génère une couleure aléatoire pour chaque auto
-			joueurs[i].setCouleur(rand() % 25 * 10, rand() % 25 * 10, rand() % 25 * 10);
+			joueurs[i].setCouleur(rand() % 4 * 85, rand() % 4 * 85, rand() % 4 * 85);
 
 			//Chargement de la texture pour l'auto spécifiée
 			textureCar.loadFromFile("car.png");
