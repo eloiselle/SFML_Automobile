@@ -235,9 +235,9 @@ int main()
 				//**************************************************************************************
 				sprJoueur[i].move(
 					joueurs[i].getVelociteX() * cos(
-						joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds(),
+						joueurs[i].convertDegreeRadian(joueurs[i].getDegreAuto())) * tempsDelta.asSeconds(),
 					joueurs[i].getVelociteY() * sin(
-						joueurs[i].convertDegreeRadian(joueurs[i].getDegre())) * tempsDelta.asSeconds());
+						joueurs[i].convertDegreeRadian(joueurs[i].getDegreAuto())) * tempsDelta.asSeconds());
 
         //AFFICHAGE*****************************************************************************
 			//**************************************************************************************
