@@ -41,7 +41,8 @@ public:
 	Sprite getSprite();									//get le sprite de la piste
 
 	//Setteur
-	void setPosition(float x, float y);						//set la position x et y du sprite de la piste
+	void setPosition(float x, float y);					//set la position x et y du sprite de la piste
+	void setNbCollisions(int nbCollisions);				//set le nombre de collisions de la piste
 
 	//Chargement
 	void lireFichierEntete(ifstream& entree);			//lecture de l'entête du fichier et affecte le nom du fichier à le nom du fichier de texture en .png
@@ -108,6 +109,12 @@ Sprite piste::getSprite()
 void piste::setPosition(float x, float y)
 {
 	_sprite.setPosition(x, y);
+}
+
+//setle nombre de formes de collisions de la piste
+void piste::setNbCollisions(int nbCollisions)
+{
+	_nbCollisions = nbCollisions;
 }
 
 //lecture de l'entête du fichier 
