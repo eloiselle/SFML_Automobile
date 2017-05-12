@@ -178,6 +178,5 @@ int main()
 		//Rfraîchi l'affichage
 		window.display();
 	}
-
 	return 0;
 }
