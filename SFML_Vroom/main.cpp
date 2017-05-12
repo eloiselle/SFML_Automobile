@@ -53,7 +53,7 @@ int main()
 	Text laps;
 	int tour = 0;
 
-
+	bool isCheckPoint1 = false;
 	bool jouer = false;
 	bool quitter = false;
 
@@ -76,17 +76,41 @@ int main()
 	automobile joueurs[4];
 	Sprite sprJoueur[4];
 
-	ConvexShape ligne;
+	RectangleShape checkPoint1;
+	RectangleShape ligneArivee;
 
-	ligne.setPointCount(4);
+	checkPoint1.setPosition(555, 605);
+	checkPoint1.setSize(Vector2f(20, 130));
+	checkPoint1.setFillColor(Color::Transparent);
+	checkPoint1.setOutlineThickness(2);
+	checkPoint1.setOutlineColor(Color::White);
 
-	ligne.setPoint(0, Vector2f(200, 200));
-	ligne.setPoint(1, Vector2f(200, 500));
-	ligne.setPoint(2, Vector2f(100, 300));
-	ligne.setPoint(3, Vector2f(300, 200));
-	ligne.setFillColor(Color::Transparent);
-	ligne.setOutlineThickness(2);
-	ligne.setOutlineColor(Color::White);
+	ligneArivee.setPosition(555, 15);
+	ligneArivee.setSize(Vector2f(20, 160));
+	ligneArivee.setFillColor(Color::Transparent);
+	ligneArivee.setOutlineThickness(2);
+	ligneArivee.setOutlineColor(Color::White);
+
+	/*ConvexShape ligne;
+	CircleShape cercle;*/
+
+	//ligne.setPointCount(4);
+
+	//ligne.setPoint(0, Vector2f(200, 200));
+	//ligne.setPoint(1, Vector2f(200, 300));
+	//ligne.setPoint(2, Vector2f(300, 300));
+	//ligne.setPoint(3, Vector2f(300, 200));
+	//ligne.setFillColor(Color::Transparent);
+	//ligne.setOutlineThickness(2);
+	//ligne.setOutlineColor(Color::White);
+
+	/*cercle.setRadius(100);
+	cercle.setPosition(500, 500);
+	cercle.setOrigin(0, 0);
+	cercle.setFillColor(Color::Transparent);
+	cercle.setOutlineColor(Color::White);
+	cercle.setOutlineThickness(2);*/
+	
 
 	//Change les couleures de chaque joueurs
 	joueurs[0].setCouleur(0, 255, 0);
@@ -264,14 +288,30 @@ int main()
 				window.draw(sprJoueur[i]);
 			}
 			
-			if (ligne.getLocalBounds().intersects(sprJoueur[0].getGlobalBounds()))
+			/*if (sprJoueur[0].getPosition() - cercle.getPosition()  cercle.getRadius())
 			{
 				tour++;
 			}
-
+*/
 			laps.setString(to_string(tour) + "/3");
 			window.draw(laps);
-			window.draw(ligne);
+			
+			window.draw(checkPoint1);
+			if (sprJoueur[0].getGlobalBounds().intersects(checkPoint1.getGlobalBounds()))
+			{
+				isCheckPoint1 = true;
+			}
+
+			if (sprJoueur[0].getGlobalBounds().intersects(ligneArivee.getGlobalBounds()) && isCheckPoint1)
+			{
+				isCheckPoint1 = false;
+				tour++;
+			}
+
+			window.draw(ligneArivee);
+
+			/*window.draw(ligne);
+			window.draw(cercle);*/
 
 			//Rfraîchi l'affichage
 			window.display();
