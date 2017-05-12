@@ -44,7 +44,7 @@ trafficLights::trafficLights()
 	_nom = "trafficLights";
 
 	_texture.loadFromFile(_nom + "rouge.png", IntRect(0, 0, 200, 137));
-	RenderTexture;
+	
 
 	_sprite.setTexture(_texture);
 }

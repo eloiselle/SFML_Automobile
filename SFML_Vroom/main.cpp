@@ -23,6 +23,7 @@ using namespace std;
 
 //Prototypes
 int afficherMenu(RenderWindow& window, Font font);
+float getDistance(CircleShape cercle, Sprite car);
 
 //Programme principal
 int main()
@@ -71,12 +72,14 @@ int main()
 	trafficLights lights;
 	piste pisteCourse("mapFinale2");													//objet Piste
 	automobile joueurs[4];
+	
 
 	int nbJoueurs = 4;
 	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
 
 	RectangleShape checkPoint1;
 	RectangleShape ligneArivee;
+	CircleShape cercle;
 
 	checkPoint1.setPosition(555, 605);
 	checkPoint1.setSize(Vector2f(20, 130));
@@ -89,6 +92,13 @@ int main()
 	ligneArivee.setFillColor(Color::Transparent);
 	ligneArivee.setOutlineThickness(2);
 	ligneArivee.setOutlineColor(Color::White);
+
+	cercle.setRadius(250);
+	cercle.setOrigin(250, 250);
+	cercle.setPosition(500, 500);
+	cercle.setFillColor(Color::Transparent);
+	cercle.setOutlineColor(Color::White);
+	cercle.setOutlineThickness(2);
 
 	//Change les couleures de chaque joueurs
 	joueurs[0].setCouleur(0, 255, 0);
@@ -245,7 +255,13 @@ int main()
 				tour++;
 			}
 
+			if (getDistance(cercle, sprJoueur[0]) <= cercle.getRadius())
+			{
+				tour++;
+			}
+
 			window.draw(ligneArivee);
+			window.draw(cercle);
 
 			//Rfraîchi l'affichage
 			window.display();
@@ -335,4 +351,15 @@ int main()
 			}
 			window.display();
 		}
+	}
+
+	float getDistance(CircleShape cercle, Sprite car)
+	{
+		float dx = 0;
+		float dy = 0;
+
+		dx = abs(cercle.getPosition().x - car.getPosition().x);
+		dy = abs(cercle.getPosition().y - car.getPosition().y);
+
+		return sqrt(dx*dx + dy*dy);
 	}
