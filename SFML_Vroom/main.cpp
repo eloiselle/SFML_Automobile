@@ -288,7 +288,7 @@ int main()
 
 		for (int i = 0; i < 4; i++)
 		{
-			nbJoueursSel[i].setSize(sf::Vector2f(200, 100));
+			nbJoueursSel[i].setSize(sf::Vector2f(200, 150));
 
 			nbJoueursSel[i].setFillColor(Color::Black);
 			nbJoueursSel[i].setOutlineThickness(5);
@@ -315,7 +315,7 @@ int main()
 
 		infoNbJrs.setFont(font);
 		infoNbJrs.setString("Nombre de joueurs: ");
-		infoNbJrs.setPosition(200, 600);
+		infoNbJrs.setPosition(200, 550);
 		infoNbJrs.setFillColor(Color::Black);
 
 		while (true)
