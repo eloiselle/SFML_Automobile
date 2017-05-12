@@ -63,7 +63,7 @@ int main()
 	chrono.setPosition(20, 20);
 
 	laps.setFont(font);
-	laps.setPosition(400, 400);
+	laps.setPosition(100, 400);
 
 
 	trafficLights lights;
@@ -90,9 +90,9 @@ int main()
 	ligneArivee.setOutlineThickness(2);
 	ligneArivee.setOutlineColor(Color::White);
 
-	cercle.setRadius(250);
-	cercle.setOrigin(250, 250);
-	cercle.setPosition(500, 500);
+	cercle.setRadius(60);
+	cercle.setOrigin(60, 60);
+	cercle.setPosition(100, 200);
 	cercle.setFillColor(Color::Transparent);
 	cercle.setOutlineColor(Color::White);
 	cercle.setOutlineThickness(2);
