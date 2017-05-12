@@ -29,7 +29,7 @@ int main()
 {
 	//Variables
 	trafficLights lights;
-	piste pisteCourse("mapFinale2");											//Objet Piste
+	piste pisteCourse("Image/mapFinale2");											//Objet Piste
 	automobile joueurs[4];
 
 	bool canDrive = false;														//Voiture peut pas bouger pendant traffic lights
@@ -42,6 +42,10 @@ int main()
 
 	//Initialisation SFML
 	RenderWindow window(VideoMode(1280, 768), "Vroooom!!!");					//Fenêtre
+	
+	//Image icon;
+	//icon.LoadFromFile("image/icon.png");
+	//window.SetIcon(256, 256, icon.GetPixelsPtr());
 	window.setFramerateLimit(60);												//Limite le nombre d'images par secondes
 
 	Sprite sprJoueur[4];														//Affiche les joueurs
@@ -100,7 +104,7 @@ int main()
 			joueurs[i].setCouleur(rand() % 25 * 10, rand() % 25 * 10, rand() % 25 * 10);
 
 			//Chargement de la texture pour l'auto spécifiée
-			textureCar.loadFromFile("car.png");
+			textureCar.loadFromFile("Image/car.png");
 			sprJoueur[i].setTexture(textureCar);
 			sprJoueur[i].setOrigin(12, 8);
 			sprJoueur[i].setColor(Color(joueurs[i].getRed(), joueurs[i].getGreen(), joueurs[i].getBlue()));
@@ -183,7 +187,6 @@ int main()
 			//Rfraîchi l'affichage
 			window.display();
 		}
-
 	}
 	return 0;
 }
@@ -223,12 +226,13 @@ int afficherMenu(RenderWindow& window, Font font)
 
 	nbJoueursSel[0].setOutlineColor(sf::Color::Green);
 
-	textureMenu.loadFromFile("titleScreen.png");
+	textureMenu.loadFromFile("Image/titleScreen.png");
 	spriteMenu.setTexture(textureMenu);
 
 	txtJouer.setFont(font);
 	txtJouer.setString("Appuyez sur espace pour jouer");
 
+	//Message d'information (Nombre de joueurs)
 	infoNbJrs.setFont(font);
 	infoNbJrs.setString("Nombre de joueurs: ");
 	infoNbJrs.setPosition(200, 600);
@@ -239,6 +243,7 @@ int afficherMenu(RenderWindow& window, Font font)
 		//******Affichage******
 		window.draw(spriteMenu);
 		window.draw(txtJouer);
+		window.draw(infoNbJrs);
 
 		if (Keyboard::isKeyPressed(Keyboard::Space))
 			return nbJoueurs;
@@ -260,9 +265,9 @@ int afficherMenu(RenderWindow& window, Font font)
 					if (j != i)
 						nbJoueursSel[j].setOutlineColor(sf::Color::Red);
 			}
+			//Affichage des boutons
 			window.draw(nbJoueursSel[i]);
 			window.draw(nombreJrs[i]);
-			window.draw(infoNbJrs);
 		}
 		window.display();
 	}
