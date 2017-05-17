@@ -67,7 +67,7 @@ int main()
 
 
 	trafficLights lights;
-	piste pisteCourse("mapTestPneus");													//objet Piste
+	piste pisteCourse("mapFinale2");													//objet Piste
 	automobile joueurs[4];
 	
 
@@ -248,7 +248,12 @@ int main()
 			{
 				window.draw(pisteCourse.getCercle(i));
 			}
-		
+			
+			for (int i = 0; i < pisteCourse.getNbPneus(); i++)
+			{
+				window.draw(pisteCourse.getPneu(i));
+			}
+
 			window.draw(ligneArivee);
 			
 
