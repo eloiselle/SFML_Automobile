@@ -217,8 +217,8 @@ int main()
 			}
 
 			//Affiche toutes les formes de collisions --> afin de tester collisions
-			for (int i = 0; i < pisteCourse.getNbCollisions(); i++)
-				window.draw(pisteCourse.getCollisions(i));
+			for (int i = 0; i < pisteCourse.getNbRectangles(); i++)
+				window.draw(pisteCourse.getRectangle(i));
 
 			//Affiche la lumière au départ
 			lights.changerLumiere(tempsJeu);
@@ -254,9 +254,9 @@ int main()
 				window.draw(pisteCourse.getPneu(i));
 			}
 
-			for (int i = 0; i < pisteCourse.getNbCollisions(); i++)
+			for (int i = 0; i < pisteCourse.getNbRectangles(); i++)
 			{
-				window.draw(pisteCourse.getCollisions(i));
+				window.draw(pisteCourse.getRectangle(i));
 			}
 
 			window.draw(ligneArivee);

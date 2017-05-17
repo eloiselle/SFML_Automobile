@@ -39,17 +39,17 @@ public:
 	~piste();											//destructeur de la piste
 
 	//Getteur 
-	int getNbCollisions();								//get le nombre de formes convexes de collisions
+	int getNbRectangles();								//get le nombre de formes convexes de collisions
 	int getNbCercles();
 	int getNbPneus();
-	ConvexShape getCollisions(int i);					//get une forme de collision
+	ConvexShape getRectangle(int i);					//get une forme de collision
 	CircleShape getCercle(int i);
 	CircleShape getPneu(int i);
 	Sprite getSprite();									//get le sprite de la piste
 
 	//Setteur
 	void setPosition(float x, float y);					//set la position x et y du sprite de la piste
-	void setNbCollisions(int nbCollisions);				//set le nombre de collisions de la piste
+	void setNbRectangles(int nbCollisions);				//set le nombre de collisions de la piste
 
 	//Chargement
 	void lireFichierEntete(ifstream& entree);			//lecture de l'entête du fichier et affecte le nom du fichier à le nom du fichier de texture en .png
@@ -76,7 +76,7 @@ piste::piste(string nomFichier)
 	
 	Sprite piste;										//sprite de la piste
 
-	ConvexShape collisions[50];							//formes convexes de collisions
+	ConvexShape rectangles[50];							//formes convexes de collisions
 
 	Vector2f point;										//coordonnées x et y d'un point
 
@@ -95,7 +95,7 @@ piste::piste(string nomFichier)
 }
 
 //get le nombre de formes convexes de collisions
-int piste::getNbCollisions()
+int piste::getNbRectangles()
 {
 	return _nbCollisions;
 }
@@ -111,7 +111,7 @@ int piste::getNbPneus()
 }
 
 //get la forme convexe de collision
-ConvexShape piste::getCollisions(int i)
+ConvexShape piste::getRectangle(int i)
 {
 	return _collisions[i];
 }
@@ -139,7 +139,7 @@ void piste::setPosition(float x, float y)
 }
 
 //setle nombre de formes de collisions de la piste
-void piste::setNbCollisions(int nbCollisions)
+void piste::setNbRectangles(int nbCollisions)
 {
 	_nbCollisions = nbCollisions;
 }
