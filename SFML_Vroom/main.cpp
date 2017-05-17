@@ -254,6 +254,11 @@ int main()
 				window.draw(pisteCourse.getPneu(i));
 			}
 
+			for (int i = 0; i < pisteCourse.getNbCollisions(); i++)
+			{
+				window.draw(pisteCourse.getCollisions(i));
+			}
+
 			window.draw(ligneArivee);
 			
 

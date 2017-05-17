@@ -224,4 +224,29 @@ void piste::chargerPiste(ifstream& entree)
 		_pneus[i].setOutlineColor(Color::White);
 		_pneus[i].setOutlineThickness(2);
 	}
+
+	entree >> _nbCollisions;
+
+	for (int i = 0; i < _nbCollisions; i++)
+	{
+		int nbPoints;
+
+		entree >> nbPoints;
+
+		_collisions[i].setPointCount(nbPoints);
+
+		for (int j = 0; j < nbPoints; j++)
+		{
+			int x;
+			int y;
+
+			entree >> x >> y;
+
+			_collisions[i].setPoint(j, Vector2f(x, y));
+			_collisions[i].setFillColor(Color::Transparent);
+			_collisions[i].setOutlineColor(Color::White);
+			_collisions[i].setOutlineThickness(2);
+
+		}
+	}
 }
