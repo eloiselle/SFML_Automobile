@@ -67,7 +67,7 @@ int main()
 
 
 	trafficLights lights;
-	piste pisteCourse("mapFinale2");													//objet Piste
+	piste pisteCourse("mapTestPneus");													//objet Piste
 	automobile joueurs[4];
 	
 
@@ -76,7 +76,6 @@ int main()
 
 	RectangleShape checkPoint1;
 	RectangleShape ligneArivee;
-	CircleShape cercle;
 
 	checkPoint1.setPosition(555, 605);
 	checkPoint1.setSize(Vector2f(20, 130));
@@ -89,13 +88,6 @@ int main()
 	ligneArivee.setFillColor(Color::Transparent);
 	ligneArivee.setOutlineThickness(2);
 	ligneArivee.setOutlineColor(Color::White);
-
-	cercle.setRadius(60);
-	cercle.setOrigin(60, 60);
-	cercle.setPosition(100, 200);
-	cercle.setFillColor(Color::Transparent);
-	cercle.setOutlineColor(Color::White);
-	cercle.setOutlineThickness(2);
 
 	//Change les couleures de chaque joueurs
 	joueurs[0].setCouleur(0, 255, 0);
@@ -252,13 +244,13 @@ int main()
 				tour++;
 			}
 
-			if (getDistance(cercle, sprJoueur[0]) <= cercle.getRadius())
+			for (int i = 0; i < pisteCourse.getNbCercles(); i++)
 			{
-				tour++;
+				window.draw(pisteCourse.getCercle(i));
 			}
-
+		
 			window.draw(ligneArivee);
-			window.draw(cercle);
+			
 
 			//Rfraîchi l'affichage
 			window.display();

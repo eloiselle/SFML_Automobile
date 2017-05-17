@@ -26,7 +26,9 @@ private:
 	Texture _texture;									//texture de la piste
 	Sprite _sprite;										//sprite de la piste
 	int _nbCollisions;									//nombre de formes convexes de collisions
+	int _nbCercles;
 	ConvexShape _collisions[50];						//formes convexes de collisions (50 est un nombre arbitraire)
+	CircleShape _cercles[50];
 
 
 public:
@@ -37,7 +39,9 @@ public:
 
 	//Getteur 
 	int getNbCollisions();								//get le nombre de formes convexes de collisions
+	int getNbCercles();
 	ConvexShape getCollisions(int i);					//get une forme de collision
+	CircleShape getCercle(int i);
 	Sprite getSprite();									//get le sprite de la piste
 
 	//Setteur
@@ -77,7 +81,7 @@ piste::piste(string nomFichier)
 	fichierTexture = _nom + ".png";
 
 	entree.open(_nom + ".txt");
-	entree >> _nbCollisions;							//lecture entete
+	//entree >> _nbCollisions;							//lecture entete
 
 	chargerPiste(entree);
 
@@ -93,10 +97,20 @@ int piste::getNbCollisions()
 	return _nbCollisions;
 }
 
+int piste::getNbCercles()
+{
+	return _nbCercles;
+}
+
 //get la forme convexe de collision
 ConvexShape piste::getCollisions(int i)
 {
 	return _collisions[i];
+}
+
+CircleShape piste::getCercle(int i)
+{
+	return _cercles[i];
 }
 
 //get le sprite de la piste
@@ -129,21 +143,47 @@ void piste::chargerPiste(ifstream& entree)
 	int nbPoints;											//nb de points par forme
 	Vector2f point;											//coordonnées d'un point
 
-	for (int i = 0; i < _nbCollisions; i++)					//pr ch. forme convexe de collision
+	//for (int i = 0; i < _nbCollisions; i++)					//pr ch. forme convexe de collision
+	//{
+	//	entree >> nbPoints;
+
+	//	_collisions[i].setPointCount(nbPoints);
+
+	//	for (int j = 0; j < nbPoints; j++)					//pr ch. point de la forme
+	//	{
+	//		entree >> point.x >> point.y;
+
+	//		_collisions[i].setPoint(j, point);
+	//	}
+
+	//	_collisions[i].setFillColor(Color::Transparent);	//a titre de visibilitépour tests
+	//	_collisions[i].setOutlineColor(Color::White);
+	//	_collisions[i].setOutlineThickness(4);
+	//}
+
+	entree >> _nbCercles;
+
+	for (int i = 0; i < _nbCercles; i++)
 	{
-		entree >> nbPoints;
+		int x;
+		int y;
+		int rad;
 
-		_collisions[i].setPointCount(nbPoints);
+		int buffer;
 
-		for (int j = 0; j < nbPoints; j++)					//pr ch. point de la forme
+		entree >> x >> y >> rad;
+
+		for (int j = 0; j < 4; j++)
 		{
-			entree >> point.x >> point.y;
-
-			_collisions[i].setPoint(j, point);
+			entree >> buffer;
 		}
 
-		_collisions[i].setFillColor(Color::Transparent);	//a titre de visibilitépour tests
-		_collisions[i].setOutlineColor(Color::White);
-		_collisions[i].setOutlineThickness(4);
+		_cercles[i].setOrigin(rad, rad);
+		_cercles[i].setPosition(x, y);
+		_cercles[i].setRadius(rad);
+		_cercles[i].setFillColor(Color::Transparent);
+		_cercles[i].setOutlineColor(Color::White);
+		_cercles[i].setOutlineThickness(2);
+
 	}
 }
