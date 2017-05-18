@@ -11,7 +11,7 @@ But			: Contrôler un automobile sur une piste de course le plus rapidement poss
 
 //Directives au pré-processeur
 #include <SFML/Main.hpp>
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics.hpp>				
 #include <iostream>
 #include <fstream>
 #include <string>

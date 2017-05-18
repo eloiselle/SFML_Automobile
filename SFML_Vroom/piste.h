@@ -30,7 +30,7 @@ private:
 	int _nbPneus;
 	ConvexShape _collisions[50];						//formes convexes de collisions (50 est un nombre arbitraire)
 	CircleShape _cercles[50];
-	CircleShape _pneus[200];
+	CircleShape _pneus[250];
 
 public:
 	//Constructeur / Déconstructeur
