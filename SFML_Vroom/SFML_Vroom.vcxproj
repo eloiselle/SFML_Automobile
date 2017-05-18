@@ -156,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="car.png" />
+    <ClInclude Include="cerclePiste.h" />
     <ClInclude Include="piste.h" />
     <ClInclude Include="trafficLights.h" />
   </ItemGroup>

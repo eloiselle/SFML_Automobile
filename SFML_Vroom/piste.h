@@ -12,6 +12,7 @@ But			: Piste de course. Est générée à partir d'un fichier texte.*/
 #include <string>
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include "cerclePiste.h"
 
 using namespace std;
 using namespace sf;
@@ -29,8 +30,9 @@ private:
 	int _nbCercles;
 	int _nbPneus;
 	ConvexShape _collisions[50];						//formes convexes de collisions (50 est un nombre arbitraire)
-	CircleShape _cercles[50];
+	//CircleShape _cercles[50];
 	CircleShape _pneus[250];
+	cerclePiste _cercles[50];
 
 public:
 	//Constructeur / Déconstructeur
@@ -118,7 +120,7 @@ ConvexShape piste::getRectangle(int i)
 
 CircleShape piste::getCercle(int i)
 {
-	return _cercles[i];
+	return _cercles[i].cercle;
 }
 
 CircleShape piste::getPneu(int i)
@@ -182,21 +184,19 @@ void piste::chargerPiste(ifstream& entree)
 		int y;
 		int rad;
 
-		int buffer;
+		int hg, hd, bd, bg = 0;
 
-		entree >> x >> y >> rad;
+		entree >> x >> y >> rad >> hg >> hd >> bd >> bg;
 
-		for (int j = 0; j < 4; j++)
-		{
-			entree >> buffer;
-		}
+		_cercles[i].setAll(hg, hd, bd, bg);
+		
 
-		_cercles[i].setOrigin(rad, rad);
-		_cercles[i].setPosition(x, y);
-		_cercles[i].setRadius(rad);
-		_cercles[i].setFillColor(Color::Transparent);
-		_cercles[i].setOutlineColor(Color::White);
-		_cercles[i].setOutlineThickness(2);
+		_cercles[i].cercle.setOrigin(rad, rad);
+		_cercles[i].cercle.setPosition(x, y);
+		_cercles[i].cercle.setRadius(rad);
+		_cercles[i].cercle.setFillColor(Color::Transparent);
+		_cercles[i].cercle.setOutlineColor(Color::White);
+		_cercles[i].cercle.setOutlineThickness(2);
 
 	}
 
