@@ -286,7 +286,7 @@ int main()
 
 		for (int i = 0; i < 4; i++)
 		{
-			nbJoueursSel[i].setSize(sf::Vector2f(200, 100));
+			nbJoueursSel[i].setSize(sf::Vector2f(200, 150));
 
 			nbJoueursSel[i].setFillColor(Color::Black);
 			nbJoueursSel[i].setOutlineThickness(5);
