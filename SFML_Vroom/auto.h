@@ -46,6 +46,8 @@ private:
 	int _autoRGB[3];
 #pragma endregion
 public:
+	bool checkpoint = false;
+	int laps = 0;
 
 #pragma region "Fonctions"
 

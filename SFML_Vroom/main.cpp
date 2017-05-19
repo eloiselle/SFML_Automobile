@@ -80,14 +80,14 @@ int main()
 	checkPoint1.setPosition(555, 605);
 	checkPoint1.setSize(Vector2f(20, 130));
 	checkPoint1.setFillColor(Color::Transparent);
-	checkPoint1.setOutlineThickness(2);
-	checkPoint1.setOutlineColor(Color::White);
+	//checkPoint1.setOutlineThickness(2);
+	//checkPoint1.setOutlineColor(Color::White);
 
-	ligneArivee.setPosition(555, 15);
-	ligneArivee.setSize(Vector2f(20, 160));
+	ligneArivee.setPosition(940, 15);
+	ligneArivee.setSize(Vector2f(20, 280));
 	ligneArivee.setFillColor(Color::Transparent);
-	ligneArivee.setOutlineThickness(2);
-	ligneArivee.setOutlineColor(Color::White);
+	//ligneArivee.setOutlineThickness(2);
+	//ligneArivee.setOutlineColor(Color::White);
 
 	//Change les couleures de chaque joueurs
 	joueurs[0].setCouleur(0, 255, 0);
@@ -156,7 +156,7 @@ int main()
 			sprJoueur[i].setColor(Color(joueurs[i].getRed(), joueurs[i].getGreen(), joueurs[i].getBlue()));
 
 			//Initialisation automobile
-			sprJoueur[i].setPosition(100 + (100 * i), 100);
+			sprJoueur[i].setPosition(900 + (100 * i), 100 );
 			sprJoueur[i].rotate(joueurs[i].getDegreAuto());
 		}
 
@@ -201,7 +201,7 @@ int main()
 							{
 								joueurs[i].setMaxSpeed(true);
 								pisteCourse.getCercle(j).getCercle().setOutlineColor(Color::Red);
-								tour++;
+							
 							}
 						}
 						if (pisteCourse.getCercle(j).getqHautDroite())
@@ -210,7 +210,7 @@ int main()
 							{
 								joueurs[i].setMaxSpeed(true);
 								pisteCourse.getCercle(j).getCercle().setOutlineColor(Color::Red);
-								tour++;
+								
 							}
 						}
 						if (pisteCourse.getCercle(j).getqBasGauche())
@@ -219,7 +219,7 @@ int main()
 							{
 								joueurs[i].setMaxSpeed(true);
 								pisteCourse.getCercle(j).getCercle().setOutlineColor(Color::Red);
-								tour++;
+								
 							}
 						}
 						if (pisteCourse.getCercle(j).getqHautGauche())
@@ -228,7 +228,7 @@ int main()
 							{
 								joueurs[i].setMaxSpeed(true);
 								pisteCourse.getCercle(j).getCercle().setOutlineColor(Color::Red);
-								tour++;
+								
 							}
 						}
 					}
@@ -246,7 +246,7 @@ int main()
 				{
 					if (sprJoueur[i].getGlobalBounds().intersects(pisteCourse.getRectangle(j).getGlobalBounds()))
 					{
-						tour++;
+						
 						joueurs[i].setMaxSpeed(300);
 					}
 				}
