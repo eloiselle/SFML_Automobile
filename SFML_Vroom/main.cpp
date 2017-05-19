@@ -146,9 +146,6 @@ int main()
 		//Chargement de chaque joueurs
 		for (int i = 0; i < nbJoueurs; i++)
 		{
-			//Génère une couleure aléatoire pour chaque auto
-			joueurs[i].setCouleur(rand() % 25 * 10, rand() % 25 * 10, rand() % 25 * 10);
-
 			//Chargement de la texture pour l'auto spécifiée
 			textureCar.loadFromFile("car.png");
 			sprJoueur[i].setTexture(textureCar);
@@ -156,9 +153,11 @@ int main()
 			sprJoueur[i].setColor(Color(joueurs[i].getRed(), joueurs[i].getGreen(), joueurs[i].getBlue()));
 
 			//Initialisation automobile
-			sprJoueur[i].setPosition(900 + (100 * i), 100 );
+			sprJoueur[i].setPosition(900, 60 + (20 * i));
 			sprJoueur[i].rotate(joueurs[i].getDegreAuto());
 		}
+
+		joueurs[0].setCouleur(253, 167, 0);
 
 		while (jouer)	//Tant que le jeu roule
 		{
