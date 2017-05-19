@@ -348,6 +348,26 @@ int afficherMenu(RenderWindow& window, Font font)
 	Text infoNbJrs;
 	Text nombreJrs[4];
 
+	Texture txtAuto1;
+	Texture txtAuto2;
+	Texture txtAuto3;
+	Texture txtAuto4;
+
+	Sprite auto1;
+	Sprite auto2;
+	Sprite auto3;
+	Sprite auto4;
+
+	txtAuto1.loadFromFile("auto1.png", IntRect(0, 0, 200, 150));
+	txtAuto2.loadFromFile("auto2.png", IntRect(0, 0, 200, 150));
+	txtAuto3.loadFromFile("auto3.png", IntRect(0, 0, 200, 150));
+	txtAuto4.loadFromFile("auto4.png", IntRect(0, 0, 200, 150));
+
+	auto1.setTexture(txtAuto1);
+	auto2.setTexture(txtAuto2);
+	auto3.setTexture(txtAuto3);
+	auto4.setTexture(txtAuto4);
+
 	for (int i = 0; i < 4; i++)
 	{
 		nbJoueursSel[i].setSize(sf::Vector2f(200, 150));
@@ -356,6 +376,7 @@ int afficherMenu(RenderWindow& window, Font font)
 		nbJoueursSel[i].setOutlineThickness(5);
 		nbJoueursSel[i].setOutlineColor(sf::Color::Red);
 		nbJoueursSel[i].setPosition(200 + (i * 225), (window.getSize().y - nbJoueursSel[i].getSize().y) - 20);
+		
 
 		nombreJrs[i].setFont(font);
 		nombreJrs[i].setString(to_string(i + 1));
@@ -365,7 +386,13 @@ int afficherMenu(RenderWindow& window, Font font)
 		temp.y = temp.y / 2 - 20;
 
 		nombreJrs[i].setPosition(nbJoueursSel[i].getPosition() + temp);
+
 	}
+
+	auto1.setPosition(200, (window.getSize().y - 150) - 20);
+	auto2.setPosition(200 + 225, (window.getSize().y - 150) - 20);
+	auto3.setPosition(200 + 450, (window.getSize().y - 150) - 20);
+	auto4.setPosition(200 + 675, (window.getSize().y - 150) - 20);
 
 	nbJoueursSel[0].setOutlineColor(sf::Color::Green);
 
@@ -406,9 +433,14 @@ int afficherMenu(RenderWindow& window, Font font)
 					if (j != i)
 						nbJoueursSel[j].setOutlineColor(sf::Color::Red);
 			}
+
 			window.draw(nbJoueursSel[i]);
 			window.draw(nombreJrs[i]);
 			window.draw(infoNbJrs);
+			window.draw(auto1);
+			window.draw(auto2);
+			window.draw(auto3);
+			window.draw(auto4);
 		}
 		window.display();
 	}
