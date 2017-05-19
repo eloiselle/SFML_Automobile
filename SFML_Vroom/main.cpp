@@ -101,20 +101,6 @@ int main()
 	joueurs[2].setKeys(Keyboard::I, Keyboard::K, Keyboard::J, Keyboard::L);
 	joueurs[3].setKeys(Keyboard::T, Keyboard::G, Keyboard::F, Keyboard::H);
 
-	//Chargement de chaque joueurs
-	for (int i = 0; i < nbJoueurs; i++)
-	{
-		//Chargement de la texture pour l'auto spécifiée
-		textureCar.loadFromFile("car.png");
-		sprJoueur[i].setTexture(textureCar);
-		sprJoueur[i].setOrigin(12, 8);
-		sprJoueur[i].setColor(Color(joueurs[i].getRed(), joueurs[i].getGreen(), joueurs[i].getBlue()));
-
-		//Initialisation automobile
-		sprJoueur[i].setPosition(100 + (100 * i), 100);
-		sprJoueur[i].rotate(joueurs[i].getDegreAuto());
-	}
-	//Limite le nombre d'images par secondes
 	lights.setPosition(585, 300);
 
 	//Menu
@@ -153,7 +139,7 @@ int main()
 			sprJoueur[i].setColor(Color(joueurs[i].getRed(), joueurs[i].getGreen(), joueurs[i].getBlue()));
 
 			//Initialisation automobile
-			sprJoueur[i].setPosition(900, 60 + (20 * i));
+			sprJoueur[i].setPosition(900, 60 + (25 * i));
 			sprJoueur[i].rotate(joueurs[i].getDegreAuto());
 		}
 
