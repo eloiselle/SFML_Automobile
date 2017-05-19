@@ -60,14 +60,14 @@ int main()
 	//Fonts et text
 	font.loadFromFile("Roboto-Italic.ttf");
 	chrono.setFont(font);
-	chrono.setPosition(20, 20);
+	chrono.setPosition(40, 40);
 
 	laps.setFont(font);
-	laps.setPosition(100, 400);
+	laps.setPosition(40, 80);
 
 
 	trafficLights lights;
-	piste pisteCourse("mapFinale2");													//objet Piste
+	piste pisteCourse("mapFinale2");											//objet Piste
 	automobile joueurs[4];
 
 

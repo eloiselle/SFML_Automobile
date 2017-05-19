@@ -195,8 +195,8 @@ void piste::chargerPiste(ifstream& entree)
 		_cercles[i].cercle.setPosition(x, y);
 		_cercles[i].cercle.setRadius(rad);
 		_cercles[i].cercle.setFillColor(Color::Transparent);
-		_cercles[i].cercle.setOutlineColor(Color::White);
-		_cercles[i].cercle.setOutlineThickness(2);
+		//_cercles[i].cercle.setOutlineColor(Color::White);
+		//_cercles[i].cercle.setOutlineThickness(2);
 
 	}
 
