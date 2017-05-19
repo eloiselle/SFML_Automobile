@@ -69,7 +69,7 @@ int main()
 	trafficLights lights;
 	piste pisteCourse("mapFinale2");													//objet Piste
 	automobile joueurs[4];
-	
+
 
 	int nbJoueurs = 4;
 	bool canDrive = false;														//voiture peut pas bouger pendant traffic lights
@@ -187,6 +187,70 @@ int main()
 				if (canDrive == false)
 					break;
 
+				for (int j = 0; j < pisteCourse.getNbCercles(); j++)
+				{
+					joueurs[i].setMaxSpeed(false);
+					pisteCourse.getCercle(j).getCercle().setOutlineColor(Color::White);
+
+					if (sprJoueur[i].getGlobalBounds().intersects(pisteCourse.getCercle(j).getCercle().getGlobalBounds()))
+					{
+
+						if (pisteCourse.getCercle(j).getqBasDroite())
+						{
+							if (pisteCourse.getCercle(j).getCercle().getPosition().x < sprJoueur[i].getPosition().x && pisteCourse.getCercle(j).getCercle().getPosition().y > sprJoueur[i].getPosition().y)
+							{
+								joueurs[i].setMaxSpeed(true);
+								pisteCourse.getCercle(j).getCercle().setOutlineColor(Color::Red);
+								tour++;
+							}
+						}
+						if (pisteCourse.getCercle(j).getqHautDroite())
+						{
+							if (pisteCourse.getCercle(j).getCercle().getPosition().x < sprJoueur[i].getPosition().x && pisteCourse.getCercle(j).getCercle().getPosition().y < sprJoueur[i].getPosition().y)
+							{
+								joueurs[i].setMaxSpeed(true);
+								pisteCourse.getCercle(j).getCercle().setOutlineColor(Color::Red);
+								tour++;
+							}
+						}
+						if (pisteCourse.getCercle(j).getqBasGauche())
+						{
+							if (pisteCourse.getCercle(j).getCercle().getPosition().x > sprJoueur[i].getPosition().x && pisteCourse.getCercle(j).getCercle().getPosition().y > sprJoueur[i].getPosition().y)
+							{
+								joueurs[i].setMaxSpeed(true);
+								pisteCourse.getCercle(j).getCercle().setOutlineColor(Color::Red);
+								tour++;
+							}
+						}
+						if (pisteCourse.getCercle(j).getqHautGauche())
+						{
+							if (pisteCourse.getCercle(j).getCercle().getPosition().x > sprJoueur[i].getPosition().x && pisteCourse.getCercle(j).getCercle().getPosition().y < sprJoueur[i].getPosition().y)
+							{
+								joueurs[i].setMaxSpeed(true);
+								pisteCourse.getCercle(j).getCercle().setOutlineColor(Color::Red);
+								tour++;
+							}
+						}
+					}
+				}
+
+				for (int j = 0; j < pisteCourse.getNbPneus(); j++)
+				{
+					if (sprJoueur[i].getGlobalBounds().intersects(pisteCourse.getPneu(j).getGlobalBounds()))
+					{
+						joueurs[i].collisionMurs();
+					}
+				}
+
+				for (int j = 0; j < pisteCourse.getNbRectangles(); j++)
+				{
+					if (sprJoueur[i].getGlobalBounds().intersects(pisteCourse.getRectangle(j).getGlobalBounds()))
+					{
+						tour++;
+						joueurs[i].setMaxSpeed(300);
+					}
+				}
+
 				//***************************Effectue toutes les actions reliées au joueur***************************
 				joueurs[i].fonctionnement(sprJoueur[i], tempsDelta);
 
@@ -246,9 +310,9 @@ int main()
 
 			for (int i = 0; i < pisteCourse.getNbCercles(); i++)
 			{
-				window.draw(pisteCourse.getCercle(i));
+				window.draw(pisteCourse.getCercle(i).getCercle());
 			}
-			
+
 			for (int i = 0; i < pisteCourse.getNbPneus(); i++)
 			{
 				window.draw(pisteCourse.getPneu(i));
@@ -260,7 +324,7 @@ int main()
 			}
 
 			window.draw(ligneArivee);
-			
+
 
 			//Rfraîchi l'affichage
 			window.display();
@@ -270,93 +334,93 @@ int main()
 }
 
 
-	//(Fonction) Affiche le menu et attends une réponse du joueur
-	int afficherMenu(RenderWindow& window, Font font)
+//(Fonction) Affiche le menu et attends une réponse du joueur
+int afficherMenu(RenderWindow& window, Font font)
+{
+	int nbJoueurs = 1;
+
+	//Textures et sprites
+	Texture textureMenu;
+	Sprite spriteMenu;
+
+	RectangleShape nbJoueursSel[4];
+	Text txtJouer;
+	Text infoNbJrs;
+	Text nombreJrs[4];
+
+	for (int i = 0; i < 4; i++)
 	{
-		int nbJoueurs = 1;
+		nbJoueursSel[i].setSize(sf::Vector2f(200, 150));
 
-		//Textures et sprites
-		Texture textureMenu;
-		Sprite spriteMenu;
+		nbJoueursSel[i].setFillColor(Color::Black);
+		nbJoueursSel[i].setOutlineThickness(5);
+		nbJoueursSel[i].setOutlineColor(sf::Color::Red);
+		nbJoueursSel[i].setPosition(200 + (i * 225), (window.getSize().y - nbJoueursSel[i].getSize().y) - 20);
 
-		RectangleShape nbJoueursSel[4];
-		Text txtJouer;
-		Text infoNbJrs;
-		Text nombreJrs[4];
+		nombreJrs[i].setFont(font);
+		nombreJrs[i].setString(to_string(i + 1));
 
+		Vector2f temp = nbJoueursSel[i].getSize();
+		temp.x = temp.x / 2 - 10;
+		temp.y = temp.y / 2 - 20;
+
+		nombreJrs[i].setPosition(nbJoueursSel[i].getPosition() + temp);
+	}
+
+	nbJoueursSel[0].setOutlineColor(sf::Color::Green);
+
+	textureMenu.loadFromFile("titleScreen.png");
+	spriteMenu.setTexture(textureMenu);
+
+	txtJouer.setFont(font);
+	txtJouer.setString("Appuyez sur espace pour jouer");
+
+	infoNbJrs.setFont(font);
+	infoNbJrs.setString("Nombre de joueurs: ");
+	infoNbJrs.setPosition(200, 600);
+	infoNbJrs.setFillColor(Color::Black);
+
+	while (true)
+	{
+		//******Affichage******
+		window.draw(spriteMenu);
+		window.draw(txtJouer);
+
+		if (Keyboard::isKeyPressed(Keyboard::Space))
+			return nbJoueurs;
+
+		if (Keyboard::isKeyPressed(Keyboard::Escape))
+			return 0;
+
+		//Vérifie quel bouton a été sélectionné, et ajuste le nombre de joueurs désiré
 		for (int i = 0; i < 4; i++)
 		{
-			nbJoueursSel[i].setSize(sf::Vector2f(200, 150));
-
-			nbJoueursSel[i].setFillColor(Color::Black);
-			nbJoueursSel[i].setOutlineThickness(5);
-			nbJoueursSel[i].setOutlineColor(sf::Color::Red);
-			nbJoueursSel[i].setPosition(200 + (i * 225), (window.getSize().y - nbJoueursSel[i].getSize().y) - 20);
-
-			nombreJrs[i].setFont(font);
-			nombreJrs[i].setString(to_string(i + 1));
-
-			Vector2f temp = nbJoueursSel[i].getSize();
-			temp.x = temp.x / 2 - 10;
-			temp.y = temp.y / 2 - 20;
-
-			nombreJrs[i].setPosition(nbJoueursSel[i].getPosition() + temp);
-		}
-
-		nbJoueursSel[0].setOutlineColor(sf::Color::Green);
-
-		textureMenu.loadFromFile("titleScreen.png");
-		spriteMenu.setTexture(textureMenu);
-
-		txtJouer.setFont(font);
-		txtJouer.setString("Appuyez sur espace pour jouer");
-
-		infoNbJrs.setFont(font);
-		infoNbJrs.setString("Nombre de joueurs: ");
-		infoNbJrs.setPosition(200, 600);
-		infoNbJrs.setFillColor(Color::Black);
-
-		while (true)
-		{
-			//******Affichage******
-			window.draw(spriteMenu);
-			window.draw(txtJouer);
-
-			if (Keyboard::isKeyPressed(Keyboard::Space))
-				return nbJoueurs;
-
-			if (Keyboard::isKeyPressed(Keyboard::Escape))
-				return 0;
-
-			//Vérifie quel bouton a été sélectionné, et ajuste le nombre de joueurs désiré
-			for (int i = 0; i < 4; i++)
+			if (Mouse::isButtonPressed(Mouse::Button::Left) &&
+				Mouse::getPosition(window).x > nbJoueursSel[i].getPosition().x && Mouse::getPosition(window).x < (nbJoueursSel[i].getPosition().x + nbJoueursSel[i].getSize().x) &&
+				Mouse::getPosition(window).y > nbJoueursSel[i].getPosition().y && Mouse::getPosition(window).y < (nbJoueursSel[i].getPosition().y + nbJoueursSel[i].getSize().y))
 			{
-				if (Mouse::isButtonPressed(Mouse::Button::Left) &&
-					Mouse::getPosition(window).x > nbJoueursSel[i].getPosition().x && Mouse::getPosition(window).x < (nbJoueursSel[i].getPosition().x + nbJoueursSel[i].getSize().x) &&
-					Mouse::getPosition(window).y > nbJoueursSel[i].getPosition().y && Mouse::getPosition(window).y < (nbJoueursSel[i].getPosition().y + nbJoueursSel[i].getSize().y))
-				{
-					nbJoueurs = i + 1;
-					nbJoueursSel[i].setOutlineColor(sf::Color::Green);
+				nbJoueurs = i + 1;
+				nbJoueursSel[i].setOutlineColor(sf::Color::Green);
 
-					for (int j = 0; j < 4; j++)
-						if (j != i)
-							nbJoueursSel[j].setOutlineColor(sf::Color::Red);
-				}
-				window.draw(nbJoueursSel[i]);
-				window.draw(nombreJrs[i]);
-				window.draw(infoNbJrs);
+				for (int j = 0; j < 4; j++)
+					if (j != i)
+						nbJoueursSel[j].setOutlineColor(sf::Color::Red);
 			}
-			window.display();
+			window.draw(nbJoueursSel[i]);
+			window.draw(nombreJrs[i]);
+			window.draw(infoNbJrs);
 		}
+		window.display();
 	}
+}
 
-	float getDistance(CircleShape cercle, Sprite car)
-	{
-		float dx = 0;
-		float dy = 0;
+float getDistance(CircleShape cercle, Sprite car)
+{
+	float dx = 0;
+	float dy = 0;
 
-		dx = abs(cercle.getPosition().x - car.getPosition().x);
-		dy = abs(cercle.getPosition().y - car.getPosition().y);
+	dx = abs(cercle.getPosition().x - car.getPosition().x);
+	dy = abs(cercle.getPosition().y - car.getPosition().y);
 
-		return sqrt(dx*dx + dy*dy);
-	}
+	return sqrt(dx*dx + dy*dy);
+}

@@ -25,6 +25,8 @@ private:
 	//États de l'auto
 	double _velociteX;
 	double _velociteY;
+	int _maxSpeedInitial;
+	int _maxSpeedGazon;
 	int _derniereDirection;
 
 	int _virage;
@@ -79,6 +81,7 @@ public:
 	//Change vélocité
 	void setVelociteY(double velociteY);
 	void setVelociteX(double velociteX);
+	void setMaxSpeed(bool option);
 	void changerDirection(int direction);
 
 	//Change Degré / Virage
@@ -115,6 +118,8 @@ automobile::automobile()
 	//États de l'auto
 	_velociteX = 0;					//La vitesse actuelle de l'auto¸(sur l'axe des X)
 	_velociteY = 0;					//La vitesse actuelle de l'auto¸(sur l'axe des Y)
+	_maxSpeedInitial = 250;
+	_maxSpeedGazon = 100;
 	_virage = 0;					//1 = Gauche, 2 = Droite, 0 = Nulle
 	_degreVelocite = 0;
 	_degre = 0;						//L'angle actuel, en degré, de l'auto
@@ -122,7 +127,7 @@ automobile::automobile()
 	_derniereDirection = 1;
 
 	//Autres options
-	_vitesseMax = 300;				//Vitesse maximale
+	_vitesseMax = _maxSpeedInitial;				//Vitesse maximale
 
 	//Accélérations
 	_vitesseIncrementation = 0.2;	//La vitesse à laquelle l'auto fais son accélération
@@ -205,6 +210,14 @@ Keyboard::Key automobile::getRight() {
 #pragma region "Setters"
 void automobile::setVelociteX(double velociteX) {
 	_velociteX = velociteX;
+}
+
+void automobile::setMaxSpeed(bool option)
+{
+	if (option)
+		_vitesseMax = _maxSpeedInitial;
+	else
+		_vitesseMax = _maxSpeedGazon;
 }
 
 void automobile::setVelociteY(double velociteY) {

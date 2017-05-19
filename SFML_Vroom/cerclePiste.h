@@ -33,10 +33,6 @@ public:
 	void setqBasDroite(int x);
 	void setqBasGauche(int x);
 	void setAll(int hg, int hd, int bd, int bg);
-
-
-
-
 };
 
 cerclePiste::cerclePiste()

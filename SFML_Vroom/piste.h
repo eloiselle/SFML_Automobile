@@ -45,7 +45,7 @@ public:
 	int getNbCercles();
 	int getNbPneus();
 	ConvexShape getRectangle(int i);					//get une forme de collision
-	CircleShape getCercle(int i);
+	cerclePiste getCercle(int i);
 	CircleShape getPneu(int i);
 	Sprite getSprite();									//get le sprite de la piste
 
@@ -118,9 +118,9 @@ ConvexShape piste::getRectangle(int i)
 	return _collisions[i];
 }
 
-CircleShape piste::getCercle(int i)
+cerclePiste piste::getCercle(int i)
 {
-	return _cercles[i].cercle;
+	return _cercles[i];
 }
 
 CircleShape piste::getPneu(int i)
@@ -195,8 +195,8 @@ void piste::chargerPiste(ifstream& entree)
 		_cercles[i].cercle.setPosition(x, y);
 		_cercles[i].cercle.setRadius(rad);
 		_cercles[i].cercle.setFillColor(Color::Transparent);
-		_cercles[i].cercle.setOutlineColor(Color::White);
-		_cercles[i].cercle.setOutlineThickness(2);
+		/*_cercles[i].cercle.setOutlineColor(Color::White);
+		_cercles[i].cercle.setOutlineThickness(2);*/
 
 	}
 
@@ -221,8 +221,8 @@ void piste::chargerPiste(ifstream& entree)
 		_pneus[i].setPosition(x, y);
 		_pneus[i].setRadius(rad);
 		_pneus[i].setFillColor(Color::Transparent);
-		_pneus[i].setOutlineColor(Color::White);
-		_pneus[i].setOutlineThickness(2);
+		//_pneus[i].setOutlineColor(Color::White);
+		//_pneus[i].setOutlineThickness(2);
 	}
 
 	entree >> _nbCollisions;
@@ -244,8 +244,8 @@ void piste::chargerPiste(ifstream& entree)
 
 			_collisions[i].setPoint(j, Vector2f(x, y));
 			_collisions[i].setFillColor(Color::Transparent);
-			_collisions[i].setOutlineColor(Color::White);
-			_collisions[i].setOutlineThickness(2);
+			//_collisions[i].setOutlineColor(Color::White);
+			//_collisions[i].setOutlineThickness(2);
 
 		}
 	}
